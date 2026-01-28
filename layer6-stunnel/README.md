@@ -167,7 +167,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 
 ![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
 
-![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
+![photo_6039717998622346556_y](https://github.com/user-attachments/assets/7120f144-825e-472c-9b4f-fad94fe25168)
 
 ![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
 
@@ -362,9 +362,9 @@ Step by step:
 ![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
 
 ![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
-**Important:** NetMod settings for Layer 6 are different from Layer 4!
 
-![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
+![photo_6039717998622346556_y](https://github.com/user-attachments/assets/bbf61c3a-edec-45e5-89b3-d4bb37f0d84e)
+
 
 ![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
 
