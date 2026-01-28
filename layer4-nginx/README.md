@@ -139,8 +139,9 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 - Port: **443** (مهم!)
 - Username: نام کاربری شما
 - Password: رمز عبور شما
+![photo_6039717998622346545_y](https://github.com/user-attachments/assets/3c56188b-0c9e-4b3e-bc1a-1d60b3853ded)
 
-![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
+
 
 روی **Save** کلیک کنید و سپس **Connect**.
 
@@ -322,8 +323,9 @@ Fill in:
 - Port: **443** (important!)
 - Username: Your username
 - Password: Your password
+![photo_6039717998622346545_y](https://github.com/user-attachments/assets/d9369f78-a81d-441e-a7cc-527f1c97bfcc)
 
-![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
+
 
 Click **Save** then **Connect**.
 
