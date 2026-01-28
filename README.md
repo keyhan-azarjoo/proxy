@@ -185,6 +185,29 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/vi
 ---
 
 --------------------------------------------------
+مرحله ۷: حذف نصب (در صورت نیاز)
+--------------------------------------------------
+
+اگر می‌خواهید پراکسی را کاملاً حذف کنید:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
+```
+
+**توجه:** اگر سرور را ریست کرده‌اید یا مجدداً نصب می‌کنید، این دستور را روی کامپیوتر خود اجرا کنید تا کلید SSH قدیمی حذف شود:
+
+```bash
+ssh-keygen -R SERVER-IP
+```
+
+مثال:
+```bash
+ssh-keygen -R 87.106.68.203
+```
+
+---
+
+--------------------------------------------------
 نکات امنیتی بسیار مهم
 --------------------------------------------------
 
@@ -480,6 +503,29 @@ This script allows you to:
 - Check bandwidth consumption
 - See connection times for each user
 - Monitor server resources (CPU, RAM, Disk)
+
+---
+
+--------------------------------------------------
+Step 7: Uninstall (if needed)
+--------------------------------------------------
+
+If you want to completely remove the proxy:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
+```
+
+**Note:** If you have reset the server or are reinstalling, run this command on your computer to remove the old SSH key:
+
+```bash
+ssh-keygen -R SERVER-IP
+```
+
+Example:
+```bash
+ssh-keygen -R 87.106.68.203
+```
 
 ---
 

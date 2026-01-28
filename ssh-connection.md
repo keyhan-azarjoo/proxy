@@ -94,6 +94,23 @@ root@vps12345:~#
 - رمز عبور اشتباه است
 - نام کاربری اشتباه است
 
+### خطای "Host key verification failed" یا "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED"
+
+این خطا زمانی رخ می‌دهد که سرور را ریست کرده‌اید یا مجدداً نصب کرده‌اید.
+
+**راه حل:** این دستور را روی کامپیوتر خود اجرا کنید:
+
+```bash
+ssh-keygen -R SERVER-IP
+```
+
+مثال:
+```bash
+ssh-keygen -R 87.106.68.203
+```
+
+سپس دوباره با SSH وصل شوید.
+
 ---
 
 ## مرحله بعد
@@ -208,6 +225,23 @@ root@vps12345:~#
 ### "Permission denied" Error
 - Password is incorrect
 - Username is incorrect
+
+### "Host key verification failed" or "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED" Error
+
+This error occurs when you have reset the server or reinstalled it.
+
+**Solution:** Run this command on your computer:
+
+```bash
+ssh-keygen -R SERVER-IP
+```
+
+Example:
+```bash
+ssh-keygen -R 87.106.68.203
+```
+
+Then connect with SSH again.
 
 ---
 
