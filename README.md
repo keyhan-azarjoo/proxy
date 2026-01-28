@@ -133,9 +133,20 @@ ssh root@185.xxx.xxx.xxx
 | **لایه ۳: SSH پایه** | ⭐ آسان | شروع و تست | 22 |
 | **لایه ۴: Nginx** | ⭐⭐ آسان | استفاده روزانه | 443 |
 | **لایه ۶: Stunnel** | ⭐⭐⭐ متوسط | امنیت بالا | 443 |
-| **لایه ۷: V2Ray** | ⭐⭐⭐⭐ پیشرفته | سانسور سخت | 443 |
+| **لایه ۷: V2Ray VMess** | ⭐⭐⭐⭐ پیشرفته | سانسور سخت | 443 |
+| **لایه ۷: دامنه واقعی (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ پیشرفته | بهترین امنیت | 443 |
 
 **💡 توصیه برای مبتدیان: لایه ۴ (Nginx)**
+
+---
+
+### 📚 راهنمای کامل هر روش:
+
+- [لایه ۳: SSH پایه](./layer3-basic/README.md) - ساده‌ترین روش برای شروع
+- [لایه ۴: Nginx](./layer4-nginx/README.md) - پیشنهادی برای استفاده روزمره
+- [لایه ۶: Stunnel](./layer6-stunnel/README.md) - امنیت دوبل با TLS wrapper
+- [لایه ۷: V2Ray VMess](./layer7-v2ray-vmess/README.md) - مخفی‌سازی پیشرفته
+- [لایه ۷: دامنه واقعی + TLS](./layer7-real-domain/README.md) - بهترین روش کلی
 
 ---
 
@@ -162,8 +173,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer4-
 
 دستور:
 ```bash
-cd common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 از شما نام کاربری و رمز عبور پرسیده می‌شود.
@@ -176,7 +186,7 @@ bash add-user.sh
 
 اگر خواستید دسترسی کاربری را قطع کنید:
 ```bash
-bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
@@ -429,9 +439,20 @@ Choose Installation Method
 | **Layer 3: Basic SSH** | ⭐ Easy | Start and test | 22 |
 | **Layer 4: Nginx** | ⭐⭐ Easy | Daily use | 443 |
 | **Layer 6: Stunnel** | ⭐⭐⭐ Medium | High security | 443 |
-| **Layer 7: V2Ray** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
+| **Layer 7: V2Ray VMess** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
+| **Layer 7: Real Domain (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ Advanced | Best security | 443 |
 
 **💡 Recommendation for beginners: Layer 4 (Nginx)**
+
+---
+
+### 📚 Complete guide for each method:
+
+- [Layer 3: Basic SSH](./layer3-basic/README.md) - Simplest method to get started
+- [Layer 4: Nginx](./layer4-nginx/README.md) - Recommended for daily use
+- [Layer 6: Stunnel](./layer6-stunnel/README.md) - Double security with TLS wrapper
+- [Layer 7: V2Ray VMess](./layer7-v2ray-vmess/README.md) - Advanced obfuscation
+- [Layer 7: Real Domain + TLS](./layer7-real-domain/README.md) - Best overall method
 
 ---
 
@@ -458,8 +479,7 @@ For each person who wants to use the proxy, create a user.
 
 Command:
 ```bash
-cd common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 You will be asked for username and password.
@@ -472,7 +492,7 @@ Step 5: Delete User (if needed)
 
 If you want to revoke user access:
 ```bash
-bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---

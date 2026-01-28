@@ -1,857 +1,439 @@
-# 📗 لایه ۴: پروکسی TCP با Nginx
+# لایه ۴: Nginx - پیشنهادی برای استفاده روزمره
 
-> **⭐ توصیه می‌شود برای اکثر کاربران** • پورت 443 (HTTPS) • نصب آسان • قابل اعتماد
+> **⭐⭐ بهترین گزینه برای استفاده روزانه**
+> پورت 443 (HTTPS) - سخت‌تر برای فیلتر شدن
 
 [← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
-## 📖 لایه ۴ چیست؟
+## این روش چیست؟
 
-لایه ۴ از Nginx برای انتقال ترافیک از پورت 443 (پورت HTTPS) به سرور SSH شما استفاده می‌کند. این کار باعث می‌شود ترافیک پروکسی شما شبیه ترافیک معمولی HTTPS به نظر برسد و مسدود کردن آن بسیار سخت‌تر شود.
+روشی که SSH را روی پورت 443 (همان پورت HTTPS) اجرا می‌کند.
+در اکثر شبکه‌ها این پورت باز است.
 
-### ✅ مزایا
-- 🌟 **بهترین تعادل بین سادگی و مخفی‌سازی** - برای اکثر کاربران توصیه می‌شود
-- 🔐 **استفاده از پورت 443** - پورت استاندارد HTTPS (به ندرت مسدود می‌شود)
-- 👀 **تشخیص دشوارتر** - شبیه ترافیک معمولی HTTPS است
-- ⚡ **سریع و قابل اعتماد** - Nginx آزمایش شده و پایدار است
-- 🛡️ **رمزگذاری SSH** - امنیت مشابه لایه ۳
-- 📱 **با تمام کلاینت‌های SSH کار می‌کند** - سازگاری کامل
+**مزایا:**
+- پورت 443 تقریباً همیشه باز است
+- شبیه ترافیک HTTPS معمولی
+- فیلتر کردن آن سخت است
+- نصب هنوز آسان است
 
-### ⚠️ محدودیت‌ها
-- ⚙️ **نصب کمی پیچیده‌تر** - نیاز به نصب Nginx دارد
-- 🚫 **Apache/Plesk را غیرفعال می‌کند** - امکان اجرای وب‌سرور روی پورت 443 وجود ندارد
-- 🔍 **ممکن است DPI آن را تشخیص دهد** - بازرسی پیشرفته می‌تواند SSH را شناسایی کند
-
----
-
-## 🎯 مناسب برای
-
-- 🌍 **اکثر کاربران** - بهترین انتخاب همه‌منظوره
-- 🏢 **شبکه‌های شرکتی** - پورت 443 معمولاً باز است
-- ✈️ **مسافرت** - پورت 443 تقریباً همه‌جا کار می‌کند
-- 🔒 **سانسور سبک** - فیلترینگ پایه را دور می‌زند
-- 💼 **استفاده روزانه** - قابل اعتماد و پرسرعت
-
-**⭐ این انتخاب شماره یک ماست!**
+**نسبت به لایه ۳:**
+- امنیت بهتر
+- سخت‌تر برای مسدود شدن
+- سرعت تقریباً یکسان
 
 ---
 
-## 🚀 نصب (آسان!)
+--------------------------------------------------
+مرحله ۱: خرید سرور VPS (IONOS)
+--------------------------------------------------
 
-### مرحله ۱: اتصال به سرور مجازی
+اگر قبلاً سرور خریده‌اید، به مرحله بعد بروید.
 
-در **Windows** (PowerShell/CMD):
-```cmd
-ssh root@YOUR_SERVER_IP
-```
+لینک خرید:
+https://www.ionos.co.uk/servers/vps
 
-در **Mac/Linux** (Terminal):
+![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+
+### نکات خرید:
+- سیستم‌عامل: **Ubuntu**
+- پلن ارزان کافی است
+- لوکیشن به انتخاب شما
+
+![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
+
+---
+
+## بعد از خرید
+
+وارد پنل IONOS شوید:
+https://my.ionos.co.uk/server
+
+<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
+
+**اطلاعات مهم:**
+- IP سرور
+- نام کاربری: root
+- رمز عبور
+
+<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+
+---
+
+--------------------------------------------------
+مرحله ۲: اتصال SSH
+--------------------------------------------------
+
+باز کنید:
+- ویندوز: CMD یا PowerShell
+- مک/لینوکس: Terminal
+
+دستور:
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER-IP
 ```
 
-### مرحله ۲: اجرای نصب
+مثال:
+```bash
+ssh root@185.xxx.xxx.xxx
+```
 
-این دستور را کپی و اجرا کنید:
+![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
+
+در اولین اتصال `yes` را تایپ کنید.
+
+![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
+
+رمز عبور سرور را وارد کنید (نمایش داده نمی‌شود).
+
+![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
+
+وارد سرور شدید:
+
+![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+
+---
+
+--------------------------------------------------
+مرحله ۳: نصب لایه ۴ (Nginx)
+--------------------------------------------------
+
+این دستور را اجرا کنید:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
 ```
 
-یا اگر مخزن را کلون کرده‌اید:
-
-```bash
-cd ssh-socks-proxy/layer4-nginx
-bash install.sh
-```
-
-### مرحله ۳: تایید نصب
-
-نصب‌کننده این کارها را انجام می‌دهد:
-1. ✅ بررسی سیستم شما
-2. ⚠️ **هشدار درباره غیرفعال‌سازی Apache/Plesk** (در صورت اجرا)
-3. 📦 نصب Nginx و وابستگی‌ها
-4. ⚙️ پیکربندی SSH و Nginx
-5. 🔥 پیکربندی فایروال
-6. ✅ نمایش جزئیات اتصال
-
-**⚠️ مهم:** اگر از سرور مجازی خود برای وب‌سایت روی پورت 443 استفاده می‌کنید، این کار آن را غیرفعال می‌کند!
-
-**زمان کل: ۵-۷ دقیقه**
+نصب خودکار انجام می‌شود.
+Nginx روی پورت 443 راه‌اندازی می‌شود.
 
 ---
 
-## 👤 افزودن کاربر
+--------------------------------------------------
+مرحله ۴: اضافه کردن کاربر
+--------------------------------------------------
 
-پس از نصب، برای اتصال باید کاربر ایجاد کنید:
+برای هر نفر یک کاربر بسازید:
 
-### حالت تعاملی (توصیه می‌شود)
 ```bash
-cd ../common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-دستورالعمل‌ها را برای نام کاربری و رمز عبور دنبال کنید.
+نام کاربری و رمز عبور را وارد کنید.
 
-### حالت سریع
+---
+
+--------------------------------------------------
+مرحله ۵: حذف کاربر (در صورت نیاز)
+--------------------------------------------------
+
 ```bash
-cd ../common
-bash add-user.sh myusername mypassword
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
 
-## 📱 اتصال از دستگاه‌های شما
+## استفاده در iOS (NPV Tunnel)
 
-### iPhone/iPad (NPV Tunnel)
+### مرحله ۱: نصب اپلیکیشن
 
-1. **دانلود:** [NPV Tunnel](https://apps.apple.com/app/npv-tunnel/id1629891977)
-2. **روی "+" بزنید تا اتصال جدید اضافه کنید**
-3. **"SSH" را انتخاب کنید** (نه SSH+SSL)
-4. **جزئیات را وارد کنید:**
-   - **Name:** My Proxy
-   - **Server:** آی‌پی سرور مجازی شما
-   - **Port:** `443` ⬅️ **مهم: از 443 استفاده کنید، نه 22**
-   - **Username:** از add-user
-   - **Password:** از add-user
-5. **ذخیره و اتصال** ✅
+وارد App Store شوید و جستجو کنید:
+**NPV Tunnel**
 
-### Android (Net Mod)
-
-1. **دانلود:** [Net Mod](https://play.google.com/store/apps/details?id=com.netmod.app)
-2. **حالت SSH Tunnel**
-3. **جزئیات را وارد کنید:**
-   - **Server:** آی‌پی سرور مجازی شما
-   - **Port:** `443` ⬅️ **از 443 استفاده کنید**
-   - **Username:** از add-user
-   - **Password:** از add-user
-4. **اتصال** ✅
-
-### Windows (PuTTY)
-
-1. **دانلود:** [PuTTY](https://www.putty.org/)
-2. **پیکربندی:**
-   - **Host:** آی‌پی سرور مجازی شما
-   - **Port:** `443` ⬅️ **از 443 استفاده کنید، نه 22**
-   - **Connection type:** SSH
-3. **Tunnels:**
-   - بروید به: Connection → SSH → Tunnels
-   - **Source port:** `1080`
-   - **Type:** Dynamic
-   - روی "Add" کلیک کنید
-4. **پروفایل را ذخیره کنید** و **باز کنید**
-5. **لاگین کنید** و پنجره را باز نگه دارید
-
-### macOS/Linux (Terminal)
-
-```bash
-ssh -p 443 -D 1080 -N username@YOUR_SERVER_IP
-```
-
-**نکته:** گزینه `-p 443` به SSH می‌گوید از پورت 443 استفاده کند!
-
-پنجره ترمینال را در هنگام استفاده از پروکسی باز نگه دارید.
+![NPV App Store](https://github.com/user-attachments/assets/22d012dd-eea8-4bde-9146-3a0e52154a88)
 
 ---
 
-## 🌐 پیکربندی مرورگر/برنامه‌های شما
+### مرحله ۲: ورود به Config
 
-پس از اتصال، مرورگر خود را به پروکسی SOCKS محلی هدایت کنید:
-
-### Firefox (توصیه می‌شود)
-1. **Settings** → **Network Settings**
-2. **Manual proxy configuration**
-3. **SOCKS Host:** `127.0.0.1`
-4. **Port:** `1080`
-5. **SOCKS v5:** ✓
-6. **Proxy DNS:** ✓
-
-### Chrome/Edge
-1. **Settings** → **System** → **Proxy settings**
-2. **SOCKS proxy:** `127.0.0.1:1080`
-
-### پروکسی سیستم‌گستر
-- **Windows:** Settings → Network → Proxy → Manual: `127.0.0.1:1080`
-- **macOS:** System Preferences → Network → Advanced → Proxies → SOCKS: `127.0.0.1:1080`
+![Config Tab](https://github.com/user-attachments/assets/2497ee34-fcb2-4575-9e42-2b930b8d0b8d)
 
 ---
 
-## 🛠️ دستورات مدیریت
+### مرحله ۳: اضافه کردن تنظیمات
 
-به پوشه common بروید:
+روی **+** کلیک کنید.
 
-```bash
-cd /path/to/ssh-socks-proxy/common
-```
+![Add Config](https://github.com/user-attachments/assets/a9b01bb9-f03d-4d5e-bcf7-d920b44660a4)
 
-### افزودن کاربر
-```bash
-bash add-user.sh
-```
+**Add Config Manually** را انتخاب کنید.
 
-### حذف کاربر
-```bash
-bash delete-user.sh username
-```
-
-### لیست کاربران
-```bash
-bash list-users.sh
-```
-
-### بررسی وضعیت
-```bash
-bash status.sh
-```
-
-باید نشان دهد:
-- ✅ SSH در حال اجرا روی پورت 22
-- ✅ Nginx در حال اجرا و انتقال 443→22
-
-### پشتیبان‌گیری
-```bash
-bash backup-config.sh
-```
-
-### حذف نصب
-```bash
-bash uninstall.sh
-```
+![Add Manually](https://github.com/user-attachments/assets/b87227d4-5b41-443f-8707-2a322d2c018f)
 
 ---
 
-## 🔧 عیب‌یابی
+### مرحله ۴: انتخاب SSH Config
 
-### نمی‌توانید متصل شوید؟
-
-**1. بررسی کنید سرویس‌ها در حال اجرا هستند:**
-```bash
-bash status.sh
-```
-
-هر دو SSH و Nginx باید "✓ Running" را نشان دهند
-
-**2. بررسی فایروال:**
-```bash
-ufw status
-```
-
-باید نشان دهد:
-```
-443/tcp    ALLOW
-22/tcp     ALLOW
-```
-
-**3. تست پورت 443:**
-```bash
-ss -tulpn | grep :443
-```
-
-باید نشان دهد که Nginx روی پورت 443 گوش می‌دهد.
-
-### "Connection refused" روی پورت 443؟
-
-**راه‌اندازی مجدد Nginx:**
-```bash
-systemctl restart nginx
-systemctl status nginx
-```
-
-**بررسی پیکربندی Nginx:**
-```bash
-nginx -t
-```
-
-باید بگوید "configuration test successful"
-
-### سرویس‌ها شروع نمی‌شوند؟
-
-**مشاهده لاگ‌های Nginx:**
-```bash
-journalctl -xe -u nginx
-```
-
-**مشاهده لاگ‌های SSH:**
-```bash
-journalctl -xe -u ssh
-```
-
-**بررسی لاگ نصب:**
-```bash
-tail -50 /var/log/ssh-proxy.log
-```
-
-### پورت 443 از قبل در حال استفاده است؟
-
-چیز دیگری از پورت 443 استفاده می‌کند. بررسی کنید:
-```bash
-ss -tulpn | grep :443
-```
-
-نصب باید Apache/Plesk را غیرفعال کرده باشد. اگر نکرده:
-```bash
-systemctl stop apache2
-systemctl disable apache2
-systemctl mask apache2
-systemctl restart nginx
-```
+![SSH Config](https://github.com/user-attachments/assets/ac804061-e32d-423a-8387-69d25e326e27)
 
 ---
 
-## ⚡ نکات بهینه‌سازی
+### مرحله ۵: وارد کردن اطلاعات
 
-### بهینه‌سازی سرعت
+اطلاعات را وارد کنید:
+- SSH Host: IP سرور
+- Port: **443** (مهم!)
+- Username: نام کاربری شما
+- Password: رمز عبور شما
 
-1. **مکان سرور مجازی را با دقت انتخاب کنید**
-   - مکانی را انتخاب کنید که از نظر جغرافیایی به شما نزدیک است
-   - یا نزدیک به سرویس‌هایی که می‌خواهید به آن‌ها دسترسی داشته باشید
+![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
 
-2. **پهنای باند سرور مجازی را بررسی کنید**
-   - اکثر سرورهای مجازی ۱-۵ ترابایت در ماه دارند
-   - مانیتور مصرف: `vnstat` (با `apt install vnstat` نصب کنید)
+روی **Save** کلیک کنید و سپس **Connect**.
 
-3. **بهینه‌سازی SSH**
-   - قبلاً توسط اسکریپت ما بهینه شده است
-   - به‌طور خودکار از رمزهای سریع استفاده می‌کند
-
-### پایداری اتصال
-
-**برای موبایل (مشکلات خواب/بیداری):**
-- "Keep alive" را در کلاینت SSH خود فعال کنید
-- NPV Tunnel: "Auto reconnect" را فعال کنید
-
-**برای دسکتاپ:**
-به دستور SSH خود اضافه کنید:
-```bash
-ssh -p 443 -D 1080 -N -o ServerAliveInterval=60 username@YOUR_SERVER_IP
-```
+✅ اتصال برقرار شد!
 
 ---
 
-## 🔄 تغییر از لایه‌های دیگر
+## استفاده در Android (Net Mod)
 
-اگر لایه ۳ (پایه) را نصب کرده‌اید:
+قدم به قدم:
 
-1. **حذف لایه ۳:**
-   ```bash
-   cd ssh-socks-proxy/common
-   bash uninstall.sh
-   ```
+![Android Step 1](https://github.com/user-attachments/assets/72e7e385-83cf-4139-98df-4d41a5097916)
 
-2. **نصب لایه ۴:**
-   ```bash
-   cd ../layer4-nginx
-   bash install.sh
-   ```
+![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
 
-3. **ایجاد مجدد کاربران:**
-   ```bash
-   cd ../common
-   bash add-user.sh
-   ```
+![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
+
+![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
+
+![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
+
+**تنظیمات Android:**
+- Host: IP سرور
+- Port: **443** (مهم!)
+- Username: نام کاربری
+- Password: رمز عبور
 
 ---
 
-## 📊 جزئیات فنی
+## نکات مهم
 
-- **Protocol:** SSH over TCP (via Nginx stream)
-- **Port:** 443 (external) → 22 (internal)
-- **Proxy:** Nginx stream module
-- **Encryption:** SSH (AES-128/256)
-- **Authentication:** Password-based
-- **Proxy Type:** SOCKS5
-- **Multi-user:** Yes (unlimited)
-
-### چگونه کار می‌کند
-
-```
-دستگاه شما
-    ↓
-اتصال به پورت 443 (شبیه HTTPS به نظر می‌رسد)
-    ↓
-Nginx روی سرور مجازی (پورت 443)
-    ↓
-انتقال به SSH (پورت 22 محلی)
-    ↓
-SSH پروکسی SOCKS ایجاد می‌کند
-    ↓
-اینترنت
-```
-
-ناظران شبکه می‌بینند: "ترافیک HTTPS به پورت 443" ✅
-واقعیت: تونل پروکسی SSH 🔐
+- حتماً پورت **443** را استفاده کنید (نه 22)
+- این روش برای استفاده روزمره عالی است
+- فیلتر کردن آن سخت‌تر از لایه ۳ است
+- برای امنیت بیشتر، لایه ۶ یا ۷ را امتحان کنید
 
 ---
 
-## ❓ سوالات متداول
+=====================================================================
 
-**س: آیا این بهتر از لایه ۳ است؟**
-**ج:** بله، برای اکثر افراد. پورت 443 به ندرت مسدود می‌شود و تشخیص آن سخت‌تر است.
+# Layer 4: Nginx - Recommended for Daily Use
 
-**س: آیا می‌توانم وب‌سایت هم داشته باشم؟**
-**ج:** نه روی پورت 443. اما می‌توانید از پورت 80 یا پورت‌های دیگر برای وب‌سایت استفاده کنید.
-
-**س: آیا این وب‌سایت موجود من را خراب می‌کند؟**
-**ج:** اگر سایت شما از پورت 443 (HTTPS) استفاده می‌کند، بله. از لایه ۳ استفاده کنید یا سایت خود را به پورت دیگری منتقل کنید.
-
-**س: چرا پورت 443؟**
-**ج:** این پورت استاندارد HTTPS است. فایروال‌ها به ندرت آن را مسدود می‌کنند و با ترافیک معمولی وب ترکیب می‌شود.
-
-**س: آیا می‌توانم پورت را تغییر دهم؟**
-**ج:** بله! `/etc/nginx/stream.d/ssh_443.conf` را ویرایش کنید و `listen 443` را به پورت دیگری تغییر دهید، سپس Nginx را راه‌اندازی مجدد کنید.
-
-**س: این چقدر امن است؟**
-**ج:** بسیار امن. رمزگذاری SSH + Nginx ترکیبی اثبات شده است. رمزگذاری مشابه لایه ۳.
-
----
-
-## 🎓 مراحل بعدی
-
-### ارتقا برای مخفی‌سازی بیشتر
-
-اگر لایه ۴ هنوز مسدود می‌شود:
-
-- **[لایه ۶ (Stunnel)](../layer6-stunnel/README.md)** - رمزگذاری TLS اضافه می‌کند
-- **[لایه ۷ (V2Ray)](../layer7-v2ray-vmess/README.md)** - حداکثر مخفی‌سازی
-
-### بیشتر بدانید
-
-- **[راهنمای اصلی](../README.md)** - مقایسه تمام روش‌ها
-- **[ابزارهای مدیریت](../README.md#management-commands)** - مدیریت کاربر و سیستم
-
----
-
-[← بازگشت به راهنمای اصلی](../README.md) | [بعدی: راهنمای لایه ۶ →](../layer6-stunnel/README.md)
-
-**ساخته شده با ❤️ برای آزادی اینترنت**
-
----
-
-# 📗 Layer 4: Nginx TCP Proxy
-
-> **⭐ RECOMMENDED FOR MOST USERS** • Port 443 (HTTPS) • Easy setup • Reliable
+> **⭐⭐ Best choice for daily usage**
+> Port 443 (HTTPS) - Harder to filter
 
 [← Back to main guide](../README.md)
 
 ---
 
-## 📖 What is Layer 4?
+## What is this method?
 
-Layer 4 uses Nginx to forward traffic from port 443 (HTTPS port) to your SSH server. This makes your proxy traffic look like regular HTTPS traffic, making it much harder to block.
+Method that runs SSH over port 443 (same as HTTPS).
+This port is open in most networks.
 
-### ✅ Advantages
-- 🌟 **Best balance of ease and stealth** - Recommended for most users
-- 🔐 **Uses port 443** - The standard HTTPS port (rarely blocked)
-- 👀 **Harder to detect** - Looks like normal HTTPS traffic
-- ⚡ **Fast and reliable** - Nginx is battle-tested
-- 🛡️ **SSH encryption** - Same security as Layer 3
-- 📱 **Works with all SSH clients** - Compatible everywhere
+**Advantages:**
+- Port 443 is almost always open
+- Looks like regular HTTPS traffic
+- Hard to filter
+- Still easy to install
 
-### ⚠️ Limitations
-- ⚙️ **Slightly more setup** - Needs Nginx installed
-- 🚫 **Disables Apache/Plesk** - Can't run web servers on port 443
-- 🔍 **DPI might still detect** - Advanced inspection can identify SSH
-
----
-
-## 🎯 Best For
-
-- 🌍 **Most users** - Best all-around choice
-- 🏢 **Corporate networks** - Port 443 usually open
-- ✈️ **Travel** - Port 443 works almost everywhere
-- 🔒 **Light censorship** - Bypasses basic blocking
-- 💼 **Daily use** - Reliable and performant
-
-**⭐ This is our #1 recommendation!**
+**Compared to Layer 3:**
+- Better security
+- Harder to block
+- Similar speed
 
 ---
 
-## 🚀 Installation (Easy!)
+--------------------------------------------------
+Step 1: Purchase VPS Server (IONOS)
+--------------------------------------------------
 
-### Step 1: Connect to Your VPS
+If you already have a server, skip to next step.
 
-On **Windows** (PowerShell/CMD):
-```cmd
-ssh root@YOUR_SERVER_IP
-```
+Purchase link:
+https://www.ionos.co.uk/servers/vps
 
-On **Mac/Linux** (Terminal):
+![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+
+### Purchase notes:
+- Operating system: **Ubuntu**
+- Cheap plan is sufficient
+- Location is your choice
+
+![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
+
+---
+
+## After Purchase
+
+Log in to IONOS panel:
+https://my.ionos.co.uk/server
+
+<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
+
+**Important information:**
+- Server IP
+- Username: root
+- Password
+
+<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+
+---
+
+--------------------------------------------------
+Step 2: SSH Connection
+--------------------------------------------------
+
+Open:
+- Windows: CMD or PowerShell
+- Mac/Linux: Terminal
+
+Command:
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER-IP
 ```
 
-### Step 2: Run Installation
+Example:
+```bash
+ssh root@185.xxx.xxx.xxx
+```
 
-Copy and paste this command:
+![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
+
+On first connection, type `yes`.
+
+![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
+
+Enter server password (not displayed).
+
+![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
+
+You're in:
+
+![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+
+---
+
+--------------------------------------------------
+Step 3: Install Layer 4 (Nginx)
+--------------------------------------------------
+
+Run this command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
 ```
 
-Or if you cloned the repository:
-
-```bash
-cd ssh-socks-proxy/layer4-nginx
-bash install.sh
-```
-
-### Step 3: Confirm Installation
-
-The installer will:
-1. ✅ Check your system
-2. ⚠️ **Warn about disabling Apache/Plesk** (if running)
-3. 📦 Install Nginx and dependencies
-4. ⚙️ Configure SSH and Nginx
-5. 🔥 Configure firewall
-6. ✅ Show connection details
-
-**⚠️ IMPORTANT:** If you're using your VPS for a website on port 443, this will disable it!
-
-**Total time: 5-7 minutes**
+Installation runs automatically.
+Nginx will be configured on port 443.
 
 ---
 
-## 👤 Adding Users
+--------------------------------------------------
+Step 4: Add User
+--------------------------------------------------
 
-After installation, create users to connect:
+Create a user for each person:
 
-### Interactive Mode (Recommended)
 ```bash
-cd ../common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-Follow prompts for username and password.
+Enter username and password.
 
-### Quick Mode
+---
+
+--------------------------------------------------
+Step 5: Delete User (if needed)
+--------------------------------------------------
+
 ```bash
-cd ../common
-bash add-user.sh myusername mypassword
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
 
-## 📱 Connecting from Your Devices
+## iOS Usage (NPV Tunnel)
 
-### iPhone/iPad (NPV Tunnel)
+### Step 1: Install App
 
-1. **Download:** [NPV Tunnel](https://apps.apple.com/app/npv-tunnel/id1629891977)
-2. **Tap "+" to add connection**
-3. **Select "SSH"** (not SSH+SSL)
-4. **Enter details:**
-   - **Name:** My Proxy
-   - **Server:** Your VPS IP
-   - **Port:** `443` ⬅️ **Important: use 443, not 22**
-   - **Username:** From add-user
-   - **Password:** From add-user
-5. **Save and connect** ✅
+Go to App Store and search:
+**NPV Tunnel**
 
-### Android (Net Mod)
-
-1. **Download:** [Net Mod](https://play.google.com/store/apps/details?id=com.netmod.app)
-2. **SSH Tunnel** mode
-3. **Enter details:**
-   - **Server:** Your VPS IP
-   - **Port:** `443` ⬅️ **Use 443**
-   - **Username:** From add-user
-   - **Password:** From add-user
-4. **Connect** ✅
-
-### Windows (PuTTY)
-
-1. **Download:** [PuTTY](https://www.putty.org/)
-2. **Configuration:**
-   - **Host:** Your VPS IP
-   - **Port:** `443` ⬅️ **Use 443, not 22**
-   - **Connection type:** SSH
-3. **Tunnels:**
-   - Go to: Connection → SSH → Tunnels
-   - **Source port:** `1080`
-   - **Type:** Dynamic
-   - Click "Add"
-4. **Save profile** and **Open**
-5. **Login** and keep window open
-
-### macOS/Linux (Terminal)
-
-```bash
-ssh -p 443 -D 1080 -N username@YOUR_SERVER_IP
-```
-
-**Note:** The `-p 443` tells SSH to use port 443!
-
-Keep terminal window open while using proxy.
+![NPV App Store](https://github.com/user-attachments/assets/22d012dd-eea8-4bde-9146-3a0e52154a88)
 
 ---
 
-## 🌐 Configuring Your Browser/Apps
+### Step 2: Go to Config
 
-After connecting, point your browser to the local SOCKS proxy:
-
-### Firefox (Recommended)
-1. **Settings** → **Network Settings**
-2. **Manual proxy configuration**
-3. **SOCKS Host:** `127.0.0.1`
-4. **Port:** `1080`
-5. **SOCKS v5:** ✓
-6. **Proxy DNS:** ✓
-
-### Chrome/Edge
-1. **Settings** → **System** → **Proxy settings**
-2. **SOCKS proxy:** `127.0.0.1:1080`
-
-### System-Wide Proxy
-- **Windows:** Settings → Network → Proxy → Manual: `127.0.0.1:1080`
-- **macOS:** System Preferences → Network → Advanced → Proxies → SOCKS: `127.0.0.1:1080`
+![Config Tab](https://github.com/user-attachments/assets/2497ee34-fcb2-4575-9e42-2b930b8d0b8d)
 
 ---
 
-## 🛠️ Management Commands
+### Step 3: Add Configuration
 
-Navigate to the common folder:
+Click **+**.
 
-```bash
-cd /path/to/ssh-socks-proxy/common
-```
+![Add Config](https://github.com/user-attachments/assets/a9b01bb9-f03d-4d5e-bcf7-d920b44660a4)
 
-### Add User
-```bash
-bash add-user.sh
-```
+Select **Add Config Manually**.
 
-### Delete User
-```bash
-bash delete-user.sh username
-```
-
-### List Users
-```bash
-bash list-users.sh
-```
-
-### Check Status
-```bash
-bash status.sh
-```
-
-Should show:
-- ✅ SSH running on port 22
-- ✅ Nginx running and forwarding 443→22
-
-### Backup
-```bash
-bash backup-config.sh
-```
-
-### Uninstall
-```bash
-bash uninstall.sh
-```
+![Add Manually](https://github.com/user-attachments/assets/b87227d4-5b41-443f-8707-2a322d2c018f)
 
 ---
 
-## 🔧 Troubleshooting
+### Step 4: Select SSH Config
 
-### Can't Connect?
-
-**1. Check services are running:**
-```bash
-bash status.sh
-```
-
-Both SSH and Nginx should show "✓ Running"
-
-**2. Check firewall:**
-```bash
-ufw status
-```
-
-Should show:
-```
-443/tcp    ALLOW
-22/tcp     ALLOW
-```
-
-**3. Test port 443:**
-```bash
-ss -tulpn | grep :443
-```
-
-Should show Nginx listening on port 443.
-
-### "Connection refused" on port 443?
-
-**Restart Nginx:**
-```bash
-systemctl restart nginx
-systemctl status nginx
-```
-
-**Check Nginx config:**
-```bash
-nginx -t
-```
-
-Should say "configuration test successful"
-
-### Services not starting?
-
-**View Nginx logs:**
-```bash
-journalctl -xe -u nginx
-```
-
-**View SSH logs:**
-```bash
-journalctl -xe -u ssh
-```
-
-**Check installation log:**
-```bash
-tail -50 /var/log/ssh-proxy.log
-```
-
-### Port 443 already in use?
-
-Something else is using port 443. Check what:
-```bash
-ss -tulpn | grep :443
-```
-
-The installation should have disabled Apache/Plesk. If not:
-```bash
-systemctl stop apache2
-systemctl disable apache2
-systemctl mask apache2
-systemctl restart nginx
-```
+![SSH Config](https://github.com/user-attachments/assets/ac804061-e32d-423a-8387-69d25e326e27)
 
 ---
 
-## ⚡ Performance Tips
+### Step 5: Enter Information
 
-### Speed Optimization
+Fill in:
+- SSH Host: Server IP
+- Port: **443** (important!)
+- Username: Your username
+- Password: Your password
 
-1. **Choose VPS location wisely**
-   - Pick a location geographically close to you
-   - Or close to services you want to access
+![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
 
-2. **Check VPS bandwidth**
-   - Most VPS have 1-5 TB/month
-   - Monitor usage: `vnstat` (install with `apt install vnstat`)
+Click **Save** then **Connect**.
 
-3. **Optimize SSH**
-   - Already optimized by our script
-   - Uses fast ciphers automatically
-
-### Connection Stability
-
-**For mobile (sleep/wake issues):**
-- Enable "Keep alive" in your SSH client
-- NPV Tunnel: Enable "Auto reconnect"
-
-**For desktop:**
-Add to your SSH command:
-```bash
-ssh -p 443 -D 1080 -N -o ServerAliveInterval=60 username@YOUR_SERVER_IP
-```
+✅ Connected successfully!
 
 ---
 
-## 🔄 Switching from Other Layers
+## Android Usage (Net Mod)
 
-If you installed Layer 3 (basic):
+Step by step:
 
-1. **Uninstall Layer 3:**
-   ```bash
-   cd ssh-socks-proxy/common
-   bash uninstall.sh
-   ```
+![Android Step 1](https://github.com/user-attachments/assets/72e7e385-83cf-4139-98df-4d41a5097916)
 
-2. **Install Layer 4:**
-   ```bash
-   cd ../layer4-nginx
-   bash install.sh
-   ```
+![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
 
-3. **Recreate users:**
-   ```bash
-   cd ../common
-   bash add-user.sh
-   ```
+![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
+
+![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
+
+![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
+
+**Android settings:**
+- Host: Server IP
+- Port: **443** (important!)
+- Username: Your username
+- Password: Your password
 
 ---
 
-## 📊 Technical Details
+## Important Notes
 
-- **Protocol:** SSH over TCP (via Nginx stream)
-- **Port:** 443 (external) → 22 (internal)
-- **Proxy:** Nginx stream module
-- **Encryption:** SSH (AES-128/256)
-- **Authentication:** Password-based
-- **Proxy Type:** SOCKS5
-- **Multi-user:** Yes (unlimited)
-
-### How It Works
-
-```
-Your Device
-    ↓
-Connect to port 443 (looks like HTTPS)
-    ↓
-Nginx on VPS (port 443)
-    ↓
-Forwards to SSH (port 22 locally)
-    ↓
-SSH creates SOCKS proxy
-    ↓
-Internet
-```
-
-Network observers see: "HTTPS traffic to port 443" ✅
-Reality: SSH proxy tunnel 🔐
+- Make sure to use port **443** (not 22)
+- This method is great for daily use
+- Harder to filter than Layer 3
+- For more security, try Layer 6 or 7
 
 ---
-
-## ❓ FAQ
-
-**Q: Is this better than Layer 3?**
-**A:** Yes, for most people. Port 443 is rarely blocked and harder to detect.
-
-**Q: Can I run a website too?**
-**A:** Not on port 443. But you can use port 80 or other ports for websites.
-
-**Q: Will this break my existing website?**
-**A:** If your site uses port 443 (HTTPS), yes. Use Layer 3 instead or move your site to another port.
-
-**Q: Why port 443?**
-**A:** It's the standard HTTPS port. Firewalls rarely block it, and it blends in with normal web traffic.
-
-**Q: Can I change the port?**
-**A:** Yes! Edit `/etc/nginx/stream.d/ssh_443.conf` and change `listen 443` to another port, then restart Nginx.
-
-**Q: How secure is this?**
-**A:** Very secure. SSH encryption + Nginx is a proven combination. Same encryption as Layer 3.
-
----
-
-## 🎓 Next Steps
-
-### Upgrade for More Stealth
-
-If Layer 4 is still being blocked:
-
-- **[Layer 6 (Stunnel)](../layer6-stunnel/README.md)** - Adds TLS encryption
-- **[Layer 7 (V2Ray)](../layer7-v2ray-vmess/README.md)** - Maximum stealth
-
-### Learn More
-
-- **[Main guide](../README.md)** - Compare all methods
-- **[Management tools](../README.md#management-commands)** - User and system management
-
----
-
-[← Back to main guide](../README.md) | [Next: Layer 6 Guide →](../layer6-stunnel/README.md)
 
 **Made with ❤️ for internet freedom**

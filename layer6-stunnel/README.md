@@ -1,799 +1,439 @@
-# 📙 لایه 6: پوشش TLS با Stunnel
+# لایه ۶: Stunnel - امنیت دوبل با TLS
 
-> **رمزنگاری دوگانه** • امنیت بالا • پورت 443 • برای فایروال‌های سخت‌گیر
+> **⭐⭐⭐ امنیت بالا با رمزنگاری دوبل**
+> پورت 443 - TLS Wrapper برای SSH
 
 [← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
-## 📖 لایه 6 چیست؟
+## این روش چیست؟
 
-لایه 6 ترافیک SSH را درون TLS (همان رمزنگاری که توسط وب‌سایت‌های HTTPS استفاده می‌شود) می‌پیچد. این کار **رمزنگاری دوگانه** ایجاد می‌کند: TLS + SSH، که امنیت بسیار بالایی دارد و تشخیص آن نسبت به SSH معمولی بسیار سخت‌تر است.
+این روش SSH را داخل یک تونل TLS می‌پیچد.
+یعنی رمزنگاری SSH + رمزنگاری TLS = امنیت دوبل
 
-### ✅ مزایا
-- 🔐🔐 **رمزنگاری دوگانه** - پوشش TLS دور SSH
-- 🕵️ **تشخیص بسیار سخت** - دقیقاً شبیه ترافیک HTTPS به نظر می‌رسد
-- 🌍 **دور زدن فایروال‌های سخت‌گیر** - پورت 443 با دست‌دادن TLS
-- 🛡️ **لایه امنیتی اضافی** - دو لایه رمزنگاری مستقل
-- 📱 **کار با کلاینت‌های SSH+SSL** - به‌ویژه NPV Tunnel
+**مزایا:**
+- رمزنگاری دوبل (SSH + TLS)
+- به نظر شبیه HTTPS واقعی
+- سخت‌تر برای تشخیص
+- هنوز هم روی پورت 443
 
-### ⚠️ محدودیت‌ها
-- ⚙️ **راه‌اندازی پیچیده‌تر** - نیازمند پیکربندی stunnel
-- 🚫 **غیرفعال کردن Apache/Plesk** - نمی‌توان وب‌سرور روی پورت 443 اجرا کرد
-- 📱 **سازگاری کلاینت** - برخی کلاینت‌ها به پشتیبانی stunnel نیاز دارند
-- 🔧 **کمی سربار بیشتر** - دو لایه رمزنگاری (تاثیر ناچیز)
-
----
-
-## 🎯 بهترین برای
-
-- 🔒 **نیازهای امنیتی بالا** - می‌خواهید حداکثر رمزنگاری را داشته باشید
-- 🌍 **سانسور سخت‌گیرانه** - زمانی که SSH به‌طور فعال مسدود می‌شود
-- 🏢 **فایروال‌های سازمانی** - دور زدن بازرسی عمیق بسته‌ها
-- 🔐 **کاربران محتاط** - می‌خواهند امنیت چند لایه داشته باشند
-- ✈️ **کشورهای دارای سانسور** - ایران، چین، امارات و غیره
-
-**برای مبتدیان توصیه نمی‌شود** - ابتدا [لایه 4](../layer4-nginx/README.md) را امتحان کنید
+**نسبت به لایه ۴:**
+- امنیت بیشتر
+- مخفی‌تر از DPI (Deep Packet Inspection)
+- نصب کمی پیچیده‌تر
 
 ---
 
-## 🚀 نصب و راه‌اندازی
+--------------------------------------------------
+مرحله ۱: خرید سرور VPS (IONOS)
+--------------------------------------------------
 
-### مرحله 1: اتصال به سرور
+اگر قبلاً سرور خریده‌اید، به مرحله بعد بروید.
 
+لینک خرید:
+https://www.ionos.co.uk/servers/vps
+
+![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+
+### نکات خرید:
+- سیستم‌عامل: **Ubuntu**
+- پلن ارزان کافی است
+- لوکیشن به انتخاب شما
+
+![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
+
+---
+
+## بعد از خرید
+
+وارد پنل IONOS شوید:
+https://my.ionos.co.uk/server
+
+<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
+
+**اطلاعات مهم:**
+- IP سرور
+- نام کاربری: root
+- رمز عبور
+
+<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+
+---
+
+--------------------------------------------------
+مرحله ۲: اتصال SSH
+--------------------------------------------------
+
+باز کنید:
+- ویندوز: CMD یا PowerShell
+- مک/لینوکس: Terminal
+
+دستور:
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER-IP
 ```
 
-### مرحله 2: اجرای نصب
+مثال:
+```bash
+ssh root@185.xxx.xxx.xxx
+```
+
+![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
+
+در اولین اتصال `yes` را تایپ کنید.
+
+![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
+
+رمز عبور سرور را وارد کنید (نمایش داده نمی‌شود).
+
+![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
+
+وارد سرور شدید:
+
+![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+
+---
+
+--------------------------------------------------
+مرحله ۳: نصب لایه ۶ (Stunnel + TLS)
+--------------------------------------------------
+
+این دستور را اجرا کنید:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer6-stunnel/install.sh -o install.sh && bash install.sh
 ```
 
-یا از مخزن کلون شده:
-
-```bash
-cd ssh-socks-proxy/layer6-stunnel
-bash install.sh
-```
-
-### مرحله 3: تایید نصب
-
-نصب‌کننده این کارها را انجام می‌دهد:
-1. ✅ بررسی سیستم
-2. ⚠️ **غیرفعال کردن Apache/Plesk/Nginx**
-3. 📦 نصب SSH، stunnel، OpenSSL
-4. 🔐 تولید گواهی TLS
-5. ⚙️ پیکربندی stunnel و SSH
-6. 🔥 راه‌اندازی فایروال
-7. ✅ نمایش جزئیات اتصال
-
-**⚠️ هشدار:** این کار تمام وب‌سرورها را روی پورت 443 متوقف می‌کند!
-
-**مدت زمان کل: 7-10 دقیقه**
+نصب خودکار انجام می‌شود.
+Stunnel با TLS روی پورت 443 راه‌اندازی می‌شود.
 
 ---
 
-## 👤 اضافه کردن کاربر
+--------------------------------------------------
+مرحله ۴: اضافه کردن کاربر
+--------------------------------------------------
+
+برای هر نفر یک کاربر بسازید:
 
 ```bash
-cd ../common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-مشابه روش‌های دیگر مبتنی بر SSH.
+نام کاربری و رمز عبور را وارد کنید.
 
 ---
 
-## 📱 اتصال از دستگاه‌های شما
+--------------------------------------------------
+مرحله ۵: حذف کاربر (در صورت نیاز)
+--------------------------------------------------
 
-### آیفون/آی‌پد (NPV Tunnel) ⭐ بهترین گزینه
-
-1. **دانلود:** [NPV Tunnel](https://apps.apple.com/app/npv-tunnel/id1629891977)
-2. **روی "+" بزنید تا اتصال اضافه کنید**
-3. **"SSH + SSL" را انتخاب کنید** ⬅️ **مهم: SSH+SSL را انتخاب کنید، نه فقط SSH!**
-4. **جزئیات را وارد کنید:**
-   - **نام:** پروکسی Stunnel من
-   - **سرور:** IP سرور شما
-   - **پورت:** `443`
-   - **نام کاربری:** از add-user
-   - **رمز عبور:** از add-user
-   - **SSL:** روشن (فعال)
-5. **ذخیره کرده و متصل شوید** ✅
-
-NPV Tunnel به‌طور خودکار پوشش TLS را مدیریت می‌کند!
-
-### اندروید (راه‌اندازی دستی)
-
-اندروید به دو مرحله نیاز دارد: کلاینت stunnel + کلاینت SSH.
-
-**گزینه الف: به‌جای آن از V2Ray/Xray استفاده کنید**
-[لایه 7 (V2Ray)](../layer7-v2ray-vmess/README.md) را برای راه‌اندازی آسان‌تر اندروید در نظر بگیرید.
-
-**گزینه ب: stunnel + SSH دستی:**
-1. نصب [SSLDroid](https://play.google.com/store/apps/details?id=hu.sztupy.ssldroid) (تونل TLS)
-2. پیکربندی SSLDroid برای اتصال به VPS:443
-3. فوروارد به localhost:22
-4. استفاده از کلاینت SSH برای اتصال به localhost:2222
-
-*(این کار پیچیده است - لایه 7 برای اندروید آسان‌تر است!)*
-
-### ویندوز (stunnel + PuTTY)
-
-**مرحله 1: نصب stunnel**
-1. دانلود: [stunnel برای ویندوز](https://www.stunnel.org/downloads.html)
-2. نصب stunnel
-
-**مرحله 2: پیکربندی stunnel**
-1. باز کردن `stunnel.conf` (در پوشه نصب stunnel)
-2. اضافه کردن:
-```ini
-[ssh]
-client = yes
-accept = 127.0.0.1:2222
-connect = YOUR_SERVER_IP:443
-```
-3. ذخیره و راه‌اندازی مجدد stunnel
-
-**مرحله 3: اتصال با PuTTY**
-1. باز کردن PuTTY
-2. میزبان: `127.0.0.1` (نه IP سرور!)
-3. پورت: `2222`
-4. Connection → SSH → Tunnels:
-   - Source port: `1080`
-   - Type: Dynamic
-   - Add
-5. باز کردن اتصال
-
-### macOS/Linux (stunnel + SSH)
-
-**مرحله 1: نصب stunnel**
-
-macOS:
 ```bash
-brew install stunnel
-```
-
-Linux:
-```bash
-sudo apt install stunnel4
-```
-
-**مرحله 2: ایجاد فایل پیکربندی stunnel**
-
-ایجاد فایل `~/stunnel-ssh.conf`:
-```ini
-[ssh]
-client = yes
-accept = 127.0.0.1:2222
-connect = YOUR_SERVER_IP:443
-```
-
-**مرحله 3: راه‌اندازی stunnel**
-```bash
-stunnel ~/stunnel-ssh.conf
-```
-
-**مرحله 4: اتصال از طریق SSH**
-```bash
-ssh -p 2222 -D 1080 -N username@127.0.0.1
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
 
-## 🌐 پیکربندی مرورگر
+## استفاده در iOS (NPV Tunnel)
 
-مشابه روش‌های دیگر:
+### مرحله ۱: نصب اپلیکیشن
 
-**فایرفاکس:**
-- SOCKS Host: `127.0.0.1`
-- Port: `1080`
-- SOCKS v5: ✓
+وارد App Store شوید و جستجو کنید:
+**NPV Tunnel**
 
-**کروم/سیستم:**
-- SOCKS proxy: `127.0.0.1:1080`
+![NPV App Store](https://github.com/user-attachments/assets/22d012dd-eea8-4bde-9146-3a0e52154a88)
 
 ---
 
-## 🛠️ دستورات مدیریتی
+### مرحله ۲: ورود به Config
 
-```bash
-cd /path/to/ssh-socks-proxy/common
-
-# مدیریت کاربران
-bash add-user.sh
-bash delete-user.sh username
-bash list-users.sh
-
-# مدیریت سیستم
-bash status.sh
-bash backup-config.sh
-bash uninstall.sh
-```
+![Config Tab](https://github.com/user-attachments/assets/2497ee34-fcb2-4575-9e42-2b930b8d0b8d)
 
 ---
 
-## 🔧 عیب‌یابی
+### مرحله ۳: اضافه کردن تنظیمات
 
-### نمی‌توانید وصل شوید؟
+روی **+** کلیک کنید.
 
-**بررسی اجرای stunnel:**
-```bash
-service stunnel4 status
-```
+![Add Config](https://github.com/user-attachments/assets/a9b01bb9-f03d-4d5e-bcf7-d920b44660a4)
 
-باید نمایش دهد "active (running)"
+**Add Config Manually** را انتخاب کنید.
 
-**بررسی لاگ‌های stunnel:**
-```bash
-tail -f /var/log/stunnel.log
-```
-
-**راه‌اندازی مجدد stunnel:**
-```bash
-service stunnel4 restart
-```
-
-### stunnel راه‌اندازی نمی‌شود؟
-
-**بررسی پیکربندی:**
-```bash
-cat /etc/stunnel/stunnel.conf
-```
-
-باید شبیه این باشد:
-```ini
-pid = /var/run/stunnel.pid
-output = /var/log/stunnel.log
-foreground = no
-client = no
-
-[ssh-tls]
-accept = 443
-connect = 127.0.0.1:22
-cert = /etc/stunnel/stunnel.pem
-```
-
-**بررسی وجود گواهی:**
-```bash
-ls -l /etc/stunnel/stunnel.pem
-```
-
-**تست دستی:**
-```bash
-stunnel /etc/stunnel/stunnel.conf
-```
-
-### مشکلات پورت 443؟
-
-**بررسی چه چیزی روی پورت 443 است:**
-```bash
-ss -tulpn | grep :443
-```
-
-باید فقط stunnel را نشان دهد.
-
-**متوقف کردن سرویس‌های در تعارض:**
-```bash
-systemctl stop nginx apache2
-systemctl mask nginx apache2
-service stunnel4 restart
-```
-
-### خطاهای گواهی SSL؟
-
-در سمت کلاینت: "Allow insecure" یا "Skip verification" را فعال کنید
-
-گواهی خود-امضا شده است، که برای این مورد استفاده طبیعی و امن است.
+![Add Manually](https://github.com/user-attachments/assets/b87227d4-5b41-443f-8707-2a322d2c018f)
 
 ---
 
-## ⚡ عملکرد و امنیت
+### مرحله ۴: انتخاب SSH Config
 
-### عملکرد
-- **سربار:** ناچیز (کاهش 1-3 درصدی در سرعت انتقال)
-- **تاخیر:** +1-2 میلی‌ثانیه از رمزنگاری دوگانه
-- **CPU:** کمی بالاتر (معمولاً قابل توجه نیست)
-
-### مزایای امنیتی
-
-1. **رمزنگاری TLS 1.3** (لایه بیرونی)
-2. **رمزنگاری SSH** (لایه درونی)
-3. **شبیه HTTPS به نظر می‌رسد** - پورت 443، دست‌دادن TLS
-4. **مقاوم در برابر DPI** - نمی‌تواند SSH را داخل TLS ببیند
-5. **قابلیت پین کردن گواهی** - امنیت اضافی سمت کلاینت
+![SSH Config](https://github.com/user-attachments/assets/ac804061-e32d-423a-8387-69d25e326e27)
 
 ---
 
-## 📊 جزئیات فنی
+### مرحله ۵: وارد کردن اطلاعات
 
-- **پروتکل:** SSH پیچیده شده در TLS (stunnel)
-- **پورت:** 443 (TLS خارجی) → 22 (SSH داخلی)
-- **نسخه TLS:** TLS 1.2/1.3 (به‌طور خودکار مذاکره می‌شود)
-- **گواهی:** خود-امضا شده (10 سال اعتبار)
-- **رمزنگاری:** TLS + SSH (لایه دوگانه)
-- **نوع پروکسی:** SOCKS5 (از طریق SSH)
+اطلاعات را وارد کنید:
+- SSH Host: IP سرور
+- Port: **443**
+- Username: نام کاربری شما
+- Password: رمز عبور شما
 
-### چگونه کار می‌کند
+![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
 
-```
-دستگاه شما
-    ↓ کلاینت stunnel
-اتصال رمزنگاری شده TLS به پورت 443
-    ↓
-سرور stunnel روی VPS (پورت 443)
-    ↓ رمزگشایی TLS
-SSH روی localhost:22
-    ↓ رمزنگاری SSH
-پروکسی SOCKS
-    ↓
-اینترنت
-```
+روی **Save** کلیک کنید و سپس **Connect**.
 
-دو لایه رمزنگاری مستقل از ترافیک شما محافظت می‌کنند!
+✅ اتصال برقرار شد!
 
 ---
 
-## 🔄 تغییر روش‌ها
+## استفاده در Android (Net Mod)
 
-**از لایه 4 به لایه 6:**
-```bash
-cd ssh-socks-proxy/common
-bash uninstall.sh
-cd ../layer6-stunnel
-bash install.sh
-cd ../common
-bash add-user.sh
-```
+قدم به قدم:
 
-**از لایه 6 به لایه 7:**
-لایه 7 برای اندروید آسان‌تر است و پنهان‌کاری مشابهی بدون پیچیدگی stunnel ارائه می‌دهد.
+![Android Step 1](https://github.com/user-attachments/assets/72e7e385-83cf-4139-98df-4d41a5097916)
 
----
+![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
 
-## ❓ سوالات متداول
+![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
 
-**س: آیا رمزنگاری دوگانه ضروری است؟**
-**ج:** برای اکثر کاربران خیر. اما حداکثر امنیت و دور زدن بهتر DPI را فراهم می‌کند.
+![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
 
-**س: چرا فقط از SSH معمولی استفاده نکنیم؟**
-**ج:** پوشش TLS باعث می‌شود دقیقاً شبیه HTTPS به نظر برسد، که مسدود کردن آن سخت‌تر است.
+![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
 
-**س: آیا مدیران شبکه می‌توانند این را تشخیص دهند؟**
-**ج:** بسیار سخت است. آن‌ها می‌بینند: "اتصال TLS به پورت 443" - شبیه HTTPS عادی به نظر می‌رسد.
-
-**س: آیا این کندتر از لایه 4 است؟**
-**ج:** کمی، اما متوجه نخواهید شد مگر اینکه اتصال بسیار کندی داشته باشید.
-
-**س: کدام بهتر است: لایه 6 یا لایه 7؟**
-**ج:** لایه 7 (V2Ray) استفاده آسان‌تری دارد و پنهان‌کاری مشابهی ارائه می‌دهد. لایه 6 اگر رمزنگاری دوگانه می‌خواهید به شما می‌دهد.
-
-**س: آیا می‌توانم به راحتی از لایه 6 روی اندروید استفاده کنم؟**
-**ج:** نه به راحتی. NPV Tunnel روی iOS عالی کار می‌کند. برای اندروید، به جای آن از لایه 7 استفاده کنید.
-
-**س: آیا گواهی خود-امضا شده امن است؟**
-**ج:** بله! شما به یک وب‌سایت عمومی دسترسی پیدا نمی‌کنید، بنابراین به CA معتبر نیاز ندارید. خود-امضا شده برای این مورد استفاده خوب و امن است.
+**تنظیمات Android:**
+- Host: IP سرور
+- Port: **443**
+- Username: نام کاربری
+- Password: رمز عبور
 
 ---
 
-## 🎓 مراحل بعدی
+## نکات مهم
 
-### پنهان‌کاری بیشتر؟
-
-- **[لایه 7 (V2Ray)](../layer7-v2ray-vmess/README.md)** - پروتکل مدرن، آسان‌تر روی اندروید
-
-### راه‌اندازی ساده‌تر؟
-
-- **[لایه 4 (Nginx)](../layer4-nginx/README.md)** - راه‌اندازی آسان‌تر، برای اکثر موارد کافی است
-
-### مقایسه همه روش‌ها
-
-- **[راهنمای اصلی](../README.md)** - مشاهده همه گزینه‌ها
+- این روش امنیت دوبل دارد (SSH + TLS)
+- از DPI بهتر عبور می‌کند
+- سرعت شبیه لایه ۴ است
+- برای سانسور سخت، لایه ۷ را امتحان کنید
 
 ---
 
-[← بازگشت به راهنمای اصلی](../README.md) | [بعدی: راهنمای لایه 7 →](../layer7-v2ray-vmess/README.md)
+=====================================================================
 
-**با ❤️ برای آزادی اینترنت ساخته شده**
+# Layer 6: Stunnel - Double Security with TLS
 
----
-
-# 📙 Layer 6: Stunnel TLS Wrapper
-
-> **Double encryption** • High security • Port 443 • For strict firewalls
+> **⭐⭐⭐ High security with double encryption**
+> Port 443 - TLS Wrapper for SSH
 
 [← Back to main guide](../README.md)
 
 ---
 
-## 📖 What is Layer 6?
+## What is this method?
 
-Layer 6 wraps SSH traffic in TLS (the same encryption used by HTTPS websites). This provides **double encryption**: TLS + SSH, making it extremely secure and harder to detect than regular SSH.
+This method wraps SSH inside a TLS tunnel.
+Meaning SSH encryption + TLS encryption = double security
 
-### ✅ Advantages
-- 🔐🔐 **Double encryption** - TLS wrapper around SSH
-- 🕵️ **Very hard to detect** - Looks exactly like HTTPS traffic
-- 🌍 **Bypasses strict firewalls** - Port 443 with TLS handshake
-- 🛡️ **Extra security layer** - Two independent encryption layers
-- 📱 **Works with SSH+SSL clients** - Especially NPV Tunnel
+**Advantages:**
+- Double encryption (SSH + TLS)
+- Looks like real HTTPS
+- Harder to detect
+- Still on port 443
 
-### ⚠️ Limitations
-- ⚙️ **More complex setup** - Requires stunnel configuration
-- 🚫 **Disables Apache/Plesk** - Can't run web servers on port 443
-- 📱 **Client compatibility** - Some clients need stunnel support
-- 🔧 **Slightly more overhead** - Two encryption layers (minimal impact)
-
----
-
-## 🎯 Best For
-
-- 🔒 **High security needs** - Want maximum encryption
-- 🌍 **Strict censorship** - When SSH is actively blocked
-- 🏢 **Corporate firewalls** - Deep packet inspection bypass
-- 🔐 **Paranoid users** - Want belt and suspenders security
-- ✈️ **Countries with censorship** - Iran, China, UAE, etc.
-
-**Not recommended for beginners** - Try [Layer 4](../layer4-nginx/README.md) first
+**Compared to Layer 4:**
+- More security
+- Better hidden from DPI (Deep Packet Inspection)
+- Slightly more complex installation
 
 ---
 
-## 🚀 Installation
+--------------------------------------------------
+Step 1: Purchase VPS Server (IONOS)
+--------------------------------------------------
 
-### Step 1: Connect to VPS
+If you already have a server, skip to next step.
 
+Purchase link:
+https://www.ionos.co.uk/servers/vps
+
+![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+
+### Purchase notes:
+- Operating system: **Ubuntu**
+- Cheap plan is sufficient
+- Location is your choice
+
+![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
+
+---
+
+## After Purchase
+
+Log in to IONOS panel:
+https://my.ionos.co.uk/server
+
+<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
+
+**Important information:**
+- Server IP
+- Username: root
+- Password
+
+<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+
+---
+
+--------------------------------------------------
+Step 2: SSH Connection
+--------------------------------------------------
+
+Open:
+- Windows: CMD or PowerShell
+- Mac/Linux: Terminal
+
+Command:
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER-IP
 ```
 
-### Step 2: Run Installation
+Example:
+```bash
+ssh root@185.xxx.xxx.xxx
+```
+
+![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
+
+On first connection, type `yes`.
+
+![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
+
+Enter server password (not displayed).
+
+![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
+
+You're in:
+
+![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+
+---
+
+--------------------------------------------------
+Step 3: Install Layer 6 (Stunnel + TLS)
+--------------------------------------------------
+
+Run this command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer6-stunnel/install.sh -o install.sh && bash install.sh
 ```
 
-Or from cloned repo:
-
-```bash
-cd ssh-socks-proxy/layer6-stunnel
-bash install.sh
-```
-
-### Step 3: Confirm Installation
-
-The installer will:
-1. ✅ Check system
-2. ⚠️ **Disable Apache/Plesk/Nginx**
-3. 📦 Install SSH, stunnel, OpenSSL
-4. 🔐 Generate TLS certificate
-5. ⚙️ Configure stunnel and SSH
-6. 🔥 Set up firewall
-7. ✅ Show connection details
-
-**⚠️ WARNING:** This will stop all web servers on port 443!
-
-**Total time: 7-10 minutes**
+Installation runs automatically.
+Stunnel with TLS will be configured on port 443.
 
 ---
 
-## 👤 Adding Users
+--------------------------------------------------
+Step 4: Add User
+--------------------------------------------------
+
+Create a user for each person:
 
 ```bash
-cd ../common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-Same as other SSH-based methods.
+Enter username and password.
 
 ---
 
-## 📱 Connecting from Your Devices
+--------------------------------------------------
+Step 5: Delete User (if needed)
+--------------------------------------------------
 
-### iPhone/iPad (NPV Tunnel) ⭐ BEST OPTION
-
-1. **Download:** [NPV Tunnel](https://apps.apple.com/app/npv-tunnel/id1629891977)
-2. **Tap "+" to add connection**
-3. **Select "SSH + SSL"** ⬅️ **Important: Choose SSH+SSL, not just SSH!**
-4. **Enter details:**
-   - **Name:** My Stunnel Proxy
-   - **Server:** Your VPS IP
-   - **Port:** `443`
-   - **Username:** From add-user
-   - **Password:** From add-user
-   - **SSL:** ON (enabled)
-5. **Save and connect** ✅
-
-NPV Tunnel handles the TLS wrapper automatically!
-
-### Android (Manual Setup)
-
-Android requires two steps: stunnel client + SSH client.
-
-**Option A: Use V2Ray/Xray instead**
-Consider [Layer 7 (V2Ray)](../layer7-v2ray-vmess/README.md) for easier Android setup.
-
-**Option B: Manual stunnel + SSH:**
-1. Install [SSLDroid](https://play.google.com/store/apps/details?id=hu.sztupy.ssldroid) (TLS tunnel)
-2. Configure SSLDroid to connect to your VPS:443
-3. Forward to localhost:22
-4. Use SSH client to connect to localhost:2222
-
-*(This is complex - Layer 7 is easier for Android!)*
-
-### Windows (stunnel + PuTTY)
-
-**Step 1: Install stunnel**
-1. Download: [stunnel for Windows](https://www.stunnel.org/downloads.html)
-2. Install stunnel
-
-**Step 2: Configure stunnel**
-1. Open `stunnel.conf` (in stunnel installation folder)
-2. Add:
-```ini
-[ssh]
-client = yes
-accept = 127.0.0.1:2222
-connect = YOUR_SERVER_IP:443
-```
-3. Save and restart stunnel
-
-**Step 3: Connect with PuTTY**
-1. Open PuTTY
-2. Host: `127.0.0.1` (not your server IP!)
-3. Port: `2222`
-4. Connection → SSH → Tunnels:
-   - Source port: `1080`
-   - Type: Dynamic
-   - Add
-5. Open connection
-
-### macOS/Linux (stunnel + SSH)
-
-**Step 1: Install stunnel**
-
-macOS:
 ```bash
-brew install stunnel
-```
-
-Linux:
-```bash
-sudo apt install stunnel4
-```
-
-**Step 2: Create stunnel config**
-
-Create file `~/stunnel-ssh.conf`:
-```ini
-[ssh]
-client = yes
-accept = 127.0.0.1:2222
-connect = YOUR_SERVER_IP:443
-```
-
-**Step 3: Start stunnel**
-```bash
-stunnel ~/stunnel-ssh.conf
-```
-
-**Step 4: Connect via SSH**
-```bash
-ssh -p 2222 -D 1080 -N username@127.0.0.1
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
 
-## 🌐 Browser Configuration
+## iOS Usage (NPV Tunnel)
 
-Same as other methods:
+### Step 1: Install App
 
-**Firefox:**
-- SOCKS Host: `127.0.0.1`
-- Port: `1080`
-- SOCKS v5: ✓
+Go to App Store and search:
+**NPV Tunnel**
 
-**Chrome/System:**
-- SOCKS proxy: `127.0.0.1:1080`
+![NPV App Store](https://github.com/user-attachments/assets/22d012dd-eea8-4bde-9146-3a0e52154a88)
 
 ---
 
-## 🛠️ Management Commands
+### Step 2: Go to Config
 
-```bash
-cd /path/to/ssh-socks-proxy/common
-
-# Manage users
-bash add-user.sh
-bash delete-user.sh username
-bash list-users.sh
-
-# System management
-bash status.sh
-bash backup-config.sh
-bash uninstall.sh
-```
+![Config Tab](https://github.com/user-attachments/assets/2497ee34-fcb2-4575-9e42-2b930b8d0b8d)
 
 ---
 
-## 🔧 Troubleshooting
+### Step 3: Add Configuration
 
-### Can't Connect?
+Click **+**.
 
-**Check stunnel is running:**
-```bash
-service stunnel4 status
-```
+![Add Config](https://github.com/user-attachments/assets/a9b01bb9-f03d-4d5e-bcf7-d920b44660a4)
 
-Should say "active (running)"
+Select **Add Config Manually**.
 
-**Check stunnel logs:**
-```bash
-tail -f /var/log/stunnel.log
-```
-
-**Restart stunnel:**
-```bash
-service stunnel4 restart
-```
-
-### stunnel not starting?
-
-**Check configuration:**
-```bash
-cat /etc/stunnel/stunnel.conf
-```
-
-Should look like:
-```ini
-pid = /var/run/stunnel.pid
-output = /var/log/stunnel.log
-foreground = no
-client = no
-
-[ssh-tls]
-accept = 443
-connect = 127.0.0.1:22
-cert = /etc/stunnel/stunnel.pem
-```
-
-**Check certificate exists:**
-```bash
-ls -l /etc/stunnel/stunnel.pem
-```
-
-**Manually test:**
-```bash
-stunnel /etc/stunnel/stunnel.conf
-```
-
-### Port 443 issues?
-
-**Check what's on port 443:**
-```bash
-ss -tulpn | grep :443
-```
-
-Should only show stunnel.
-
-**Kill conflicting services:**
-```bash
-systemctl stop nginx apache2
-systemctl mask nginx apache2
-service stunnel4 restart
-```
-
-### SSL Certificate Errors?
-
-On client side: Enable "Allow insecure" or "Skip verification"
-
-The certificate is self-signed, which is normal and secure for this use case.
+![Add Manually](https://github.com/user-attachments/assets/b87227d4-5b41-443f-8707-2a322d2c018f)
 
 ---
 
-## ⚡ Performance & Security
+### Step 4: Select SSH Config
 
-### Performance
-- **Overhead:** Minimal (1-3% throughput reduction)
-- **Latency:** +1-2ms from double encryption
-- **CPU:** Slightly higher (usually not noticeable)
-
-### Security Benefits
-
-1. **TLS 1.3 encryption** (outer layer)
-2. **SSH encryption** (inner layer)
-3. **Looks like HTTPS** - Port 443, TLS handshake
-4. **DPI resistant** - Can't see SSH inside TLS
-5. **Certificate pinning possible** - Extra client-side security
+![SSH Config](https://github.com/user-attachments/assets/ac804061-e32d-423a-8387-69d25e326e27)
 
 ---
 
-## 📊 Technical Details
+### Step 5: Enter Information
 
-- **Protocol:** SSH wrapped in TLS (stunnel)
-- **Port:** 443 (external TLS) → 22 (internal SSH)
-- **TLS Version:** TLS 1.2/1.3 (automatically negotiated)
-- **Certificate:** Self-signed (10 years validity)
-- **Encryption:** TLS + SSH (double layer)
-- **Proxy Type:** SOCKS5 (via SSH)
+Fill in:
+- SSH Host: Server IP
+- Port: **443**
+- Username: Your username
+- Password: Your password
 
-### How It Works
+![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
 
-```
-Your Device
-    ↓ stunnel client
-TLS encrypted connection to port 443
-    ↓
-stunnel server on VPS (port 443)
-    ↓ decrypts TLS
-SSH on localhost:22
-    ↓ SSH encryption
-SOCKS proxy
-    ↓
-Internet
-```
+Click **Save** then **Connect**.
 
-Two independent encryption layers protect your traffic!
+✅ Connected successfully!
 
 ---
 
-## 🔄 Switching Methods
+## Android Usage (Net Mod)
 
-**From Layer 4 to Layer 6:**
-```bash
-cd ssh-socks-proxy/common
-bash uninstall.sh
-cd ../layer6-stunnel
-bash install.sh
-cd ../common
-bash add-user.sh
-```
+Step by step:
 
-**From Layer 6 to Layer 7:**
-Layer 7 is easier for Android and provides similar stealth without stunnel complexity.
+![Android Step 1](https://github.com/user-attachments/assets/72e7e385-83cf-4139-98df-4d41a5097916)
 
----
+![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
 
-## ❓ FAQ
+![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
 
-**Q: Is double encryption necessary?**
-**A:** Not for most users. But it provides maximum security and better DPI bypass.
+![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
 
-**Q: Why not just use regular SSH?**
-**A:** TLS wrapper makes it look exactly like HTTPS, which is harder to block.
+![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
 
-**Q: Can network admins detect this?**
-**A:** Very difficult. They see: "TLS connection to port 443" - looks like normal HTTPS.
-
-**Q: Is this slower than Layer 4?**
-**A:** Slightly, but you won't notice unless you're on a very slow connection.
-
-**Q: Which is better: Layer 6 or Layer 7?**
-**A:** Layer 7 (V2Ray) is easier to use and provides similar stealth. Layer 6 gives you double encryption if you want that.
-
-**Q: Can I use Layer 6 on Android easily?**
-**A:** Not easily. NPV Tunnel works great on iOS. For Android, use Layer 7 instead.
-
-**Q: Is the self-signed certificate secure?**
-**A:** Yes! You're not accessing a public website, so you don't need a trusted CA. Self-signed is fine and secure for this use case.
+**Android settings:**
+- Host: Server IP
+- Port: **443**
+- Username: Your username
+- Password: Your password
 
 ---
 
-## 🎓 Next Steps
+## Important Notes
 
-### Even More Stealth?
-
-- **[Layer 7 (V2Ray)](../layer7-v2ray-vmess/README.md)** - Modern protocol, easier on Android
-
-### Simpler Setup?
-
-- **[Layer 4 (Nginx)](../layer4-nginx/README.md)** - Easier setup, good enough for most
-
-### Compare All Methods
-
-- **[Main guide](../README.md)** - See all options
+- This method has double security (SSH + TLS)
+- Better passes through DPI
+- Speed similar to Layer 4
+- For hard censorship, try Layer 7
 
 ---
-
-[← Back to main guide](../README.md) | [Next: Layer 7 Guide →](../layer7-v2ray-vmess/README.md)
 
 **Made with ❤️ for internet freedom**

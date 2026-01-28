@@ -1,669 +1,429 @@
-# 📘 لایه ۳: پروکسی SOCKS پایه SSH
+# لایه ۳: SSH پایه - ساده‌ترین روش
 
-> **ساده‌ترین راه برای شروع** • مناسب مبتدی‌ها • رمزنگاری استاندارد SSH
+> **⭐ آسان‌ترین روش برای شروع**
+> پورت 22 - مناسب تست و یادگیری
 
 [← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
-## 📖 لایه ۳ چیست؟
+## این روش چیست؟
 
-لایه ۳ از پروتکل استاندارد SSH روی پورت ۲۲ استفاده می‌کند. این ساده‌ترین روش راه‌اندازی است - فقط SSH که به گونه‌ای تنظیم شده که اتصالات پروکسی SOCKS را مجاز کند.
+ساده‌ترین روش پراکسی که از SSH استاندارد روی پورت 22 استفاده می‌کند.
 
-### ✅ مزایا
-- ⭐ **راه‌اندازی بسیار آسان** - ۳ تا ۵ دقیقه
-- 🔧 **تنظیمات کمینه** - فقط سرور SSH
-- 🛡️ **امنیت اثبات‌شده** - SSH یک پروتکل امن و آزموده‌شده است
-- 📱 **سازگار با تمام کلاینت‌های SSH** - در همه جا کار می‌کند
-- 💻 **نیاز به نرم‌افزار اضافی ندارد** - از SSH داخلی استفاده می‌کند
+**مزایا:**
+- نصب بسیار آسان (5 دقیقه)
+- بدون نیاز به تنظیمات پیچیده
+- رمزنگاری SSH استاندارد
 
-### ⚠️ محدودیت‌ها
-- 🚫 **پورت ۲۲ ممکن است مسدود شود** - برخی شبکه‌ها/کشورها SSH را مسدود می‌کنند
-- 👁️ **به راحتی قابل شناسایی است** - مدیران شبکه می‌توانند ترافیک SSH را ببینند
-- 🔒 **برای سانسور شدید مناسب نیست** - DPI می‌تواند SSH را تشخیص دهد
+**محدودیت:**
+- پورت 22 در برخی شبکه‌ها ممکن است فیلتر باشد
+- برای سانسور سخت مناسب نیست
 
 ---
 
-## 🎯 مناسب برای
+--------------------------------------------------
+مرحله ۱: خرید سرور VPS (IONOS)
+--------------------------------------------------
 
-- 🔰 **کاربران تازه‌کار** که می‌خواهند یاد بگیرند
-- 🧪 **تست و یادگیری** قبل از امتحان روش‌های پیشرفته‌تر
-- 🏠 **استفاده خانگی/اداری** در جاهایی که SSH مسدود نیست
-- 🎓 **درک مفاهیم پایه** پروکسی‌های SOCKS
+اگر قبلاً سرور خریده‌اید، به مرحله بعد بروید.
+
+لینک خرید:
+https://www.ionos.co.uk/servers/vps
+
+![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+
+### نکات خرید:
+- سیستم‌عامل: **Ubuntu**
+- پلن ارزان کافی است
+- لوکیشن به انتخاب شما
+
+![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
 
 ---
 
-## 🚀 نصب (خیلی آسان!)
+## بعد از خرید
 
-### مرحله ۱: اتصال به سرور شما
+وارد پنل IONOS شوید:
+https://my.ionos.co.uk/server
 
-در **Windows** از PowerShell یا Command Prompt استفاده کنید:
-```cmd
-ssh root@YOUR_SERVER_IP
-```
+<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
 
-در **Mac/Linux** از Terminal استفاده کنید:
+**اطلاعات مهم:**
+- IP سرور
+- نام کاربری: root
+- رمز عبور
+
+<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+
+---
+
+--------------------------------------------------
+مرحله ۲: اتصال SSH
+--------------------------------------------------
+
+باز کنید:
+- ویندوز: CMD یا PowerShell
+- مک/لینوکس: Terminal
+
+دستور:
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER-IP
 ```
 
-*به جای `YOUR_SERVER_IP` آدرس IP سرور خود را بگذارید*
+مثال:
+```bash
+ssh root@185.xxx.xxx.xxx
+```
 
-### مرحله ۲: دانلود و اجرای نصب
+![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
 
-این یک دستور را کپی و اجرا کنید:
+در اولین اتصال `yes` را تایپ کنید.
+
+![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
+
+رمز عبور سرور را وارد کنید (نمایش داده نمی‌شود).
+
+![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
+
+وارد سرور شدید:
+
+![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+
+---
+
+--------------------------------------------------
+مرحله ۳: نصب لایه ۳
+--------------------------------------------------
+
+این دستور را اجرا کنید:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
 ```
 
-یا اگر مخزن را clone کرده‌اید:
-
-```bash
-cd ssh-socks-proxy/layer3-basic
-bash install.sh
-```
-
-### مرحله ۳: پیروی از دستورات روی صفحه
-
-نصب‌کننده این کارها را انجام می‌دهد:
-1. ✅ بررسی سیستم شما (Ubuntu، فضای دیسک و غیره)
-2. 📦 نصب سرور SSH و فایروال
-3. ⚙️ تنظیم SSH برای پروکسی SOCKS
-4. 🔥 تنظیم فایروال
-5. ✅ نمایش جزئیات اتصال
-
-**زمان کل: ۳-۵ دقیقه**
+نصب خودکار انجام می‌شود.
 
 ---
 
-## 👤 اضافه کردن کاربران
+--------------------------------------------------
+مرحله ۴: اضافه کردن کاربر
+--------------------------------------------------
 
-بعد از نصب، یک کاربر برای اتصال بسازید:
+برای هر نفر یک کاربر بسازید:
 
-### روش ۱: حالت تعاملی (پیشنهادی)
 ```bash
-cd ../common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-از شما پرسیده می‌شود:
-- نام کاربری (فقط حروف، اعداد، خط تیره و زیرخط)
-- رمز عبور (هنگام تایپ مخفی می‌ماند)
-- تأیید رمز عبور
-
-### روش ۲: حالت سریع
-```bash
-cd ../common
-bash add-user.sh myusername mypassword
-```
-
-⚠️ **هشدار:** این روش رمز عبور را در تاریخچه دستورات نمایش می‌دهد (کمتر امن)
+نام کاربری و رمز عبور را وارد کنید.
 
 ---
 
-## 📱 اتصال از دستگاه‌های شما
-
-### iPhone/iPad (NPV Tunnel)
-
-1. **دانلود اپلیکیشن:** [NPV Tunnel](https://apps.apple.com/app/npv-tunnel/id1629891977)
-2. **باز کنید** و روی "+" بزنید
-3. **"SSH" را انتخاب کنید** (نه SSH+SSL)
-4. **مشخصات را وارد کنید:**
-   - **Name:** پروکسی من (یا هر نامی)
-   - **Server:** آدرس IP سرور شما
-   - **Port:** `22`
-   - **Username:** از مرحله add-user
-   - **Password:** از مرحله add-user
-5. **ذخیره و اتصال** ✅
-
-### Android (Net Mod)
-
-1. **دانلود اپلیکیشن:** [Net Mod](https://play.google.com/store/apps/details?id=com.netmod.app)
-2. **باز کنید** → SSH Tunnel
-3. **مشخصات را وارد کنید:**
-   - **Server:** IP سرور شما
-   - **Port:** `22`
-   - **Username:** از مرحله add-user
-   - **Password:** از مرحله add-user
-4. **روی "Connect" بزنید** ✅
-
-### Windows (PuTTY)
-
-1. **دانلود:** [PuTTY](https://www.putty.org/)
-2. **اجرای PuTTY**
-3. **تنظیمات:**
-   - **Host Name:** IP سرور شما
-   - **Port:** `22`
-   - **Connection type:** SSH
-4. **بروید به:** Connection → SSH → Tunnels
-5. **اضافه کردن تونل:**
-   - **Source port:** `1080`
-   - **Destination:** (خالی بگذارید)
-   - **Type:** "Dynamic" را انتخاب کنید
-   - روی "Add" کلیک کنید
-6. **برگردید به Session**، پروفایل را ذخیره کنید، سپس "Open"
-7. **وارد شوید** با نام کاربری/رمز عبور
-8. **پنجره را باز نگه دارید** در حین استفاده از پروکسی
-
-### macOS/Linux (Terminal)
-
-Terminal را باز کنید و اجرا کنید:
+--------------------------------------------------
+مرحله ۵: حذف کاربر (در صورت نیاز)
+--------------------------------------------------
 
 ```bash
-ssh -D 1080 -N username@YOUR_SERVER_IP
-```
-
-جایگزین کنید:
-- `username` = نام کاربری پروکسی شما
-- `YOUR_SERVER_IP` = آدرس IP سرور شما
-
-**پنجره ترمینال را باز نگه دارید** در حین استفاده از پروکسی.
-
----
-
-## 🌐 تنظیم مرورگر/برنامه‌های شما
-
-بعد از اتصال، برنامه‌ها را برای استفاده از پروکسی تنظیم کنید:
-
-### Firefox
-1. **Settings** → **Network Settings**
-2. **Manual proxy configuration**
-3. **SOCKS Host:** `127.0.0.1`
-4. **Port:** `1080`
-5. **SOCKS v5:** ✓ (علامت بزنید)
-6. **Proxy DNS:** ✓ (علامت بزنید)
-
-### Chrome/Edge
-1. **Settings** → **System** → **Open proxy settings**
-2. **SOCKS Proxy:** `127.0.0.1:1080`
-
-### سیستم‌عامل (Windows)
-1. **Settings** → **Network & Internet** → **Proxy**
-2. **Use a proxy server:** ON
-3. **Address:** `127.0.0.1`
-4. **Port:** `1080`
-
-### سیستم‌عامل (macOS)
-1. **System Preferences** → **Network**
-2. **Advanced** → **Proxies**
-3. **SOCKS Proxy:** `127.0.0.1:1080`
-
----
-
-## 🛠️ دستورات مدیریت
-
-برای مدیریت به پوشه common بروید:
-
-```bash
-cd /path/to/ssh-socks-proxy/common
-```
-
-### لیست تمام کاربران
-```bash
-bash list-users.sh
-```
-
-### حذف یک کاربر
-```bash
-bash delete-user.sh username
-```
-
-### بررسی وضعیت سیستم
-```bash
-bash status.sh
-```
-
-### پشتیبان‌گیری از تنظیمات
-```bash
-bash backup-config.sh
-```
-
-### حذف کامل
-```bash
-bash uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
 
-## 🔧 رفع مشکلات
+## استفاده در iOS (NPV Tunnel)
 
-### نمی‌توانید وصل شوید؟
+### مرحله ۱: نصب اپلیکیشن
 
-**بررسی اجرای SSH:**
-```bash
-systemctl status ssh
-```
+وارد App Store شوید و جستجو کنید:
+**NPV Tunnel**
 
-باید "active (running)" را به رنگ سبز نشان دهد.
-
-**بررسی فایروال:**
-```bash
-ufw status
-```
-
-باید نشان دهد: `22/tcp ALLOW`
-
-**بررسی IP شما:**
-```bash
-curl ifconfig.me
-```
-
-مطمئن شوید این با IP‌ای که سعی می‌کنید به آن متصل شوید مطابقت دارد.
-
-### پیغام "Connection refused"؟
-
-1. فایروال ممکن است مسدود کند. اجرا کنید:
-   ```bash
-   ufw allow 22/tcp
-   ufw reload
-   ```
-
-2. SSH ممکن است در حال اجرا نباشد. اجرا کنید:
-   ```bash
-   systemctl restart ssh
-   ```
-
-### پیغام "Authentication failed"؟
-
-- نام کاربری و رمز عبور را دوباره بررسی کنید
-- مطمئن شوید کاربر را با `add-user.sh` ساخته‌اید
-- وجود کاربر را بررسی کنید: `bash list-users.sh`
-
-### هنوز مشکل دارید؟
-
-**مشاهده لاگ‌های SSH:**
-```bash
-journalctl -xe -u ssh
-```
-
-**بررسی لاگ نصب:**
-```bash
-cat /var/log/ssh-proxy.log
-```
+![NPV App Store](https://github.com/user-attachments/assets/22d012dd-eea8-4bde-9146-3a0e52154a88)
 
 ---
 
-## ⚡ مراحل بعدی
+### مرحله ۲: ورود به Config
 
-### ارتقا به روش‌های مخفی‌تر
-
-اگر SSH مسدود می‌شود، ارتقا را در نظر بگیرید:
-
-- **[لایه ۴ (Nginx)](../layer4-nginx/README.md)** - از پورت ۴۴۳ استفاده می‌کند، سخت‌تر مسدود می‌شود
-- **[لایه ۶ (Stunnel)](../layer6-stunnel/README.md)** - رمزنگاری دوگانه
-- **[لایه ۷ (V2Ray)](../layer7-v2ray-vmess/README.md)** - حداکثر مخفی‌بودن
-
-فقط ابتدا `bash uninstall.sh` را اجرا کنید، سپس روش جدید را نصب کنید.
+![Config Tab](https://github.com/user-attachments/assets/2497ee34-fcb2-4575-9e42-2b930b8d0b8d)
 
 ---
 
-## 📊 جزئیات فنی
+### مرحله ۳: اضافه کردن تنظیمات
 
-- **پروتکل:** SSH (OpenSSH)
-- **پورت:** 22 (پورت پیش‌فرض SSH)
-- **رمزنگاری:** AES-128/256-CTR/GCM (پیش‌فرض SSH)
-- **احراز هویت:** مبتنی بر رمز عبور
-- **نوع پروکسی:** SOCKS5
-- **چند کاربره:** بله (نامحدود)
+روی **+** کلیک کنید.
 
----
+![Add Config](https://github.com/user-attachments/assets/a9b01bb9-f03d-4d5e-bcf7-d920b44660a4)
 
-## ❓ سؤالات متداول
+**Add Config Manually** را انتخاب کنید.
 
-**س: چرا از این به جای VPN تجاری استفاده کنم؟**
-**ج:** شما کنترل همه چیز را دارید - بدون ثبت لاگ توسط شخص ثالث، آدرس IP ثابت، حریم خصوصی کامل.
-
-**س: می‌توانم از این برای تورنت استفاده کنم؟**
-**ج:** بستگی به شرایط سرویس ارائه‌دهنده VPS شما دارد. قبل از استفاده برای P2P بررسی کنید.
-
-**س: این آدرس IP من را مخفی می‌کند؟**
-**ج:** بله، وب‌سایت‌ها IP سرور شما را به جای IP واقعی شما می‌بینند.
-
-**س: می‌توانم چند دستگاه را متصل کنم؟**
-**ج:** بله! یا کاربران جداگانه بسازید یا یک لاگین را بین دستگاه‌ها به اشتراک بگذارید.
-
-**س: سرعت آن چقدر است؟**
-**ج:** بستگی به مکان و پهنای باند VPS شما دارد. SSH سربار کمی اضافه می‌کند.
+![Add Manually](https://github.com/user-attachments/assets/b87227d4-5b41-443f-8707-2a322d2c018f)
 
 ---
 
-[← بازگشت به راهنمای اصلی](../README.md) | [بعدی: راهنمای لایه ۴ →](../layer4-nginx/README.md)
+### مرحله ۴: انتخاب SSH Config
 
-**ساخته شده با ❤️ برای آزادی اینترنت**
+![SSH Config](https://github.com/user-attachments/assets/ac804061-e32d-423a-8387-69d25e326e27)
 
 ---
 
-# 📘 Layer 3: Basic SSH SOCKS Proxy
+### مرحله ۵: وارد کردن اطلاعات
 
-> **The easiest way to get started** • Perfect for beginners • Standard SSH encryption
+اطلاعات را وارد کنید:
+- SSH Host: IP سرور
+- Port: **22**
+- Username: نام کاربری شما
+- Password: رمز عبور شما
+
+![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
+
+روی **Save** کلیک کنید و سپس **Connect**.
+
+✅ اتصال برقرار شد!
+
+---
+
+## استفاده در Android (Net Mod)
+
+قدم به قدم:
+
+![Android Step 1](https://github.com/user-attachments/assets/72e7e385-83cf-4139-98df-4d41a5097916)
+
+![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
+
+![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
+
+![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
+
+![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
+
+**تنظیمات Android:**
+- Host: IP سرور
+- Port: **22**
+- Username: نام کاربری
+- Password: رمز عبور
+
+---
+
+## نکات مهم
+
+- پورت 22 در برخی شبکه‌ها ممکن است فیلتر شود
+- برای استفاده روزمره لایه ۴ (Nginx) بهتر است
+- این روش برای یادگیری و تست عالی است
+
+---
+
+=====================================================================
+
+# Layer 3: Basic SSH - Simplest Method
+
+> **⭐ Easiest way to start**
+> Port 22 - Great for testing and learning
 
 [← Back to main guide](../README.md)
 
 ---
 
-## 📖 What is Layer 3?
+## What is this method?
 
-Layer 3 uses the standard SSH protocol on port 22. It's the simplest setup - just SSH configured to allow SOCKS proxy connections.
+The simplest proxy method using standard SSH on port 22.
 
-### ✅ Advantages
-- ⭐ **Easiest to set up** - 3-5 minutes
-- 🔧 **Minimal configuration** - Just SSH server
-- 🛡️ **Proven security** - SSH is time-tested and secure
-- 📱 **Works with all SSH clients** - Compatible everywhere
-- 💻 **No extra software needed** - Uses built-in SSH
+**Advantages:**
+- Very easy installation (5 minutes)
+- No complex configuration needed
+- Standard SSH encryption
 
-### ⚠️ Limitations
-- 🚫 **Port 22 can be blocked** - Some networks/countries block SSH
-- 👁️ **Easy to detect** - Network admins can see SSH traffic
-- 🔒 **Not suitable for strict censorship** - DPI can identify SSH
+**Limitations:**
+- Port 22 may be filtered in some networks
+- Not suitable for hard censorship
 
 ---
 
-## 🎯 Best For
+--------------------------------------------------
+Step 1: Purchase VPS Server (IONOS)
+--------------------------------------------------
 
-- 🔰 **First-time users** who want to learn
-- 🧪 **Testing and learning** before trying advanced methods
-- 🏠 **Home/office use** where SSH isn't blocked
-- 🎓 **Understanding the basics** of SOCKS proxies
+If you already have a server, skip to next step.
+
+Purchase link:
+https://www.ionos.co.uk/servers/vps
+
+![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+
+### Purchase notes:
+- Operating system: **Ubuntu**
+- Cheap plan is sufficient
+- Location is your choice
+
+![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
 
 ---
 
-## 🚀 Installation (Super Easy!)
+## After Purchase
 
-### Step 1: Connect to Your VPS
+Log in to IONOS panel:
+https://my.ionos.co.uk/server
 
-On **Windows**, use PowerShell or Command Prompt:
-```cmd
-ssh root@YOUR_SERVER_IP
-```
+<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
 
-On **Mac/Linux**, use Terminal:
+**Important information:**
+- Server IP
+- Username: root
+- Password
+
+<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+
+---
+
+--------------------------------------------------
+Step 2: SSH Connection
+--------------------------------------------------
+
+Open:
+- Windows: CMD or PowerShell
+- Mac/Linux: Terminal
+
+Command:
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER-IP
 ```
 
-*Replace `YOUR_SERVER_IP` with your VPS IP address*
+Example:
+```bash
+ssh root@185.xxx.xxx.xxx
+```
 
-### Step 2: Download and Run Installation
+![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
 
-Copy and paste this ONE command:
+On first connection, type `yes`.
+
+![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
+
+Enter server password (not displayed).
+
+![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
+
+You're in:
+
+![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+
+---
+
+--------------------------------------------------
+Step 3: Install Layer 3
+--------------------------------------------------
+
+Run this command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
 ```
 
-Or if you cloned the repository:
-
-```bash
-cd ssh-socks-proxy/layer3-basic
-bash install.sh
-```
-
-### Step 3: Follow the Prompts
-
-The installer will:
-1. ✅ Check your system (Ubuntu, disk space, etc.)
-2. 📦 Install SSH server and firewall
-3. ⚙️ Configure SSH for SOCKS proxy
-4. 🔥 Configure firewall
-5. ✅ Show you the connection details
-
-**Total time: 3-5 minutes**
+Installation runs automatically.
 
 ---
 
-## 👤 Adding Users
+--------------------------------------------------
+Step 4: Add User
+--------------------------------------------------
 
-After installation, create a user to connect:
+Create a user for each person:
 
-### Option 1: Interactive Mode (Recommended)
 ```bash
-cd ../common
-bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-You'll be prompted for:
-- Username (letters, numbers, dash, underscore only)
-- Password (will be hidden as you type)
-- Password confirmation
-
-### Option 2: Quick Mode
-```bash
-cd ../common
-bash add-user.sh myusername mypassword
-```
-
-⚠️ **Warning:** This shows the password in command history (less secure)
+Enter username and password.
 
 ---
 
-## 📱 Connecting from Your Devices
-
-### iPhone/iPad (NPV Tunnel)
-
-1. **Download app:** [NPV Tunnel](https://apps.apple.com/app/npv-tunnel/id1629891977)
-2. **Open app** and tap "+"
-3. **Select "SSH"** (not SSH+SSL)
-4. **Enter details:**
-   - **Name:** My Proxy (or any name)
-   - **Server:** Your VPS IP address
-   - **Port:** `22`
-   - **Username:** From add-user step
-   - **Password:** From add-user step
-5. **Save and connect** ✅
-
-### Android (Net Mod)
-
-1. **Download app:** [Net Mod](https://play.google.com/store/apps/details?id=com.netmod.app)
-2. **Open app** → SSH Tunnel
-3. **Enter details:**
-   - **Server:** Your VPS IP
-   - **Port:** `22`
-   - **Username:** From add-user step
-   - **Password:** From add-user step
-4. **Tap "Connect"** ✅
-
-### Windows (PuTTY)
-
-1. **Download:** [PuTTY](https://www.putty.org/)
-2. **Run PuTTY**
-3. **Configuration:**
-   - **Host Name:** Your VPS IP
-   - **Port:** `22`
-   - **Connection type:** SSH
-4. **Go to:** Connection → SSH → Tunnels
-5. **Add tunnel:**
-   - **Source port:** `1080`
-   - **Destination:** (leave empty)
-   - **Type:** Select "Dynamic"
-   - Click "Add"
-6. **Go back to Session**, save profile, then "Open"
-7. **Login** with username/password
-8. **Keep window open** while using proxy
-
-### macOS/Linux (Terminal)
-
-Open Terminal and run:
+--------------------------------------------------
+Step 5: Delete User (if needed)
+--------------------------------------------------
 
 ```bash
-ssh -D 1080 -N username@YOUR_SERVER_IP
-```
-
-Replace:
-- `username` = your proxy username
-- `YOUR_SERVER_IP` = your VPS IP address
-
-**Keep terminal window open** while using proxy.
-
----
-
-## 🌐 Configuring Your Browser/Apps
-
-After connecting, configure apps to use the proxy:
-
-### Firefox
-1. **Settings** → **Network Settings**
-2. **Manual proxy configuration**
-3. **SOCKS Host:** `127.0.0.1`
-4. **Port:** `1080`
-5. **SOCKS v5:** ✓ (check this)
-6. **Proxy DNS:** ✓ (check this)
-
-### Chrome/Edge
-1. **Settings** → **System** → **Open proxy settings**
-2. **SOCKS Proxy:** `127.0.0.1:1080`
-
-### System-Wide (Windows)
-1. **Settings** → **Network & Internet** → **Proxy**
-2. **Use a proxy server:** ON
-3. **Address:** `127.0.0.1`
-4. **Port:** `1080`
-
-### System-Wide (macOS)
-1. **System Preferences** → **Network**
-2. **Advanced** → **Proxies**
-3. **SOCKS Proxy:** `127.0.0.1:1080`
-
----
-
-## 🛠️ Management Commands
-
-Go to the common folder for management:
-
-```bash
-cd /path/to/ssh-socks-proxy/common
-```
-
-### List All Users
-```bash
-bash list-users.sh
-```
-
-### Delete a User
-```bash
-bash delete-user.sh username
-```
-
-### Check System Status
-```bash
-bash status.sh
-```
-
-### Backup Configuration
-```bash
-bash backup-config.sh
-```
-
-### Complete Uninstall
-```bash
-bash uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
 
-## 🔧 Troubleshooting
+## iOS Usage (NPV Tunnel)
 
-### Can't Connect?
+### Step 1: Install App
 
-**Check SSH is running:**
-```bash
-systemctl status ssh
-```
+Go to App Store and search:
+**NPV Tunnel**
 
-Should say "active (running)" in green.
-
-**Check firewall:**
-```bash
-ufw status
-```
-
-Should show: `22/tcp ALLOW`
-
-**Check your IP:**
-```bash
-curl ifconfig.me
-```
-
-Make sure this matches the IP you're trying to connect to.
-
-### "Connection refused"?
-
-1. Firewall might be blocking. Run:
-   ```bash
-   ufw allow 22/tcp
-   ufw reload
-   ```
-
-2. SSH might not be running. Run:
-   ```bash
-   systemctl restart ssh
-   ```
-
-### "Authentication failed"?
-
-- Double-check username and password
-- Make sure you created the user with `add-user.sh`
-- Check user exists: `bash list-users.sh`
-
-### Still having issues?
-
-**View SSH logs:**
-```bash
-journalctl -xe -u ssh
-```
-
-**Check installation log:**
-```bash
-cat /var/log/ssh-proxy.log
-```
+![NPV App Store](https://github.com/user-attachments/assets/22d012dd-eea8-4bde-9146-3a0e52154a88)
 
 ---
 
-## ⚡ Next Steps
+### Step 2: Go to Config
 
-### Upgrade to More Stealth
-
-If SSH is being blocked, consider upgrading:
-
-- **[Layer 4 (Nginx)](../layer4-nginx/README.md)** - Uses port 443, harder to block
-- **[Layer 6 (Stunnel)](../layer6-stunnel/README.md)** - Double encryption
-- **[Layer 7 (V2Ray)](../layer7-v2ray-vmess/README.md)** - Maximum stealth
-
-Just run `bash uninstall.sh` first, then install the new method.
+![Config Tab](https://github.com/user-attachments/assets/2497ee34-fcb2-4575-9e42-2b930b8d0b8d)
 
 ---
 
-## 📊 Technical Details
+### Step 3: Add Configuration
 
-- **Protocol:** SSH (OpenSSH)
-- **Port:** 22 (default SSH port)
-- **Encryption:** AES-128/256-CTR/GCM (SSH default)
-- **Authentication:** Password-based
-- **Proxy Type:** SOCKS5
-- **Multi-user:** Yes (unlimited)
+Click **+**.
 
----
+![Add Config](https://github.com/user-attachments/assets/a9b01bb9-f03d-4d5e-bcf7-d920b44660a4)
 
-## ❓ FAQ
+Select **Add Config Manually**.
 
-**Q: Why use this instead of a commercial VPN?**
-**A:** You control everything - no third-party logging, fixed IP address, full privacy.
-
-**Q: Can I use this for torrenting?**
-**A:** Depends on your VPS provider's terms of service. Check before using for P2P.
-
-**Q: Does this hide my IP address?**
-**A:** Yes, websites will see your VPS IP instead of your real IP.
-
-**Q: Can I connect multiple devices?**
-**A:** Yes! Either create separate users or share one login across devices.
-
-**Q: How fast is it?**
-**A:** Depends on your VPS location and bandwidth. SSH adds minimal overhead.
+![Add Manually](https://github.com/user-attachments/assets/b87227d4-5b41-443f-8707-2a322d2c018f)
 
 ---
 
-[← Back to main guide](../README.md) | [Next: Layer 4 Guide →](../layer4-nginx/README.md)
+### Step 4: Select SSH Config
+
+![SSH Config](https://github.com/user-attachments/assets/ac804061-e32d-423a-8387-69d25e326e27)
+
+---
+
+### Step 5: Enter Information
+
+Fill in:
+- SSH Host: Server IP
+- Port: **22**
+- Username: Your username
+- Password: Your password
+
+![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
+
+Click **Save** then **Connect**.
+
+✅ Connected successfully!
+
+---
+
+## Android Usage (Net Mod)
+
+Step by step:
+
+![Android Step 1](https://github.com/user-attachments/assets/72e7e385-83cf-4139-98df-4d41a5097916)
+
+![Android Step 2](https://github.com/user-attachments/assets/c308415b-1484-448d-8c9d-69c5c97aab2d)
+
+![Android Step 3](https://github.com/user-attachments/assets/86f3cea3-3d09-48bd-93f0-7824ffa10cb1)
+
+![Android Step 4](https://github.com/user-attachments/assets/9062ea58-d7bc-400c-92bb-0b00a830757a)
+
+![Android Step 5](https://github.com/user-attachments/assets/2847c64f-7061-4860-96b8-c131cc672031)
+
+**Android settings:**
+- Host: Server IP
+- Port: **22**
+- Username: Your username
+- Password: Your password
+
+---
+
+## Important Notes
+
+- Port 22 may be filtered in some networks
+- For daily use, Layer 4 (Nginx) is better
+- This method is great for learning and testing
+
+---
 
 **Made with ❤️ for internet freedom**
