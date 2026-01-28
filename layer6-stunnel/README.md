@@ -146,7 +146,10 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 
 **SNI چیست؟** SNI باعث می‌شود ترافیک شما شبیه بازدید از یک وبسایت معمولی به نظر برسد.
 
-![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
+![photo_6039717998622346553_y](https://github.com/user-attachments/assets/a792a56c-7292-4c8e-bf17-4aa040d669ec)
+
+![photo_6039717998622346552_y](https://github.com/user-attachments/assets/61ee74b4-6327-415e-813d-a989ec119b97)
+
 
 روی **Save** کلیک کنید و سپس **Connect**.
 
@@ -336,8 +339,10 @@ Fill in:
 - **SNI: www.google.com** (or any other website like www.bing.com)
 
 **What is SNI?** SNI makes your traffic look like you're visiting a normal website.
+![photo_6039717998622346553_y](https://github.com/user-attachments/assets/4ec4ffbb-ee8b-4329-baf2-aa396958393b)
 
-![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
+![photo_6039717998622346552_y](https://github.com/user-attachments/assets/fe3392eb-ef95-4f21-b88a-c7b85185c1d0)
+
 
 Click **Save** then **Connect**.
 
