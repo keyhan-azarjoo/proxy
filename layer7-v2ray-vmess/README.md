@@ -30,7 +30,7 @@ V2Ray با پروتکل VMess - یک پروتکل پیشرفته که ترافی
 مرحله ۱: خرید سرور VPS
 --------------------------------------------------
 
-اگر قبلاً سرور خریده‌اید، به مرحله بعد بروید.
+**اگر از قبل سرور لینوکس با Ubuntu دارید، این مرحله را رد کنید و به مرحله ۲ بروید.**
 
 **برای خرید از IONOS (پیشنهادی):** [راهنمای خرید سرور از IONOS](../buy-ionos-server.md)
 
@@ -50,33 +50,12 @@ V2Ray با پروتکل VMess - یک پروتکل پیشرفته که ترافی
 مرحله ۲: اتصال SSH
 --------------------------------------------------
 
-باز کنید:
-- ویندوز: CMD یا PowerShell
-- مک/لینوکس: Terminal
+**[راهنمای اتصال به سرور با SSH](../ssh-connection.md)**
 
-دستور:
+خلاصه:
 ```bash
 ssh root@SERVER-IP
 ```
-
-مثال:
-```bash
-ssh root@185.xxx.xxx.xxx
-```
-
-![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
-
-در اولین اتصال `yes` را تایپ کنید.
-
-![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
-
-رمز عبور سرور را وارد کنید (نمایش داده نمی‌شود).
-
-![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
-
-وارد سرور شدید:
-
-![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
 
 ---
 
@@ -87,7 +66,7 @@ ssh root@185.xxx.xxx.xxx
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
 ```
 
 نصب خودکار انجام می‌شود.
@@ -107,7 +86,7 @@ V2Ray با VMess روی پورت 443 راه‌اندازی می‌شود.
 برای هر نفر یک کاربر بسازید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **توجه:** برای V2Ray، اسکریپت UUID جدید و لینک کانفیگ می‌سازد.
@@ -119,7 +98,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
@@ -227,7 +206,7 @@ Uses WebSocket to look exactly like normal web traffic.
 Step 1: Purchase VPS Server
 --------------------------------------------------
 
-If you already have a server, skip to next step.
+**If you already have a Linux server with Ubuntu, skip this step and go to Step 2.**
 
 **To purchase from IONOS (recommended):** [Guide to Purchasing Server from IONOS](../buy-ionos-server.md)
 
@@ -247,33 +226,12 @@ If you already have a server, skip to next step.
 Step 2: SSH Connection
 --------------------------------------------------
 
-Open:
-- Windows: CMD or PowerShell
-- Mac/Linux: Terminal
+**[Guide to Connecting to Server with SSH](../ssh-connection.md)**
 
-Command:
+Summary:
 ```bash
 ssh root@SERVER-IP
 ```
-
-Example:
-```bash
-ssh root@185.xxx.xxx.xxx
-```
-
-![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
-
-On first connection, type `yes`.
-
-![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
-
-Enter server password (not displayed).
-
-![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
-
-You're in:
-
-![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
 
 ---
 
@@ -284,7 +242,7 @@ Step 3: Install Layer 7 (V2Ray VMess)
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
 ```
 
 Installation runs automatically.
@@ -304,7 +262,7 @@ Step 4: Add New User
 Create a user for each person:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **Note:** For V2Ray, the script creates a new UUID and config link.
@@ -316,7 +274,7 @@ Step 5: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---

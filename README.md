@@ -44,9 +44,17 @@
 
 ---
 
+## نحوه استفاده از این راهنما
+
+**مهم:** مراحل را به ترتیب و یکی یکی انجام دهید. هر مرحله را کامل کنید و سپس به مرحله بعد بروید.
+
+---
+
 --------------------------------------------------
 مرحله ۱: خرید سرور VPS
 --------------------------------------------------
+
+**اگر از قبل سرور لینوکس با Ubuntu دارید، این مرحله را رد کنید و به مرحله ۲ بروید.**
 
 برای شروع باید یک سرور VPS تهیه کنید.
 هر VPS با سیستم‌عامل Ubuntu قابل استفاده است.
@@ -71,34 +79,16 @@
 مرحله ۲: اتصال به سرور با SSH
 --------------------------------------------------
 
-### در کامپیوتر خود:
-- ویندوز: CMD یا PowerShell
-- مک / لینوکس: Terminal
+برای اتصال به سرور از طریق SSH، به راهنمای کامل مراجعه کنید:
 
-دستور زیر را اجرا کنید:
+**[راهنمای اتصال به سرور با SSH](./ssh-connection.md)**
+
+### خلاصه:
 ```bash
 ssh root@SERVER-IP
 ```
 
-مثال:
-```bash
-ssh root@185.xxx.xxx.xxx
-```
-
-![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
-
-در اولین اتصال، سیستم از شما تأیید می‌خواهد.
-کلمه `yes` را وارد کنید.
-
-![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
-
-سپس رمز عبور سرور را وارد کنید (چیزی نمایش داده نمی‌شود، طبیعی است).
-
-![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
-
-اگر همه چیز درست باشد، وارد سرور می‌شوید:
-
-![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+پس از اتصال، ادامه دهید.
 
 ---
 
@@ -138,7 +128,7 @@ ssh root@185.xxx.xxx.xxx
 
 این دستور را اجرا کنید:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
 ```
 
 نصب به طور خودکار انجام می‌شود.
@@ -153,7 +143,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer4-
 
 دستور:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 از شما نام کاربری و رمز عبور پرسیده می‌شود.
@@ -170,7 +160,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/
 
 اگر خواستید دسترسی کاربری را قطع کنید:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
@@ -182,7 +172,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/
 برای مشاهده کاربران متصل، میزان مصرف پهنای باند، و زمان اتصالات:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 این اسکریپت به شما امکان می‌دهد:
@@ -353,9 +343,17 @@ Before starting, you only need these:
 
 ---
 
+## How to Use This Guide
+
+**Important:** Follow the steps in order, one by one. Complete each step before moving to the next.
+
+---
+
 --------------------------------------------------
 Step 1: Purchase VPS Server
 --------------------------------------------------
+
+**If you already have a Linux server with Ubuntu, skip this step and go to Step 2.**
 
 To get started, you need to get a VPS server.
 Any VPS with Ubuntu operating system can be used.
@@ -380,34 +378,16 @@ Keep this information safe.
 Step 2: Connect to Server via SSH
 --------------------------------------------------
 
-### On your computer:
-- Windows: CMD or PowerShell
-- Mac / Linux: Terminal
+For connecting to the server via SSH, refer to the complete guide:
 
-Run the following command:
+**[Guide to Connecting to Server with SSH](./ssh-connection.md)**
+
+### Summary:
 ```bash
 ssh root@SERVER-IP
 ```
 
-Example:
-```bash
-ssh root@185.xxx.xxx.xxx
-```
-
-![SSH Command](https://github.com/user-attachments/assets/394ee09f-9be4-4b5e-b874-d03e0a470539)
-
-On the first connection, the system asks for confirmation.
-Enter the word `yes`.
-
-![SSH Confirm](https://github.com/user-attachments/assets/ea212a44-273a-417b-b678-63bf2b887d9a)
-
-Then enter the server password (nothing is displayed, this is normal).
-
-![Password Entry](https://github.com/user-attachments/assets/d8b8188d-8398-4921-81f2-5fd670fd1dbe)
-
-If everything is correct, you will enter the server:
-
-![SSH Connected](https://github.com/user-attachments/assets/514ea69f-1e51-4c81-b6f3-cc50b7ceaa9c)
+After connecting, continue below.
 
 ---
 
@@ -447,7 +427,7 @@ Step 3: Installation (depending on chosen method)
 
 Run this command:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
 ```
 
 Installation is done automatically.
@@ -462,7 +442,7 @@ For each person who wants to use the proxy, create a user.
 
 Command:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 You will be asked for username and password.
@@ -479,7 +459,7 @@ Step 5: Delete User (if needed)
 
 If you want to revoke user access:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---
@@ -491,7 +471,7 @@ Step 6: User Management and Monitoring
 To view connected users, bandwidth usage, and connection times:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 This script allows you to:
