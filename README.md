@@ -49,39 +49,19 @@
 --------------------------------------------------
 
 برای شروع باید یک سرور VPS تهیه کنید.
-در این راهنما از IONOS استفاده شده، ولی هر VPS Ubuntu قابل استفاده است.
+هر VPS با سیستم‌عامل Ubuntu قابل استفاده است.
 
-لینک خرید:
-https://www.ionos.co.uk/servers/vps
+**برای خرید از IONOS (پیشنهادی):** [راهنمای خرید سرور از IONOS](./buy-ionos-server.md)
 
-![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
-
-### هنگام خرید به این نکات توجه کنید:
+### نکات مهم:
 - سیستم‌عامل حتماً **Ubuntu**
 - پلن ارزان هم کاملاً کافی است
 - لوکیشن سرور به نیاز شما بستگی دارد
 
-![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
-
----
-
-## بعد از خرید سرور چه می‌بینید؟
-
-پس از خرید، وارد پنل کاربری IONOS شوید:
-
-https://my.ionos.co.uk/home/products
-یا مستقیماً:
-https://my.ionos.co.uk/server
-
-<img width="1182" height="1388" alt="33333333" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
-
-در صفحه سرور اطلاعات بسیار مهمی می‌بینید:
-
-- IP سرور (خیلی مهم)
-- نام کاربری: root
-- رمز عبور اولیه
-
-<img width="1182" height="1387" alt="5555555" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+پس از خرید سرور، اطلاعات زیر را از پنل ارائه‌دهنده دریافت کنید:
+- **IP سرور** (خیلی مهم)
+- **نام کاربری:** root
+- **رمز عبور اولیه**
 
 این اطلاعات را نگه دارید.
 
@@ -378,39 +358,19 @@ Step 1: Purchase VPS Server
 --------------------------------------------------
 
 To get started, you need to get a VPS server.
-In this guide, we use IONOS, but any Ubuntu VPS can be used.
+Any VPS with Ubuntu operating system can be used.
 
-Purchase link:
-https://www.ionos.co.uk/servers/vps
+**To purchase from IONOS (recommended):** [Guide to Purchasing Server from IONOS](./buy-ionos-server.md)
 
-![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
-
-### When purchasing, pay attention to these points:
+### Important notes:
 - Operating system must be **Ubuntu**
 - Even a cheap plan is completely sufficient
 - Server location depends on your needs
 
-![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
-
----
-
-## What do you see after purchasing the server?
-
-After purchase, log in to the IONOS user panel:
-
-https://my.ionos.co.uk/home/products
-Or directly:
-https://my.ionos.co.uk/server
-
-<img width="1182" height="1388" alt="33333333" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
-
-On the server page, you will see very important information:
-
-- Server IP (very important)
-- Username: root
-- Initial password
-
-<img width="1182" height="1387" alt="5555555" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
+After purchasing the server, get the following information from your provider's panel:
+- **Server IP** (very important)
+- **Username:** root
+- **Initial password**
 
 Keep this information safe.
 

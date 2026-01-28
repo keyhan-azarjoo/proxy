@@ -23,38 +23,22 @@
 ---
 
 --------------------------------------------------
-مرحله ۱: خرید سرور VPS (IONOS)
+مرحله ۱: خرید سرور VPS
 --------------------------------------------------
 
 اگر قبلاً سرور خریده‌اید، به مرحله بعد بروید.
 
-لینک خرید:
-https://www.ionos.co.uk/servers/vps
-
-![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+**برای خرید از IONOS (پیشنهادی):** [راهنمای خرید سرور از IONOS](../buy-ionos-server.md)
 
 ### نکات خرید:
 - سیستم‌عامل: **Ubuntu**
 - پلن ارزان کافی است
 - لوکیشن به انتخاب شما
 
-![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
-
----
-
-## بعد از خرید
-
-وارد پنل IONOS شوید:
-https://my.ionos.co.uk/server
-
-<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
-
-**اطلاعات مهم:**
+**اطلاعات مورد نیاز از سرور:**
 - IP سرور
 - نام کاربری: root
 - رمز عبور
-
-<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
 
 ---
 
@@ -238,38 +222,22 @@ The simplest proxy method using standard SSH on port 22.
 ---
 
 --------------------------------------------------
-Step 1: Purchase VPS Server (IONOS)
+Step 1: Purchase VPS Server
 --------------------------------------------------
 
 If you already have a server, skip to next step.
 
-Purchase link:
-https://www.ionos.co.uk/servers/vps
-
-![VPS Selection](https://github.com/user-attachments/assets/76de78dc-0a84-47ae-9a58-b3665330b168)
+**To purchase from IONOS (recommended):** [Guide to Purchasing Server from IONOS](../buy-ionos-server.md)
 
 ### Purchase notes:
 - Operating system: **Ubuntu**
 - Cheap plan is sufficient
 - Location is your choice
 
-![VPS Selection](https://github.com/user-attachments/assets/823cb7b2-8a84-40fd-9caa-d85563ede9ee)
-
----
-
-## After Purchase
-
-Log in to IONOS panel:
-https://my.ionos.co.uk/server
-
-<img width="1182" height="1388" alt="IONOS Panel" src="https://github.com/user-attachments/assets/46a45e79-c30c-44ca-b8cb-3508616e72f7" />
-
-**Important information:**
+**Required information from server:**
 - Server IP
 - Username: root
 - Password
-
-<img width="1182" height="1387" alt="Server Info" src="https://github.com/user-attachments/assets/8cf364c3-a090-4f20-b496-ab45ed2f3659" />
 
 ---
 
