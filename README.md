@@ -192,6 +192,25 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/
 ---
 
 --------------------------------------------------
+مرحله ۶: مدیریت و مانیتورینگ کاربران
+--------------------------------------------------
+
+برای مشاهده کاربران متصل، میزان مصرف پهنای باند، و زمان اتصالات:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+این اسکریپت به شما امکان می‌دهد:
+- لیست تمام کاربران تعریف‌شده را ببینید
+- کاربران متصل فعلی را مشاهده کنید
+- میزان مصرف پهنای باند را بررسی کنید
+- زمان اتصال هر کاربر را ببینید
+- منابع سرور (CPU، RAM، دیسک) را کنترل کنید
+
+---
+
+--------------------------------------------------
 نکات امنیتی بسیار مهم
 --------------------------------------------------
 
@@ -494,6 +513,25 @@ If you want to revoke user access:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
+
+---
+
+--------------------------------------------------
+Step 6: User Management and Monitoring
+--------------------------------------------------
+
+To view connected users, bandwidth usage, and connection times:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+This script allows you to:
+- See list of all defined users
+- View currently connected users
+- Check bandwidth consumption
+- See connection times for each user
+- Monitor server resources (CPU, RAM, Disk)
 
 ---
 
