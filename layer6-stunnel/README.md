@@ -134,11 +134,17 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 
 ### مرحله ۵: وارد کردن اطلاعات
 
+**مهم:** تنظیمات لایه ۶ با لایه ۴ فرق دارد!
+
 اطلاعات را وارد کنید:
 - SSH Host: IP سرور
 - Port: **443**
 - Username: نام کاربری شما
 - Password: رمز عبور شما
+- **Connection Mode: SSH-TLS** (نه SSH معمولی!)
+- **SNI: www.google.com** (یا هر وبسایت دیگری مثل www.bing.com)
+
+**SNI چیست؟** SNI باعث می‌شود ترافیک شما شبیه بازدید از یک وبسایت معمولی به نظر برسد.
 
 ![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
 
@@ -167,6 +173,8 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 - Port: **443**
 - Username: نام کاربری
 - Password: رمز عبور
+- **Connection Mode: SSH-TLS**
+- **SNI: www.google.com**
 
 ---
 
@@ -317,11 +325,17 @@ Select **Add Config Manually**.
 
 ### Step 5: Enter Information
 
+**Important:** Layer 6 settings are different from Layer 4!
+
 Fill in:
 - SSH Host: Server IP
 - Port: **443**
 - Username: Your username
 - Password: Your password
+- **Connection Mode: SSH-TLS** (not regular SSH!)
+- **SNI: www.google.com** (or any other website like www.bing.com)
+
+**What is SNI?** SNI makes your traffic look like you're visiting a normal website.
 
 ![Fill SSH Info](https://github.com/user-attachments/assets/b232e341-4d59-4f2b-804d-d923f31a03e6)
 
@@ -350,6 +364,8 @@ Step by step:
 - Port: **443**
 - Username: Your username
 - Password: Your password
+- **Connection Mode: SSH-TLS**
+- **SNI: www.google.com**
 
 ---
 
