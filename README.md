@@ -178,6 +178,10 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/
 
 از شما نام کاربری و رمز عبور پرسیده می‌شود.
 
+**نکات مهم:**
+- رمز عبور باید حداقل ۸ کاراکتر باشد
+- هنگام تایپ رمز، چیزی نمایش داده نمی‌شود (این طبیعی است و برای امنیت است)
+
 ---
 
 --------------------------------------------------
@@ -502,6 +506,10 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/
 ```
 
 You will be asked for username and password.
+
+**Important notes:**
+- Password must be at least 8 characters
+- Password won't be visible while typing (this is normal for security)
 
 ---
 

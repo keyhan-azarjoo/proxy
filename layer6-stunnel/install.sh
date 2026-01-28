@@ -21,8 +21,7 @@ preflight_check() {
 
     if ! grep -q "Ubuntu" /etc/os-release 2>/dev/null; then
         echo "Warning: This script is designed for Ubuntu"
-        read -p "Continue anyway? (yes/no): " CONTINUE
-        [ "$CONTINUE" != "yes" ] && exit 0
+        echo "Continuing anyway..."
     fi
 
     if [ "$EUID" -ne 0 ]; then
@@ -38,8 +37,7 @@ preflight_check() {
 
     if ss -tulpn | grep -q ":443 "; then
         echo "Warning: Port 443 is in use. Will be freed during installation."
-        read -p "Continue? (yes/no): " CONTINUE
-        [ "$CONTINUE" != "yes" ] && exit 0
+        echo "Continuing..."
     fi
 
     log "Pre-flight checks passed"
@@ -65,12 +63,7 @@ main() {
     preflight_check
 
     echo ""
-    read -p "Continue with installation? (yes/no): " CONFIRM
-    if [ "$CONFIRM" != "yes" ]; then
-        echo "Installation cancelled"
-        exit 0
-    fi
-
+    echo "Starting installation..."
     log "=== Starting Layer 6 installation ==="
 
     # Backup
@@ -200,7 +193,10 @@ EOF
     echo ""
     echo "Next steps:"
     echo "  1. Add a proxy user:"
-    echo "     bash add-user.sh"
+    echo "     curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo ""
+    echo "     Note: Password must be at least 8 characters."
+    echo "           Password won't be visible while typing (this is normal)."
     echo ""
     echo "  2. On iOS (NPV Tunnel):"
     echo "     - Select 'SSH + SSL' mode"
@@ -213,12 +209,11 @@ EOF
     echo "     - Then SSH to localhost:22"
     echo ""
     echo "Management commands:"
-    echo "  bash add-user.sh       - Add new user"
-    echo "  bash delete-user.sh    - Delete user"
-    echo "  bash list-users.sh     - List all users"
-    echo "  bash status.sh         - Check system status"
-    echo "  bash backup-config.sh  - Backup configuration"
-    echo "  bash uninstall.sh      - Uninstall completely"
+    echo "  Add user:     curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user:  curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh USERNAME"
+    echo "  View users:   curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh"
+    echo "  List users:   curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/list-users.sh -o list-users.sh && bash list-users.sh"
+    echo "  Check status: curl -fsSL https://raw.githubusercontent.com/myotgo/ssh-socks-proxy/main/common/status.sh -o status.sh && bash status.sh"
     echo ""
     echo "============================================"
 }

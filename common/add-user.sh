@@ -75,6 +75,11 @@ main() {
     else
         # Interactive mode
         read -p "Enter username: " USERNAME
+        echo ""
+        echo "Password requirements:"
+        echo "  - Minimum 8 characters"
+        echo "  - Note: Password won't be visible while typing (this is normal for security)"
+        echo ""
         read -sp "Enter password: " PASSWORD
         echo
         read -sp "Confirm password: " PASSWORD_CONFIRM
