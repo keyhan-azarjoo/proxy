@@ -25,6 +25,7 @@ DuckDNS یک سرویس **DNS داینامیک رایگان** است که:
 https://duckdns.org
 
 با **Google** یا **GitHub** لاگین کنید.
+<img width="1918" height="1136" alt="Screenshot 2026-01-29 085553" src="https://github.com/user-attachments/assets/57684565-3981-44a4-89d0-abd2b8cf8c78" />
 
 بعد از لاگین، یک صفحه reCaptcha نمایش داده می‌شود. آن را تکمیل کنید:
 
