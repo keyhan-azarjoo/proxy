@@ -63,7 +63,7 @@ https://duckdns.org
 
 ۳. پیام سبز **"success: domain ... added to your account"** نمایش داده می‌شود
 
-![Domain Added](./layer7-real-domain/images/4.png)
+<img width="1658" height="1082" alt="4" src="https://github.com/user-attachments/assets/cfe83b4c-7f5c-49a2-978e-e4d498aceaf2" />
 
 حالا دامنه شما ساخته شد! (مثلاً: `myproxy.duckdns.org`)
 
