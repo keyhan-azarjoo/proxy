@@ -29,7 +29,8 @@ https://duckdns.org
 
 بعد از لاگین، یک صفحه reCaptcha نمایش داده می‌شود. آن را تکمیل کنید:
 
-![DuckDNS Login](./layer7-real-domain/images/2.png)
+<img width="1662" height="1081" alt="2" src="https://github.com/user-attachments/assets/d0d85295-1508-41fd-b5ef-4cd0d82bfdd5" />
+
 
 ---
 
