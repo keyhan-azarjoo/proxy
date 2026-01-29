@@ -31,20 +31,28 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 ## مرحله ۳: اضافه کردن کانفیگ در NPV Tunnel
 
 1. اپلیکیشن **NPV Tunnel** را باز کنید
-2. به بخش **Config** بروید
-3. روی **+** کلیک کنید
-4. **Add Config Manually** را انتخاب کنید
-5. **V2Ray VMess** را انتخاب کنید
-6. اطلاعات JSON را وارد کنید:
-   - Address: **IP سرور**
-   - Port: **443**
-   - UUID: **UUID دریافت شده از سرور**
-   - AlterID: **0**
-   - Security: **auto**
-   - Network: **tcp**
-   - TLS: **فعال (Enable)**
-   - Allow Insecure: **فعال**
-7. روی **Save** کلیک کنید
+2. go to the config page
+![photo_6039706939081559670_y](https://github.com/user-attachments/assets/60c584db-692c-4dfc-9397-51937e95c5c3)
+then click on +
+![photo_6039706939081559669_y](https://github.com/user-attachments/assets/5bcc2142-acfd-440b-bf4b-4f0111b1affd)
+
+then select add config manually
+![photo_6039706939081559668_y](https://github.com/user-attachments/assets/8cff8eeb-7ecb-4d64-b57d-943b11aff82a)
+then select V2ray Config 
+
+![photo_6039706939081559667_y](https://github.com/user-attachments/assets/f6cb1e96-ac04-4353-8cbb-fb653bc77194)
+
+then paste the ios json here and click on save
+
+![photo_6039706939081559666_y](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
+
+then from the list, select the saved config and connect
+![photo_6039706939081559665_y](https://github.com/user-attachments/assets/e8f8dc31-def6-4efc-9259-bee71bd73a81)
+
+
+
+
+8. روی **Save** کلیک کنید
 
 ---
 
@@ -53,6 +61,24 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 روی کانفیگ ذخیره شده کلیک کنید و **Connect** بزنید.
 
 ---
+
+Android
+click on add
+![photo_6039706939081559660_y](https://github.com/user-attachments/assets/ac324b74-daec-4182-85b1-ea746e8c4401)
+then click on json config
+
+![photo_6039706939081559662_y](https://github.com/user-attachments/assets/b9874cfd-8168-4fa9-91ee-b39b1d593316)
+
+then click on open Editor
+![photo_6039706939081559663_y](https://github.com/user-attachments/assets/9fb5852d-6007-4762-9d52-9fbf9cac801c)
+
+then paste the json in the editor and click the checkbox and save it
+![photo_6039706939081559661_y](https://github.com/user-attachments/assets/f17d62bc-ded1-40c7-b214-50913316ae48)
+
+then click on the newly saved config and connect
+![photo_6039706939081559664_y](https://github.com/user-attachments/assets/7640d0dd-d860-4a61-85ba-a9c602281b84)
+
+
 
 ## نکات مهم
 
