@@ -3,7 +3,7 @@
 > **⭐⭐ بهترین گزینه برای استفاده روزانه**
 > پورت 443 (HTTPS) - سخت‌تر برای فیلتر شدن
 
-[← صفحه قبلی: لایه ۳](../layer3-basic/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۶ (Stunnel)](../layer6-stunnel/README.md)
+[← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
@@ -88,7 +88,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/ad
 ---
 
 --------------------------------------------------
-مرحله ۵: حذف کاربر (در صورت نیاز)
+مرحله ۵: مانیتورینگ کاربران
+--------------------------------------------------
+
+برای مشاهده کاربران متصل و وضعیت سرور:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+مرحله ۶: حذف کاربر (در صورت نیاز)
 --------------------------------------------------
 
 ```bash
@@ -188,7 +200,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 > **⭐⭐ Best choice for daily usage**
 > Port 443 (HTTPS) - Harder to filter
 
-[← Previous: Layer 3](../layer3-basic/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 6 (Stunnel)](../layer6-stunnel/README.md)
+[← Back to main guide](../README.md)
 
 ---
 
@@ -273,7 +285,19 @@ Enter username and password.
 ---
 
 --------------------------------------------------
-Step 5: Delete User (if needed)
+Step 5: Monitor Users
+--------------------------------------------------
+
+To view connected users and server status:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash

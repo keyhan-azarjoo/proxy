@@ -3,7 +3,7 @@
 > **⭐⭐⭐⭐ برای سانسور سخت**
 > پورت 443 - پروتکل VLESS با WebSocket + TLS
 
-[← صفحه قبلی: لایه ۷ (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۷ دامنه واقعی](../layer7-real-domain/README.md)
+[← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
@@ -89,7 +89,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 ---
 
 --------------------------------------------------
-مرحله ۵: حذف کاربر (در صورت نیاز)
+مرحله ۵: مانیتورینگ کاربران
+--------------------------------------------------
+
+برای مشاهده کاربران متصل و وضعیت سرور:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+مرحله ۶: حذف کاربر (در صورت نیاز)
 --------------------------------------------------
 
 ```bash
@@ -129,7 +141,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 > **⭐⭐⭐⭐ For hard censorship**
 > Port 443 - VLESS protocol with WebSocket + TLS
 
-[← Previous: Layer 7 (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 7 Real Domain](../layer7-real-domain/README.md)
+[← Back to main guide](../README.md)
 
 ---
 
@@ -215,7 +227,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 ---
 
 --------------------------------------------------
-Step 5: Delete User (if needed)
+Step 5: Monitor Users
+--------------------------------------------------
+
+To view connected users and server status:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash

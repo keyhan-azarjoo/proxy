@@ -3,7 +3,7 @@
 > **⭐⭐⭐ امنیت بالا با رمزنگاری دوبل**
 > پورت 443 - TLS Wrapper برای SSH
 
-[← صفحه قبلی: لایه ۴ (Nginx)](../layer4-nginx/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۷ (V2Ray)](../layer7-v2ray-vmess/README.md)
+[← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
@@ -88,7 +88,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/ad
 ---
 
 --------------------------------------------------
-مرحله ۵: حذف کاربر (در صورت نیاز)
+مرحله ۵: مانیتورینگ کاربران
+--------------------------------------------------
+
+برای مشاهده کاربران متصل و وضعیت سرور:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+مرحله ۶: حذف کاربر (در صورت نیاز)
 --------------------------------------------------
 
 ```bash
@@ -200,7 +212,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 > **⭐⭐⭐ High security with double encryption**
 > Port 443 - TLS Wrapper for SSH
 
-[← Previous: Layer 4 (Nginx)](../layer4-nginx/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 7 (V2Ray)](../layer7-v2ray-vmess/README.md)
+[← Back to main guide](../README.md)
 
 ---
 
@@ -285,7 +297,19 @@ Enter username and password.
 ---
 
 --------------------------------------------------
-Step 5: Delete User (if needed)
+Step 5: Monitor Users
+--------------------------------------------------
+
+To view connected users and server status:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash

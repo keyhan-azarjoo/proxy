@@ -1,6 +1,6 @@
 # راهنمای اتصال به سرور با SSH
 
-[← صفحه قبلی: خرید سرور](./buy-ionos-server.md) | [← بازگشت به راهنمای اصلی](./README.md)
+[← بازگشت به راهنمای اصلی](./README.md)
 
 ---
 
@@ -132,7 +132,7 @@ ssh-keygen -R 87.106.68.203
 
 # Guide to Connecting to Server with SSH
 
-[← Previous: Buy Server](./buy-ionos-server.md) | [← Back to main guide](./README.md)
+[← Back to main guide](./README.md)
 
 ---
 

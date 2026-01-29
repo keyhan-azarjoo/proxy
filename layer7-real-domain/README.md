@@ -3,7 +3,7 @@
 > **⭐⭐⭐⭐⭐ بهترین روش (سخت‌ترین برای فیلتر شدن)**
 > پورت 443 - تونل TLS واقعی با گواهی معتبر
 
-[← صفحه قبلی: لایه ۷ (V2Ray VLESS)](../layer7-v2ray-vless/README.md) | [← بازگشت به راهنمای اصلی](../README.md)
+[← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
@@ -134,7 +134,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 ---
 
 --------------------------------------------------
-مرحله ۶: حذف کاربر (در صورت نیاز)
+مرحله ۶: مانیتورینگ کاربران
+--------------------------------------------------
+
+برای مشاهده کاربران متصل و وضعیت سرور:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+مرحله ۷: حذف کاربر (در صورت نیاز)
 --------------------------------------------------
 
 ```bash
@@ -208,7 +220,7 @@ crontab -e
 > **⭐⭐⭐⭐⭐ Best method (hardest to filter)**
 > Port 443 - Real TLS tunnel with valid certificate
 
-[← Previous: Layer 7 (V2Ray VLESS)](../layer7-v2ray-vless/README.md) | [← Back to main guide](../README.md)
+[← Back to main guide](../README.md)
 
 ---
 
@@ -339,7 +351,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 ---
 
 --------------------------------------------------
-Step 6: Delete User (if needed)
+Step 6: Monitor Users
+--------------------------------------------------
+
+To view connected users and server status:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+```
+
+---
+
+--------------------------------------------------
+Step 7: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
