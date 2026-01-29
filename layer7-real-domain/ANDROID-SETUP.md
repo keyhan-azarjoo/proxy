@@ -24,32 +24,35 @@
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VLESS** دریافت می‌کنید. این اطلاعات را کپی کنید.
+بعد از اجرا، **۲ کانفیگ JSON** نمایش داده می‌شود (iOS و Android). کانفیگ **Android** را کپی کنید.
+
+<img width="597" alt="add-user output" src="https://github.com/user-attachments/assets/2ba70fc3-c3d2-4d05-bab7-6957fba209bc" />
 
 ---
 
 ## مرحله ۳: اضافه کردن کانفیگ در NetMod
 
 1. اپلیکیشن **NetMod** را باز کنید
-2. روی **Profile** کلیک کنید
-3. روی **Add new Profile** کلیک کنید
-4. نوع اتصال **V2Ray VLESS** را انتخاب کنید
-5. اطلاعات JSON را وارد کنید:
-   - Address: **دامنه شما** (مثلاً myproxy123.duckdns.org)
-   - Port: **443**
-   - UUID: **UUID دریافت شده از سرور**
-   - Encryption: **none**
-   - Network: **ws** (WebSocket)
-   - Path: **مسیر دریافت شده از سرور**
-   - TLS: **فعال (Enable)**
-   - SNI: **دامنه شما**
-6. روی **Add** یا **Save** کلیک کنید
 
----
+2. روی **Add** کلیک کنید
 
-## مرحله ۴: اتصال
+![Click Add](https://github.com/user-attachments/assets/ac324b74-daec-4182-85b1-ea746e8c4401)
 
-پروفایل جدید را انتخاب کنید و **Connect** بزنید.
+3. گزینه **JSON Config** را انتخاب کنید
+
+![Select JSON Config](https://github.com/user-attachments/assets/b9874cfd-8168-4fa9-91ee-b39b1d593316)
+
+4. روی **Open Editor** کلیک کنید
+
+![Open Editor](https://github.com/user-attachments/assets/9fb5852d-6007-4762-9d52-9fbf9cac801c)
+
+5. کانفیگ JSON مربوط به Android را paste کنید، تیک بزنید و ذخیره کنید
+
+![Paste JSON and save](https://github.com/user-attachments/assets/f17d62bc-ded1-40c7-b214-50913316ae48)
+
+6. کانفیگ ذخیره شده را انتخاب کنید و **Connect** بزنید
+
+![Select and connect](https://github.com/user-attachments/assets/7640d0dd-d860-4a61-85ba-a9c602281b84)
 
 ---
 
@@ -57,7 +60,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 - فیلد **inbounds** در JSON نباید خالی باشد. بدون آن، NetMod کانفیگ را قبول نمی‌کند
 - این روش از گواهی TLS معتبر (Let's Encrypt) استفاده می‌کند
-- ترافیک شما دقیقاً شبیه یک وبسایت HTTPS معمولی است
+- ترافیک شما دقیقا شبیه یک وبسایت HTTPS معمولی است
 - UUID و کانفیگ را ایمن نگه دارید
 - اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ برگردانده می‌شود
 
@@ -91,32 +94,35 @@ On the server, run the add user command:
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-After running, you will receive a **JSON config** and a **VLESS link**. Copy this information.
+After running, **2 JSON configs** will be displayed (iOS and Android). Copy the **Android** config.
+
+<img width="597" alt="add-user output" src="https://github.com/user-attachments/assets/2ba70fc3-c3d2-4d05-bab7-6957fba209bc" />
 
 ---
 
 ## Step 3: Add Config in NetMod
 
 1. Open **NetMod** app
-2. Click on **Profile**
-3. Click on **Add new Profile**
-4. Select connection type **V2Ray VLESS**
-5. Enter the JSON information:
-   - Address: **Your domain** (e.g., myproxy123.duckdns.org)
-   - Port: **443**
-   - UUID: **UUID received from server**
-   - Encryption: **none**
-   - Network: **ws** (WebSocket)
-   - Path: **Path received from server**
-   - TLS: **Enable**
-   - SNI: **Your domain**
-6. Click **Add** or **Save**
 
----
+2. Tap **Add**
 
-## Step 4: Connect
+![Click Add](https://github.com/user-attachments/assets/ac324b74-daec-4182-85b1-ea746e8c4401)
 
-Select the new profile and tap **Connect**.
+3. Select **JSON Config**
+
+![Select JSON Config](https://github.com/user-attachments/assets/b9874cfd-8168-4fa9-91ee-b39b1d593316)
+
+4. Tap **Open Editor**
+
+![Open Editor](https://github.com/user-attachments/assets/9fb5852d-6007-4762-9d52-9fbf9cac801c)
+
+5. Paste the Android JSON config, tap the checkbox, and save
+
+![Paste JSON and save](https://github.com/user-attachments/assets/f17d62bc-ded1-40c7-b214-50913316ae48)
+
+6. Select the saved config and tap **Connect**
+
+![Select and connect](https://github.com/user-attachments/assets/7640d0dd-d860-4a61-85ba-a9c602281b84)
 
 ---
 

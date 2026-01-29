@@ -23,43 +23,40 @@
 ```bash
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
 ```
-<img width="597" height="1251" alt="Screenshot 2026-01-29 at 02 30 51" src="https://github.com/user-attachments/assets/72e160d2-a380-4f5e-befb-9a7e8e071b7c" />
 
-بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VMess** دریافت می‌کنید. این اطلاعات را کپی کنید.
+بعد از اجرا، **۲ کانفیگ JSON** نمایش داده می‌شود (iOS و Android). کانفیگ **iOS** را کپی کنید.
+
+<img width="597" alt="add-user output" src="https://github.com/user-attachments/assets/72e160d2-a380-4f5e-befb-9a7e8e071b7c" />
 
 ---
 
 ## مرحله ۳: اضافه کردن کانفیگ در NPV Tunnel
 
 1. اپلیکیشن **NPV Tunnel** را باز کنید
-2. go to the config page
-![photo_6039706939081559670_y](https://github.com/user-attachments/assets/60c584db-692c-4dfc-9397-51937e95c5c3)
-then click on +
-![photo_6039706939081559669_y](https://github.com/user-attachments/assets/5bcc2142-acfd-440b-bf4b-4f0111b1affd)
 
-then select add config manually
-![photo_6039706939081559668_y](https://github.com/user-attachments/assets/8cff8eeb-7ecb-4d64-b57d-943b11aff82a)
-then select V2ray Config 
+2. به صفحه **Config** بروید
 
-![photo_6039706939081559667_y](https://github.com/user-attachments/assets/f6cb1e96-ac04-4353-8cbb-fb653bc77194)
+![Config page](https://github.com/user-attachments/assets/60c584db-692c-4dfc-9397-51937e95c5c3)
 
-then paste the ios json here and click on save
+3. روی **+** کلیک کنید
 
-![photo_6039706939081559666_y](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
+![Click plus](https://github.com/user-attachments/assets/5bcc2142-acfd-440b-bf4b-4f0111b1affd)
 
-then from the list, select the saved config and connect
-![photo_6039706939081559665_y](https://github.com/user-attachments/assets/e8f8dc31-def6-4efc-9259-bee71bd73a81)
+4. گزینه **Add Config Manually** را انتخاب کنید
 
+![Add config manually](https://github.com/user-attachments/assets/8cff8eeb-7ecb-4d64-b57d-943b11aff82a)
 
+5. **V2Ray Config** را انتخاب کنید
 
+![V2Ray Config](https://github.com/user-attachments/assets/f6cb1e96-ac04-4353-8cbb-fb653bc77194)
 
-8. روی **Save** کلیک کنید
+6. کانفیگ JSON مربوط به iOS را اینجا paste کنید و روی **Save** کلیک کنید
 
----
+![Paste JSON and save](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
 
-## مرحله ۴: اتصال
+7. کانفیگ ذخیره شده را انتخاب کنید و **Connect** بزنید
 
-روی کانفیگ ذخیره شده کلیک کنید و **Connect** بزنید.
+![Select and connect](https://github.com/user-attachments/assets/e8f8dc31-def6-4efc-9259-bee71bd73a81)
 
 ---
 
@@ -99,33 +96,39 @@ On the server, run the add user command:
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-After running, you will receive a **JSON config** and a **VMess link**. Copy this information.
+After running, **2 JSON configs** will be displayed (iOS and Android). Copy the **iOS** config.
+
+<img width="597" alt="add-user output" src="https://github.com/user-attachments/assets/72e160d2-a380-4f5e-befb-9a7e8e071b7c" />
 
 ---
 
 ## Step 3: Add Config in NPV Tunnel
 
 1. Open **NPV Tunnel** app
-2. Go to **Config** section
-3. Click **+**
+
+2. Go to the **Config** page
+
+![Config page](https://github.com/user-attachments/assets/60c584db-692c-4dfc-9397-51937e95c5c3)
+
+3. Tap the **+** button
+
+![Click plus](https://github.com/user-attachments/assets/5bcc2142-acfd-440b-bf4b-4f0111b1affd)
+
 4. Select **Add Config Manually**
-5. Select **V2Ray VMess**
-6. Enter the JSON information:
-   - Address: **Your server IP**
-   - Port: **443**
-   - UUID: **UUID received from server**
-   - AlterID: **0**
-   - Security: **auto**
-   - Network: **tcp**
-   - TLS: **Enable**
-   - Allow Insecure: **Enable**
-7. Click **Save**
 
----
+![Add config manually](https://github.com/user-attachments/assets/8cff8eeb-7ecb-4d64-b57d-943b11aff82a)
 
-## Step 4: Connect
+5. Select **V2Ray Config**
 
-Tap on the saved config and tap **Connect**.
+![V2Ray Config](https://github.com/user-attachments/assets/f6cb1e96-ac04-4353-8cbb-fb653bc77194)
+
+6. Paste the iOS JSON config and tap **Save**
+
+![Paste JSON and save](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
+
+7. Select the saved config and tap **Connect**
+
+![Select and connect](https://github.com/user-attachments/assets/e8f8dc31-def6-4efc-9259-bee71bd73a81)
 
 ---
 
