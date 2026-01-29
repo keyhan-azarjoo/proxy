@@ -113,10 +113,22 @@ main() {
     # Generate WebSocket path
     WS_PATH="/$(cat /proc/sys/kernel/random/uuid | cut -d'-' -f1)"
 
-    # Configure cert paths
+    # Copy certs (not symlink — Let's Encrypt dirs are 0700 root-only)
     mkdir -p /etc/xray/certs
-    ln -sf "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" /etc/xray/certs/cert.pem
-    ln -sf "/etc/letsencrypt/live/$DOMAIN/privkey.pem" /etc/xray/certs/private.key
+    cp "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" /etc/xray/certs/cert.pem
+    cp "/etc/letsencrypt/live/$DOMAIN/privkey.pem" /etc/xray/certs/private.key
+
+    # Certbot renewal hook to copy new certs and restart xray
+    mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+    cat > /etc/letsencrypt/renewal-hooks/deploy/xray-certs.sh <<HOOK
+#!/bin/bash
+cp "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" /etc/xray/certs/cert.pem
+cp "/etc/letsencrypt/live/$DOMAIN/privkey.pem" /etc/xray/certs/private.key
+chown nobody:nogroup /etc/xray/certs/cert.pem /etc/xray/certs/private.key
+chmod 644 /etc/xray/certs/cert.pem /etc/xray/certs/private.key
+systemctl restart xray
+HOOK
+    chmod 755 /etc/letsencrypt/renewal-hooks/deploy/xray-certs.sh
 
     # Fix permissions
     chmod 755 /usr /usr/local /usr/local/etc
