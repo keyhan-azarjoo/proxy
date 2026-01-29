@@ -66,6 +66,10 @@
 مرحله ۲: دریافت دامنه رایگان (DuckDNS)
 --------------------------------------------------
 
+**برای راهنمای کامل با تصویر:** [راهنمای دریافت دامنه رایگان از DuckDNS](../get-free-domain.md)
+
+### خلاصه مراحل:
+
 ### قدم ۱: ثبت‌نام در DuckDNS
 
 وارد شوید: https://duckdns.org
@@ -284,6 +288,10 @@ Step 1: Purchase VPS Server
 --------------------------------------------------
 Step 2: Get Free Domain (DuckDNS)
 --------------------------------------------------
+
+**For full guide with screenshots:** [Guide to Getting a Free Domain from DuckDNS](../get-free-domain.md)
+
+### Summary:
 
 ### Step 1: Sign up on DuckDNS
 
