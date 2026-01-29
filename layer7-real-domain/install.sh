@@ -57,6 +57,19 @@ main() {
         exit 1
     fi
 
+    # DuckDNS auto-update setup
+    DUCKDNS_TOKEN=""
+    DUCKDNS_SUBDOMAIN=""
+    if [[ "$DOMAIN" == *.duckdns.org ]]; then
+        DUCKDNS_SUBDOMAIN="${DOMAIN%.duckdns.org}"
+        echo ""
+        echo "DuckDNS domain detected: $DOMAIN"
+        read -p "Enter your DuckDNS token (leave empty to skip): " DUCKDNS_TOKEN
+        if [ -z "$DUCKDNS_TOKEN" ]; then
+            echo "Warning: No DuckDNS token provided. Skipping automatic DNS update."
+        fi
+    fi
+
     preflight_check
 
     log "=== Starting Layer 7 installation ==="
@@ -80,6 +93,25 @@ main() {
     apt update -y
     apt install -y curl unzip openssl ufw jq certbot
     log "Dependencies installed"
+
+    # Update DuckDNS DNS record (before certbot, so domain resolves to this server)
+    if [ -n "$DUCKDNS_TOKEN" ]; then
+        echo "Updating DuckDNS DNS record..."
+        DUCKDNS_RESPONSE=$(curl -s "https://www.duckdns.org/update?domains=${DUCKDNS_SUBDOMAIN}&token=${DUCKDNS_TOKEN}&ip=")
+        if [ "$DUCKDNS_RESPONSE" = "OK" ]; then
+            log "DuckDNS DNS updated successfully"
+        else
+            log "WARNING: DuckDNS update failed (response: $DUCKDNS_RESPONSE)"
+            echo "Warning: DuckDNS update failed. Make sure your token is correct."
+            echo "Continuing anyway..."
+        fi
+
+        # Set up cron job for automatic DNS update every 5 minutes
+        echo "Setting up DuckDNS auto-update cron job..."
+        CRON_CMD="*/5 * * * * curl -fs \"https://www.duckdns.org/update?domains=${DUCKDNS_SUBDOMAIN}&token=${DUCKDNS_TOKEN}&ip=\" >/dev/null"
+        (crontab -l 2>/dev/null | grep -v "duckdns.org/update"; echo "$CRON_CMD") | crontab -
+        log "DuckDNS auto-update cron job configured (every 5 minutes)"
+    fi
 
     # Firewall
     echo "Configuring firewall..."
@@ -186,13 +218,25 @@ EOF
     chmod 644 /usr/local/etc/xray/users.json
 
     # Save server config (domain, path) for add-user script
-    cat > /usr/local/etc/xray/server-config.json <<EOF
+    if [ -n "$DUCKDNS_TOKEN" ]; then
+        cat > /usr/local/etc/xray/server-config.json <<EOF
+{
+  "domain": "$DOMAIN",
+  "ws_path": "$WS_PATH",
+  "protocol": "vless",
+  "duckdns_token": "$DUCKDNS_TOKEN",
+  "duckdns_subdomain": "$DUCKDNS_SUBDOMAIN"
+}
+EOF
+    else
+        cat > /usr/local/etc/xray/server-config.json <<EOF
 {
   "domain": "$DOMAIN",
   "ws_path": "$WS_PATH",
   "protocol": "vless"
 }
 EOF
+    fi
     chmod 644 /usr/local/etc/xray/server-config.json
 
     log "Xray configured"
@@ -242,6 +286,14 @@ Users Database: /usr/local/etc/xray/users.json
 Server Config: /usr/local/etc/xray/server-config.json
 EOF
 
+    if [ -n "$DUCKDNS_TOKEN" ]; then
+        cat >> /root/proxy-installation-info.txt <<EOF
+
+DuckDNS Subdomain: $DUCKDNS_SUBDOMAIN
+DuckDNS Auto-Update: Enabled (cron every 5 minutes)
+EOF
+    fi
+
     touch "$LOG_FILE"
 
     log "=== Layer 7 installation completed ==="
@@ -259,6 +311,10 @@ EOF
     echo "Port: 443"
     echo "Protocol: VLESS + WebSocket + TLS"
     echo ""
+    if [ -n "$DUCKDNS_TOKEN" ]; then
+        echo "DuckDNS Auto-Update: Enabled (every 5 minutes)"
+        echo ""
+    fi
     echo "Next step: Add a user to get connection config"
     echo ""
     echo "Management commands:"
