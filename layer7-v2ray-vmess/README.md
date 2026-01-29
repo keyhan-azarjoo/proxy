@@ -78,7 +78,9 @@ V2Ray با VMess روی پورت 443 راه‌اندازی می‌شود.
 مرحله ۴: اضافه کردن کاربر
 --------------------------------------------------
 
-برای هر نفر یک کاربر بسازید. بعد از اضافه کردن کاربر، کانفیگ اتصال (UUID و JSON) نمایش داده می‌شود:
+برای هر نفر یک کاربر بسازید. بعد از اضافه کردن کاربر، **۲ کانفیگ JSON** نمایش داده می‌شود:
+- کانفیگ iOS (برای NPV Tunnel)
+- کانفیگ Android (برای NetMod)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
@@ -216,7 +218,9 @@ V2Ray with VMess will be configured on port 443.
 Step 4: Add User
 --------------------------------------------------
 
-Create a user for each person. After adding a user, the connection config (UUID and JSON) will be displayed:
+Create a user for each person. After adding a user, **2 JSON configs** will be displayed:
+- iOS config (for NPV Tunnel)
+- Android config (for NetMod)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
