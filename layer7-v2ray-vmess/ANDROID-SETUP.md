@@ -24,6 +24,8 @@
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
+<img width="597" height="1251" alt="Screenshot 2026-01-29 at 02 30 51" src="https://github.com/user-attachments/assets/2ba70fc3-c3d2-4d05-bab7-6957fba209bc" />
+
 بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VMess** دریافت می‌کنید. این اطلاعات را کپی کنید.
 
 ---
@@ -31,19 +33,22 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 ## مرحله ۳: اضافه کردن کانفیگ در NetMod
 
 1. اپلیکیشن **NetMod** را باز کنید
-2. روی **Profile** کلیک کنید
-3. روی **Add new Profile** کلیک کنید
-4. نوع اتصال **V2Ray VMess** را انتخاب کنید
-5. اطلاعات JSON را وارد کنید:
-   - Address: **IP سرور**
-   - Port: **443**
-   - UUID: **UUID دریافت شده از سرور**
-   - AlterID: **0**
-   - Security: **auto**
-   - Network: **tcp**
-   - TLS: **فعال (Enable)**
-   - Allow Insecure: **فعال**
-6. روی **Add** یا **Save** کلیک کنید
+2
+click on add
+![photo_6039706939081559660_y](https://github.com/user-attachments/assets/ac324b74-daec-4182-85b1-ea746e8c4401)
+then click on json config
+
+![photo_6039706939081559662_y](https://github.com/user-attachments/assets/b9874cfd-8168-4fa9-91ee-b39b1d593316)
+
+then click on open Editor
+![photo_6039706939081559663_y](https://github.com/user-attachments/assets/9fb5852d-6007-4762-9d52-9fbf9cac801c)
+
+then paste the json in the editor and click the checkbox and save it
+![photo_6039706939081559661_y](https://github.com/user-attachments/assets/f17d62bc-ded1-40c7-b214-50913316ae48)
+
+then click on the newly saved config and connect
+![photo_6039706939081559664_y](https://github.com/user-attachments/assets/7640d0dd-d860-4a61-85ba-a9c602281b84)
+
 
 ---
 
