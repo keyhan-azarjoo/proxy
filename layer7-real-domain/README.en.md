@@ -1,7 +1,7 @@
 # Layer 7: Real Domain + TLS - Best Overall Method
 
 > **⭐⭐⭐⭐⭐ Best method (hardest to filter)**
-> Port 443 - Real TLS tunnel with valid certificate
+> Port 443 - Real TLS + gRPC tunnel with valid certificate
 
 [← Back to main guide](../README.en.md)
 
@@ -121,7 +121,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 The script will:
 - Obtain valid TLS certificate
-- Set up VLESS on port 443
+- Set up VLESS gRPC on port 443
 - Prepare everything
 
 ---
@@ -224,7 +224,6 @@ Add this line:
 ---
 
 **Made with ❤️ for internet freedom**
-
 
 
 

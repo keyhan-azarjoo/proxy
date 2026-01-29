@@ -39,18 +39,22 @@ Content (for VLESS):
       }]
     },
     "streamSettings": {
-      "network": "ws",
+      "network": "grpc",
       "security": "tls",
       "tlsSettings": {
-        "serverName": "your-domain.duckdns.org"
+        "serverName": "your-domain.duckdns.org",
+        "allowInsecure": false,
+        "alpn": ["h2"]
       },
-      "wsSettings": {
-        "path": "/vless"
+      "grpcSettings": {
+        "serviceName": "YOUR-GRPC-SERVICE"
       }
     }
   }]
 }
 ```
+
+**Note:** Replace `your-domain.duckdns.org`, `YOUR-UUID`, and `YOUR-GRPC-SERVICE`.
 
 ### Step 3: Run
 
@@ -91,4 +95,3 @@ Group → Import → From VLESS/Trojan link / QR code
 ---
 
 **Made with ❤️ for internet freedom**
-

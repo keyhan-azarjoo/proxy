@@ -39,18 +39,22 @@ sudo nano /usr/local/etc/xray/config.json
       }]
     },
     "streamSettings": {
-      "network": "ws",
+      "network": "grpc",
       "security": "tls",
       "tlsSettings": {
-        "serverName": "your-domain.duckdns.org"
+        "serverName": "your-domain.duckdns.org",
+        "allowInsecure": false,
+        "alpn": ["h2"]
       },
-      "wsSettings": {
-        "path": "/vless"
+      "grpcSettings": {
+        "serviceName": "YOUR-GRPC-SERVICE"
       }
     }
   }]
 }
 ```
+
+**توجه:** `your-domain.duckdns.org` و `YOUR-UUID` و `YOUR-GRPC-SERVICE` را جایگزین کنید.
 
 ### مرحله ۳: اجرا
 
