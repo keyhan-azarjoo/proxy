@@ -52,15 +52,6 @@ main() {
         exit 0
     fi
 
-    # Confirm deletion (if interactive)
-    if [ -t 0 ]; then
-        read -p "Are you sure you want to delete user '$USERNAME'? (yes/no): " CONFIRM
-        if [ "$CONFIRM" != "yes" ]; then
-            echo "Deletion cancelled"
-            exit 0
-        fi
-    fi
-
     # Backup before changes
     backup_config
 

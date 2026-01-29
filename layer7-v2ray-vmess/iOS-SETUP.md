@@ -4,60 +4,61 @@
 
 ---
 
-## اپلیکیشن‌های مورد نیاز
+## اپلیکیشن مورد نیاز
 
-دو گزینه دارید:
-- **V2Box** (رایگان در App Store)
-- **Shadowrocket** (پولی ولی بهتر)
+**NPV Tunnel**
 
 ---
 
 ## مرحله ۱: نصب اپلیکیشن
 
-وارد **App Store** شوید و یکی از این دو را نصب کنید:
-- V2Box (توصیه برای شروع)
-- Shadowrocket
+وارد **App Store** شوید و جستجو کنید: **NPV Tunnel**
 
 ---
 
-## مرحله ۲: دریافت لینک VMess یا QR Code
+## مرحله ۲: دریافت کانفیگ JSON
 
-بعد از نصب سرور، یکی از این دو را دریافت کرده‌اید:
-- **لینک VMess** (vmess://...)
-- **QR Code**
+روی سرور، دستور اضافه کردن کاربر را اجرا کنید:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VMess** دریافت می‌کنید. این اطلاعات را کپی کنید.
 
 ---
 
-## مرحله ۳: اضافه کردن کانفیگ
+## مرحله ۳: اضافه کردن کانفیگ در NPV Tunnel
 
-### روش ۱: اسکن QR Code (راحت‌تر)
-
-1. در اپلیکیشن روی **+** یا **Scan** بزنید
-2. QR Code نمایش داده شده در سرور را اسکن کنید
-3. کانفیگ به‌طور خودکار اضافه می‌شود
-
-### روش ۲: کپی لینک
-
-1. لینک VMess را کپی کنید
-2. در اپلیکیشن **Paste from Clipboard** یا **Import from Clipboard** را بزنید
-3. کانفیگ اضافه می‌شود
+1. اپلیکیشن **NPV Tunnel** را باز کنید
+2. به بخش **Config** بروید
+3. روی **+** کلیک کنید
+4. **Add Config Manually** را انتخاب کنید
+5. **V2Ray VMess** را انتخاب کنید
+6. اطلاعات JSON را وارد کنید:
+   - Address: **IP سرور**
+   - Port: **443**
+   - UUID: **UUID دریافت شده از سرور**
+   - AlterID: **0**
+   - Security: **auto**
+   - Network: **tcp**
+   - TLS: **فعال (Enable)**
+   - Allow Insecure: **فعال**
+7. روی **Save** کلیک کنید
 
 ---
 
 ## مرحله ۴: اتصال
 
-روی کانفیگ کلیک کنید و **Connect** بزنید.
-
-✅ اتصال برقرار شد!
+روی کانفیگ ذخیره شده کلیک کنید و **Connect** بزنید.
 
 ---
 
 ## نکات مهم
 
-- این روش برای سانسور سخت طراحی شده
-- ترافیک شبیه وب معمولی است
-- UUID و لینک را ایمن نگه دارید
-- برای هر کاربر یک UUID جداگانه بسازید
+- UUID و کانفیگ را ایمن نگه دارید
+- اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ برگردانده می‌شود
+- برای هر کاربر یک UUID جداگانه ساخته می‌شود
 
 ---
 
@@ -69,61 +70,62 @@
 
 ---
 
-## Required Apps
+## Required App
 
-You have two options:
-- **V2Box** (Free on App Store)
-- **Shadowrocket** (Paid but better)
+**NPV Tunnel**
 
 ---
 
 ## Step 1: Install App
 
-Go to **App Store** and install one of these:
-- V2Box (recommended for beginners)
-- Shadowrocket
+Go to **App Store** and search: **NPV Tunnel**
 
 ---
 
-## Step 2: Get VMess Link or QR Code
+## Step 2: Get JSON Config
 
-After server installation, you received one of these:
-- **VMess link** (vmess://...)
-- **QR Code**
+On the server, run the add user command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+After running, you will receive a **JSON config** and a **VMess link**. Copy this information.
 
 ---
 
-## Step 3: Add Configuration
+## Step 3: Add Config in NPV Tunnel
 
-### Method 1: Scan QR Code (easier)
-
-1. In the app, tap **+** or **Scan**
-2. Scan the QR code shown on the server
-3. Config is added automatically
-
-### Method 2: Copy Link
-
-1. Copy the VMess link
-2. In the app, tap **Paste from Clipboard** or **Import from Clipboard**
-3. Config is added
+1. Open **NPV Tunnel** app
+2. Go to **Config** section
+3. Click **+**
+4. Select **Add Config Manually**
+5. Select **V2Ray VMess**
+6. Enter the JSON information:
+   - Address: **Your server IP**
+   - Port: **443**
+   - UUID: **UUID received from server**
+   - AlterID: **0**
+   - Security: **auto**
+   - Network: **tcp**
+   - TLS: **Enable**
+   - Allow Insecure: **Enable**
+7. Click **Save**
 
 ---
 
 ## Step 4: Connect
 
-Tap on the config and tap **Connect**.
-
-✅ Connected successfully!
+Tap on the saved config and tap **Connect**.
 
 ---
 
 ## Important Notes
 
-- This method is designed for hard censorship
-- Traffic looks like regular web traffic
-- Keep UUID and link secure
-- Create a separate UUID for each user
+- Keep UUID and config secure
+- If you add the same username again, the same config will be returned
+- A separate UUID is created for each user
 
 ---
 
-**Made with ❤️ for internet freedom**
+**Made with love for internet freedom**

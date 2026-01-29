@@ -6,59 +6,60 @@
 
 ## اپلیکیشن مورد نیاز
 
-**V2RayNG**
+**NetMod (Net Mod Syna)**
 
 ---
 
 ## مرحله ۱: نصب اپلیکیشن
 
-از **Google Play** یا **GitHub** نصب کنید:
-
-لینک GitHub:
-https://github.com/2dust/v2rayNG/releases
+از **Google Play** جستجو کنید: **NetMod** یا **Net Mod Syna**
 
 ---
 
-## مرحله ۲: دریافت لینک یا QR Code
+## مرحله ۲: دریافت کانفیگ JSON
 
-بعد از نصب سرور، یکی از این را دریافت کرده‌اید:
-- **لینک VLESS/Trojan** (vless://... یا trojan://...)
-- **QR Code**
+روی سرور، دستور اضافه کردن کاربر را اجرا کنید:
 
-این لینک شامل دامنه واقعی شما است.
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VLESS** دریافت می‌کنید. این اطلاعات را کپی کنید.
 
 ---
 
-## مرحله ۳: اضافه کردن کانفیگ
+## مرحله ۳: اضافه کردن کانفیگ در NetMod
 
-### روش ۱: اسکن QR Code
-
-1. روی **+** کلیک کنید
-2. **Scan QR code** را انتخاب کنید
-3. QR Code سرور را اسکن کنید
-
-### روش ۲: Import از Clipboard
-
-1. لینک VLESS/Trojan را کپی کنید
-2. در اپلیکیشن روی **+** بزنید
-3. **Import config from clipboard** را انتخاب کنید
+1. اپلیکیشن **NetMod** را باز کنید
+2. روی **Profile** کلیک کنید
+3. روی **Add new Profile** کلیک کنید
+4. نوع اتصال **V2Ray VLESS** را انتخاب کنید
+5. اطلاعات JSON را وارد کنید:
+   - Address: **دامنه شما** (مثلاً myproxy123.duckdns.org)
+   - Port: **443**
+   - UUID: **UUID دریافت شده از سرور**
+   - Encryption: **none**
+   - Network: **ws** (WebSocket)
+   - Path: **مسیر دریافت شده از سرور**
+   - TLS: **فعال (Enable)**
+   - SNI: **دامنه شما**
+6. روی **Add** یا **Save** کلیک کنید
 
 ---
 
 ## مرحله ۴: اتصال
 
-روی کانفیگ کلیک کنید و دکمه اتصال را بزنید.
-
-✅ اتصال برقرار شد!
+پروفایل جدید را انتخاب کنید و **Connect** بزنید.
 
 ---
 
 ## نکات مهم
 
-- این روش بهترین امنیت و مخفی‌سازی را دارد
-- استفاده از دامنه واقعی + گواهی TLS معتبر
-- ترافیک دقیقاً شبیه HTTPS واقعی است
-- برای سانسور بسیار سخت طراحی شده
+- فیلد **inbounds** در JSON نباید خالی باشد. بدون آن، NetMod کانفیگ را قبول نمی‌کند
+- این روش از گواهی TLS معتبر (Let's Encrypt) استفاده می‌کند
+- ترافیک شما دقیقاً شبیه یک وبسایت HTTPS معمولی است
+- UUID و کانفیگ را ایمن نگه دارید
+- اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ برگردانده می‌شود
 
 ---
 
@@ -72,60 +73,61 @@ https://github.com/2dust/v2rayNG/releases
 
 ## Required App
 
-**V2RayNG**
+**NetMod (Net Mod Syna)**
 
 ---
 
 ## Step 1: Install App
 
-Install from **Google Play** or **GitHub**:
-
-GitHub link:
-https://github.com/2dust/v2rayNG/releases
+Search on **Google Play**: **NetMod** or **Net Mod Syna**
 
 ---
 
-## Step 2: Get Link or QR Code
+## Step 2: Get JSON Config
 
-After server installation, you received one of these:
-- **VLESS/Trojan link** (vless://... or trojan://...)
-- **QR Code**
+On the server, run the add user command:
 
-This link includes your real domain.
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+After running, you will receive a **JSON config** and a **VLESS link**. Copy this information.
 
 ---
 
-## Step 3: Add Configuration
+## Step 3: Add Config in NetMod
 
-### Method 1: Scan QR Code
-
-1. Tap **+**
-2. Select **Scan QR code**
-3. Scan the server QR code
-
-### Method 2: Import from Clipboard
-
-1. Copy the VLESS/Trojan link
-2. In the app, tap **+**
-3. Select **Import config from clipboard**
+1. Open **NetMod** app
+2. Click on **Profile**
+3. Click on **Add new Profile**
+4. Select connection type **V2Ray VLESS**
+5. Enter the JSON information:
+   - Address: **Your domain** (e.g., myproxy123.duckdns.org)
+   - Port: **443**
+   - UUID: **UUID received from server**
+   - Encryption: **none**
+   - Network: **ws** (WebSocket)
+   - Path: **Path received from server**
+   - TLS: **Enable**
+   - SNI: **Your domain**
+6. Click **Add** or **Save**
 
 ---
 
 ## Step 4: Connect
 
-Tap on the config and press the connect button.
-
-✅ Connected successfully!
+Select the new profile and tap **Connect**.
 
 ---
 
 ## Important Notes
 
-- This method has the best security and obfuscation
-- Uses real domain + valid TLS certificate
-- Traffic looks exactly like real HTTPS
-- Designed for very hard censorship
+- The **inbounds** field in the JSON must not be empty. Without it, NetMod will not accept the config
+- This method uses a valid TLS certificate (Let's Encrypt)
+- Your traffic looks exactly like a normal HTTPS website
+- Keep UUID and config secure
+- If you add the same username again, the same config will be returned
 
 ---
 
-**Made with ❤️ for internet freedom**
+**Made with love for internet freedom**

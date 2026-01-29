@@ -3,7 +3,7 @@
 > **⭐⭐⭐ امنیت بالا با رمزنگاری دوبل**
 > پورت 443 - TLS Wrapper برای SSH
 
-[← بازگشت به راهنمای اصلی](../README.md)
+[← صفحه قبلی: لایه ۴ (Nginx)](../layer4-nginx/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۷ (V2Ray)](../layer7-v2ray-vmess/README.md)
 
 ---
 
@@ -200,7 +200,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 > **⭐⭐⭐ High security with double encryption**
 > Port 443 - TLS Wrapper for SSH
 
-[← Back to main guide](../README.md)
+[← Previous: Layer 4 (Nginx)](../layer4-nginx/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 7 (V2Ray)](../layer7-v2ray-vmess/README.md)
 
 ---
 

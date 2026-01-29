@@ -100,6 +100,14 @@ echo "----------------------------"
 
 cat <<EOF
 {
+  "inbounds": [{
+    "port": 10808,
+    "listen": "127.0.0.1",
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  }],
   "outbounds": [{
     "protocol": "vmess",
     "settings": {
@@ -127,7 +135,7 @@ EOF
 
 echo ""
 echo "Copy the above configuration to your V2Ray client"
-echo "(e.g., V2RayNG, Clash, Qv2ray, NPV Tunnel)"
+echo "(NPV Tunnel for iOS, NetMod for Android)"
 echo ""
 echo "Quick Connect String:"
 echo "vmess://$UUID@$SERVER_IP:443"

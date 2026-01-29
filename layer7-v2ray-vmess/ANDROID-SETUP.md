@@ -6,59 +6,59 @@
 
 ## اپلیکیشن مورد نیاز
 
-**V2RayNG**
+**NetMod (Net Mod Syna)**
 
 ---
 
 ## مرحله ۱: نصب اپلیکیشن
 
-از **Google Play** یا **GitHub** نصب کنید:
-
-لینک GitHub:
-https://github.com/2dust/v2rayNG/releases
-
-آخرین نسخه (فایل APK) را دانلود و نصب کنید.
+از **Google Play** جستجو کنید: **NetMod** یا **Net Mod Syna**
 
 ---
 
-## مرحله ۲: دریافت لینک VMess یا QR Code
+## مرحله ۲: دریافت کانفیگ JSON
 
-بعد از نصب سرور، یکی از این دو را دریافت کرده‌اید:
-- **لینک VMess** (vmess://...)
-- **QR Code**
+روی سرور، دستور اضافه کردن کاربر را اجرا کنید:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VMess** دریافت می‌کنید. این اطلاعات را کپی کنید.
 
 ---
 
-## مرحله ۳: اضافه کردن کانفیگ
+## مرحله ۳: اضافه کردن کانفیگ در NetMod
 
-### روش ۱: اسکن QR Code
-
-1. روی **+** کلیک کنید
-2. **Scan QR code** را انتخاب کنید
-3. QR Code سرور را اسکن کنید
-
-### روش ۲: Import از Clipboard
-
-1. لینک VMess را کپی کنید
-2. در اپلیکیشن روی **+** بزنید
-3. **Import config from clipboard** را انتخاب کنید
+1. اپلیکیشن **NetMod** را باز کنید
+2. روی **Profile** کلیک کنید
+3. روی **Add new Profile** کلیک کنید
+4. نوع اتصال **V2Ray VMess** را انتخاب کنید
+5. اطلاعات JSON را وارد کنید:
+   - Address: **IP سرور**
+   - Port: **443**
+   - UUID: **UUID دریافت شده از سرور**
+   - AlterID: **0**
+   - Security: **auto**
+   - Network: **tcp**
+   - TLS: **فعال (Enable)**
+   - Allow Insecure: **فعال**
+6. روی **Add** یا **Save** کلیک کنید
 
 ---
 
 ## مرحله ۴: اتصال
 
-روی کانفیگ کلیک کنید و دکمه اتصال را بزنید.
-
-✅ اتصال برقرار شد!
+پروفایل جدید را انتخاب کنید و **Connect** بزنید.
 
 ---
 
 ## نکات مهم
 
-- این روش برای سانسور سخت طراحی شده
-- ترافیک شبیه وب معمولی است
-- UUID و لینک را ایمن نگه دارید
-- برای هر کاربر یک UUID جداگانه بسازید
+- فیلد **inbounds** در JSON نباید خالی باشد. بدون آن، NetMod کانفیگ را قبول نمی‌کند
+- UUID و کانفیگ را ایمن نگه دارید
+- اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ برگردانده می‌شود
+- برای هر کاربر یک UUID جداگانه ساخته می‌شود
 
 ---
 
@@ -72,60 +72,60 @@ https://github.com/2dust/v2rayNG/releases
 
 ## Required App
 
-**V2RayNG**
+**NetMod (Net Mod Syna)**
 
 ---
 
 ## Step 1: Install App
 
-Install from **Google Play** or **GitHub**:
-
-GitHub link:
-https://github.com/2dust/v2rayNG/releases
-
-Download and install the latest version (APK file).
+Search on **Google Play**: **NetMod** or **Net Mod Syna**
 
 ---
 
-## Step 2: Get VMess Link or QR Code
+## Step 2: Get JSON Config
 
-After server installation, you received one of these:
-- **VMess link** (vmess://...)
-- **QR Code**
+On the server, run the add user command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+After running, you will receive a **JSON config** and a **VMess link**. Copy this information.
 
 ---
 
-## Step 3: Add Configuration
+## Step 3: Add Config in NetMod
 
-### Method 1: Scan QR Code
-
-1. Tap **+**
-2. Select **Scan QR code**
-3. Scan the server QR code
-
-### Method 2: Import from Clipboard
-
-1. Copy the VMess link
-2. In the app, tap **+**
-3. Select **Import config from clipboard**
+1. Open **NetMod** app
+2. Click on **Profile**
+3. Click on **Add new Profile**
+4. Select connection type **V2Ray VMess**
+5. Enter the JSON information:
+   - Address: **Your server IP**
+   - Port: **443**
+   - UUID: **UUID received from server**
+   - AlterID: **0**
+   - Security: **auto**
+   - Network: **tcp**
+   - TLS: **Enable**
+   - Allow Insecure: **Enable**
+6. Click **Add** or **Save**
 
 ---
 
 ## Step 4: Connect
 
-Tap on the config and press the connect button.
-
-✅ Connected successfully!
+Select the new profile and tap **Connect**.
 
 ---
 
 ## Important Notes
 
-- This method is designed for hard censorship
-- Traffic looks like regular web traffic
-- Keep UUID and link secure
-- Create a separate UUID for each user
+- The **inbounds** field in the JSON must not be empty. Without it, NetMod will not accept the config
+- Keep UUID and config secure
+- If you add the same username again, the same config will be returned
+- A separate UUID is created for each user
 
 ---
 
-**Made with ❤️ for internet freedom**
+**Made with love for internet freedom**

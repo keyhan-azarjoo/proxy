@@ -3,7 +3,7 @@
 > **⭐ آسان‌ترین روش برای شروع**
 > پورت 22 - مناسب تست و یادگیری
 
-[← بازگشت به راهنمای اصلی](../README.md)
+[← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۴ (Nginx)](../layer4-nginx/README.md)
 
 ---
 
@@ -181,7 +181,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 > **⭐ Easiest way to start**
 > Port 22 - Great for testing and learning
 
-[← Back to main guide](../README.md)
+[← Back to main guide](../README.md) | [→ Next: Layer 4 (Nginx)](../layer4-nginx/README.md)
 
 ---
 

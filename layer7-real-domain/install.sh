@@ -16,9 +16,7 @@ preflight_check() {
     log "Running pre-flight checks..."
 
     if ! grep -q "Ubuntu" /etc/os-release 2>/dev/null; then
-        echo "Warning: Designed for Ubuntu"
-        read -p "Continue? (yes/no): " CONTINUE
-        [ "$CONTINUE" != "yes" ] && exit 0
+        echo "Warning: Designed for Ubuntu, continuing anyway..."
     fi
 
     [ "$EUID" -ne 0 ] && { echo "Error: Run as root"; exit 1; }
@@ -28,14 +26,10 @@ preflight_check() {
 
     if ss -tulpn | grep -q ":443 "; then
         echo "Warning: Port 443 in use. Will be freed."
-        read -p "Continue? (yes/no): " CONTINUE
-        [ "$CONTINUE" != "yes" ] && exit 0
     fi
 
     if ss -tulpn | grep -q ":80 "; then
         echo "Warning: Port 80 in use. Certbot needs it."
-        read -p "Continue? (yes/no): " CONTINUE
-        [ "$CONTINUE" != "yes" ] && exit 0
     fi
 
     log "Pre-flight checks passed"
@@ -64,9 +58,6 @@ main() {
     fi
 
     preflight_check
-
-    read -p "Continue? (yes/no): " CONFIRM
-    [ "$CONFIRM" != "yes" ] && exit 0
 
     log "=== Starting Layer 7 installation ==="
 

@@ -111,6 +111,14 @@ echo "----------------------------"
 
 cat <<EOF
 {
+  "inbounds": [{
+    "port": 10808,
+    "listen": "127.0.0.1",
+    "protocol": "socks",
+    "settings": {
+      "udp": true
+    }
+  }],
   "outbounds": [{
     "protocol": "vless",
     "settings": {
@@ -135,5 +143,5 @@ echo "Quick Connect String:"
 echo "vless://$UUID@$SERVER_IP:443?type=ws&security=tls&path=$WS_PATH#$USERNAME"
 echo ""
 echo "Copy the above configuration to your V2Ray client"
-echo "(e.g., V2RayNG, V2Box, Shadowrocket)"
+echo "(NPV Tunnel for iOS, NetMod for Android)"
 echo ""

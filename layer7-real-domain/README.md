@@ -3,7 +3,7 @@
 > **⭐⭐⭐⭐⭐ بهترین روش (سخت‌ترین برای فیلتر شدن)**
 > پورت 443 - تونل TLS واقعی با گواهی معتبر
 
-[← بازگشت به راهنمای اصلی](../README.md)
+[← صفحه قبلی: لایه ۷ (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
@@ -145,58 +145,15 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 ---
 
-## استفاده در iOS (V2Box یا Shadowrocket)
+## استفاده در iOS
 
-### مرحله ۱: نصب اپلیکیشن
-
-از App Store یکی از این‌ها را نصب کنید:
-- **V2Box** (رایگان)
-- **Shadowrocket** (پولی ولی بهتر)
-
-### مرحله ۲: اضافه کردن کانفیگ
-
-**روش ۱: اسکن QR Code (راحت‌تر)**
-- در اپلیکیشن روی + یا Scan بزنید
-- QR Code نمایش داده شده در سرور را اسکن کنید
-
-**روش ۲: کپی لینک**
-- لینک VLESS/Trojan که بعد از نصب گرفتید را کپی کنید
-- در اپلیکیشن Paste from Clipboard بزنید
-
-### مرحله ۳: اتصال
-
-روی کانفیگ کلیک کنید و Connect بزنید.
-
-✅ اتصال برقرار شد!
+[راهنمای اتصال با iOS (NPV Tunnel)](./iOS-SETUP.md)
 
 ---
 
-## استفاده در Android (V2RayNG)
+## استفاده در Android
 
-### مرحله ۱: نصب اپلیکیشن
-
-از Google Play یا GitHub اپلیکیشن **V2RayNG** را نصب کنید.
-
-لینک GitHub:
-https://github.com/2dust/v2rayNG/releases
-
-### مرحله ۲: اضافه کردن کانفیگ
-
-**روش ۱: اسکن QR Code**
-- روی + کلیک کنید
-- "Scan QR code" را انتخاب کنید
-- QR Code سرور را اسکن کنید
-
-**روش ۲: Import از کلیپ‌بورد**
-- لینک را کپی کنید
-- در اپلیکیشن روی + بزنید
-- "Import config from clipboard" را انتخاب کنید
-
-### مرحله ۳: اتصال
-
-روی کانفیگ کلیک کنید و دکمه اتصال را بزنید.
-
-✅ اتصال برقرار شد!
+[راهنمای اتصال با Android (NetMod)](./ANDROID-SETUP.md)
 
 ---
 
@@ -227,7 +184,8 @@ crontab -e
 - از DPI، فیلتر SNI، و Active Probing عبور می‌کند
 - گواهی معتبر مرورگر دارد
 - سخت‌ترین برای فیلتر شدن
-- نیاز به کلاینت V2Ray/VLESS دارد
+- برای iOS: NPV Tunnel
+- برای Android: NetMod
 - دامنه و UUID را ایمن نگه دارید
 
 ---
@@ -250,7 +208,7 @@ crontab -e
 > **⭐⭐⭐⭐⭐ Best method (hardest to filter)**
 > Port 443 - Real TLS tunnel with valid certificate
 
-[← Back to main guide](../README.md)
+[← Previous: Layer 7 (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← Back to main guide](../README.md)
 
 ---
 
@@ -392,58 +350,15 @@ After deletion, the user can no longer connect with their previous config.
 
 ---
 
-## iOS Usage (V2Box or Shadowrocket)
+## iOS Usage
 
-### Step 1: Install App
-
-Install one of these from App Store:
-- **V2Box** (free)
-- **Shadowrocket** (paid but better)
-
-### Step 2: Add Config
-
-**Method 1: Scan QR Code (easier)**
-- In app, tap + or Scan
-- Scan the QR code shown on server
-
-**Method 2: Copy Link**
-- Copy the VLESS/Trojan link you received after installation
-- In app, select Paste from Clipboard
-
-### Step 3: Connect
-
-Click on the config and tap Connect.
-
-✅ Connected successfully!
+[iOS Connection Guide (NPV Tunnel)](./iOS-SETUP.md)
 
 ---
 
-## Android Usage (V2RayNG)
+## Android Usage
 
-### Step 1: Install App
-
-Install **V2RayNG** from Google Play or GitHub.
-
-GitHub link:
-https://github.com/2dust/v2rayNG/releases
-
-### Step 2: Add Config
-
-**Method 1: Scan QR Code**
-- Tap +
-- Select "Scan QR code"
-- Scan server QR code
-
-**Method 2: Import from Clipboard**
-- Copy the link
-- In app, tap +
-- Select "Import config from clipboard"
-
-### Step 3: Connect
-
-Tap on config and press connect button.
-
-✅ Connected successfully!
+[Android Connection Guide (NetMod)](./ANDROID-SETUP.md)
 
 ---
 
@@ -474,7 +389,8 @@ Add this line:
 - Passes DPI, SNI filtering, and Active Probing
 - Has valid browser certificate
 - Hardest to filter
-- Requires V2Ray/VLESS client
+- For iOS: NPV Tunnel
+- For Android: NetMod
 - Keep domain and UUID secure
 
 ---

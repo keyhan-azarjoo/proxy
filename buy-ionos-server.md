@@ -1,6 +1,6 @@
 # راهنمای خرید سرور VPS از IONOS
 
-[← بازگشت به راهنمای اصلی](./README.md)
+[← بازگشت به راهنمای اصلی](./README.md) | [→ صفحه بعدی: اتصال SSH](./ssh-connection.md)
 
 ---
 
@@ -82,7 +82,7 @@ https://my.ionos.co.uk/server
 
 # Guide to Purchasing VPS Server from IONOS
 
-[← Back to main guide](./README.md)
+[← Back to main guide](./README.md) | [→ Next: SSH Connection](./ssh-connection.md)
 
 ---
 

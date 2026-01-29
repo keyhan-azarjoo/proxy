@@ -56,15 +56,6 @@ if ! jq -e --arg u "$USERNAME" '.[$u]' "$USER_DB" >/dev/null 2>&1; then
     exit 1
 fi
 
-# Confirm deletion
-if [ -t 0 ]; then
-    read -p "Are you sure you want to delete user '$USERNAME'? (yes/no): " CONFIRM
-    if [ "$CONFIRM" != "yes" ]; then
-        echo "Deletion cancelled"
-        exit 0
-    fi
-fi
-
 # Get user UUID
 UUID=$(jq -r --arg u "$USERNAME" '.[$u]' "$USER_DB")
 

@@ -35,13 +35,6 @@ echo ""
 echo "SSH server will remain, but proxy configurations will be removed"
 echo ""
 
-# Confirm
-read -p "Are you sure you want to uninstall? (type 'yes' to confirm): " CONFIRM
-if [ "$CONFIRM" != "yes" ]; then
-    echo "Uninstall cancelled"
-    exit 0
-fi
-
 log "=== Starting uninstallation ==="
 
 # Backup current config

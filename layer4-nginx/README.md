@@ -3,7 +3,7 @@
 > **⭐⭐ بهترین گزینه برای استفاده روزانه**
 > پورت 443 (HTTPS) - سخت‌تر برای فیلتر شدن
 
-[← بازگشت به راهنمای اصلی](../README.md)
+[← صفحه قبلی: لایه ۳](../layer3-basic/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۶ (Stunnel)](../layer6-stunnel/README.md)
 
 ---
 
@@ -188,7 +188,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/de
 > **⭐⭐ Best choice for daily usage**
 > Port 443 (HTTPS) - Harder to filter
 
-[← Back to main guide](../README.md)
+[← Previous: Layer 3](../layer3-basic/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 6 (Stunnel)](../layer6-stunnel/README.md)
 
 ---
 

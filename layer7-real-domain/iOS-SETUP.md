@@ -4,63 +4,62 @@
 
 ---
 
-## اپلیکیشن‌های مورد نیاز
+## اپلیکیشن مورد نیاز
 
-دو گزینه دارید:
-- **V2Box** (رایگان در App Store)
-- **Shadowrocket** (پولی ولی بهتر)
+**NPV Tunnel**
 
 ---
 
 ## مرحله ۱: نصب اپلیکیشن
 
-وارد **App Store** شوید و یکی از این دو را نصب کنید:
-- V2Box (توصیه برای شروع)
-- Shadowrocket
+وارد **App Store** شوید و جستجو کنید: **NPV Tunnel**
 
 ---
 
-## مرحله ۲: دریافت لینک یا QR Code
+## مرحله ۲: دریافت کانفیگ JSON
 
-بعد از نصب سرور، یکی از این را دریافت کرده‌اید:
-- **لینک VLESS/Trojan** (vless://... یا trojan://...)
-- **QR Code**
+روی سرور، دستور اضافه کردن کاربر را اجرا کنید:
 
-این لینک شامل دامنه واقعی شما (مثل myproxy.duckdns.org) است.
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+بعد از اجرا، یک **کانفیگ JSON** و یک **لینک VLESS** دریافت می‌کنید. این اطلاعات را کپی کنید.
 
 ---
 
-## مرحله ۳: اضافه کردن کانفیگ
+## مرحله ۳: اضافه کردن کانفیگ در NPV Tunnel
 
-### روش ۱: اسکن QR Code (راحت‌تر)
-
-1. در اپلیکیشن روی **+** یا **Scan** بزنید
-2. QR Code نمایش داده شده در سرور را اسکن کنید
-3. کانفیگ به‌طور خودکار اضافه می‌شود
-
-### روش ۲: کپی لینک
-
-1. لینک VLESS/Trojan را کپی کنید
-2. در اپلیکیشن **Paste from Clipboard** یا **Import from Clipboard** را بزنید
-3. کانفیگ اضافه می‌شود
+1. اپلیکیشن **NPV Tunnel** را باز کنید
+2. به بخش **Config** بروید
+3. روی **+** کلیک کنید
+4. **Add Config Manually** را انتخاب کنید
+5. **V2Ray VLESS** را انتخاب کنید
+6. اطلاعات JSON را وارد کنید:
+   - Address: **دامنه شما** (مثلاً myproxy123.duckdns.org)
+   - Port: **443**
+   - UUID: **UUID دریافت شده از سرور**
+   - Encryption: **none**
+   - Network: **ws** (WebSocket)
+   - Path: **مسیر دریافت شده از سرور**
+   - TLS: **فعال (Enable)**
+   - SNI: **دامنه شما**
+7. روی **Save** کلیک کنید
 
 ---
 
 ## مرحله ۴: اتصال
 
-روی کانفیگ کلیک کنید و **Connect** بزنید.
-
-✅ اتصال برقرار شد!
+روی کانفیگ ذخیره شده کلیک کنید و **Connect** بزنید.
 
 ---
 
 ## نکات مهم
 
-- این روش بهترین امنیت و مخفی‌سازی را دارد
-- استفاده از دامنه واقعی + گواهی TLS معتبر
-- ترافیک دقیقاً شبیه HTTPS واقعی است
-- برای سانسور بسیار سخت طراحی شده
-- UUID و لینک را ایمن نگه دارید
+- این روش از گواهی TLS معتبر (Let's Encrypt) استفاده می‌کند
+- ترافیک شما دقیقاً شبیه یک وبسایت HTTPS معمولی است
+- UUID و کانفیگ را ایمن نگه دارید
+- اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ برگردانده می‌شود
 
 ---
 
@@ -72,64 +71,63 @@
 
 ---
 
-## Required Apps
+## Required App
 
-You have two options:
-- **V2Box** (Free on App Store)
-- **Shadowrocket** (Paid but better)
+**NPV Tunnel**
 
 ---
 
 ## Step 1: Install App
 
-Go to **App Store** and install one of these:
-- V2Box (recommended for beginners)
-- Shadowrocket
+Go to **App Store** and search: **NPV Tunnel**
 
 ---
 
-## Step 2: Get Link or QR Code
+## Step 2: Get JSON Config
 
-After server installation, you received one of these:
-- **VLESS/Trojan link** (vless://... or trojan://...)
-- **QR Code**
+On the server, run the add user command:
 
-This link includes your real domain (like myproxy.duckdns.org).
+```bash
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+```
+
+After running, you will receive a **JSON config** and a **VLESS link**. Copy this information.
 
 ---
 
-## Step 3: Add Configuration
+## Step 3: Add Config in NPV Tunnel
 
-### Method 1: Scan QR Code (easier)
-
-1. In the app, tap **+** or **Scan**
-2. Scan the QR code shown on the server
-3. Config is added automatically
-
-### Method 2: Copy Link
-
-1. Copy the VLESS/Trojan link
-2. In the app, tap **Paste from Clipboard** or **Import from Clipboard**
-3. Config is added
+1. Open **NPV Tunnel** app
+2. Go to **Config** section
+3. Click **+**
+4. Select **Add Config Manually**
+5. Select **V2Ray VLESS**
+6. Enter the JSON information:
+   - Address: **Your domain** (e.g., myproxy123.duckdns.org)
+   - Port: **443**
+   - UUID: **UUID received from server**
+   - Encryption: **none**
+   - Network: **ws** (WebSocket)
+   - Path: **Path received from server**
+   - TLS: **Enable**
+   - SNI: **Your domain**
+7. Click **Save**
 
 ---
 
 ## Step 4: Connect
 
-Tap on the config and tap **Connect**.
-
-✅ Connected successfully!
+Tap on the saved config and tap **Connect**.
 
 ---
 
 ## Important Notes
 
-- This method has the best security and obfuscation
-- Uses real domain + valid TLS certificate
-- Traffic looks exactly like real HTTPS
-- Designed for very hard censorship
-- Keep UUID and link secure
+- This method uses a valid TLS certificate (Let's Encrypt)
+- Your traffic looks exactly like a normal HTTPS website
+- Keep UUID and config secure
+- If you add the same username again, the same config will be returned
 
 ---
 
-**Made with ❤️ for internet freedom**
+**Made with love for internet freedom**
