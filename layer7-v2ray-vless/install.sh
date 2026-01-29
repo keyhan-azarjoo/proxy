@@ -163,8 +163,16 @@ EOF
 
     log "Xray configured"
 
+    # Allow Xray (running as nobody) to read certs via systemd override
+    mkdir -p /etc/systemd/system/xray.service.d
+    cat > /etc/systemd/system/xray.service.d/override.conf <<OVERRIDE
+[Service]
+ReadOnlyPaths=/etc/xray/certs
+OVERRIDE
+
     # Start Xray
     echo "Starting Xray..."
+    systemctl daemon-reexec
     systemctl daemon-reload
     systemctl enable xray
     systemctl restart xray
