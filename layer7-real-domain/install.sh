@@ -104,7 +104,7 @@ main() {
 
         echo "Setting up DuckDNS auto-update cron job..."
         CRON_CMD="*/5 * * * * curl -fs \"https://www.duckdns.org/update?domains=${DUCKDNS_SUBDOMAIN}&token=${DUCKDNS_TOKEN}&ip=\" >/dev/null"
-        (crontab -l 2>/dev/null | grep -v "duckdns.org/update"; echo "$CRON_CMD") | crontab -
+        (crontab -l 2>/dev/null | grep -v "duckdns.org/update" || true; echo "$CRON_CMD") | crontab -
         log "DuckDNS auto-update cron job configured (every 5 minutes)"
     fi
 
