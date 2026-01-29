@@ -136,6 +136,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 ```bash
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
+<img width="1541" height="1327" alt="Screenshot 2026-01-29 095609" src="https://github.com/user-attachments/assets/d4a840bc-25f9-4347-a9b0-6bc1998f060c" />
 
 **توجه:** اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ قبلی برگردانده می‌شود.
 
@@ -362,6 +363,7 @@ Create a user for each person. After adding a user, **2 JSON configs** will be d
 ```bash
 curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
+<img width="1541" height="1327" alt="Screenshot 2026-01-29 095609" src="https://github.com/user-attachments/assets/3a4b8512-2ebe-424c-8499-ad7025872d2f" />
 
 **Note:** If you add the same username again, the same config will be returned.
 
@@ -448,5 +450,6 @@ Add this line:
 ---
 
 **Made with ❤️ for internet freedom**
+
 
 
