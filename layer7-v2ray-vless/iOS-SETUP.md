@@ -125,7 +125,7 @@ After running, **2 JSON configs** will be displayed (iOS and Android). Copy the 
 
 6. Paste the iOS JSON config and tap **Save**
 
-![Paste JSON and save](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
+![photo_6042023025965731191_y](https://github.com/user-attachments/assets/869573b5-834e-42ad-bfcd-356049ce3613)
 
 7. Select the saved config and tap **Connect**
 
