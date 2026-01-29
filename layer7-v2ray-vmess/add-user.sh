@@ -103,6 +103,7 @@ echo ""
 
 cat <<EOF
 {
+  "inbounds": [],
   "outbounds": [{
     "protocol": "vmess",
     "settings": {

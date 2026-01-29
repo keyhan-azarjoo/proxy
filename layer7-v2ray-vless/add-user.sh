@@ -114,6 +114,7 @@ echo ""
 
 cat <<EOF
 {
+  "inbounds": [],
   "outbounds": [{
     "protocol": "vless",
     "settings": {
