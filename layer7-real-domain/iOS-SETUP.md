@@ -52,7 +52,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 6. کانفیگ JSON مربوط به iOS را اینجا paste کنید و روی **Save** کلیک کنید
 
-![Paste JSON and save](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
+![photo_6042023025965731205_y](https://github.com/user-attachments/assets/19214c01-ff65-4b3f-9dc8-85af09bfbe25)
 
 7. کانفیگ ذخیره شده را انتخاب کنید و **Connect** بزنید
 
@@ -125,7 +125,8 @@ After running, **2 JSON configs** will be displayed (iOS and Android). Copy the 
 
 6. Paste the iOS JSON config and tap **Save**
 
-![Paste JSON and save](https://github.com/user-attachments/assets/8e2d3f37-84b8-4f9e-bf2b-63e3f63b8bac)
+![photo_6042023025965731205_y](https://github.com/user-attachments/assets/32ec412a-912b-427f-b4b8-aa55b8510f98)
+
 
 7. Select the saved config and tap **Connect**
 
