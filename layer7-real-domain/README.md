@@ -340,6 +340,9 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 **During installation you'll be asked:**
 1. Your domain (e.g.: myproxy123.duckdns.org)
 2. Your email (for Let's Encrypt)
+   
+<img width="1178" height="602" alt="Screenshot 2026-01-29 094843" src="https://github.com/user-attachments/assets/5818b2e8-8752-477b-834f-0679423c47ce" />
+
 
 The script will:
 - Obtain valid TLS certificate
@@ -445,4 +448,5 @@ Add this line:
 ---
 
 **Made with ❤️ for internet freedom**
+
 
