@@ -115,6 +115,8 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 **در طول نصب از شما پرسیده می‌شود:**
 1. دامنه شما (مثلاً: myproxy123.duckdns.org)
 2. ایمیل شما (برای Let's Encrypt)
+<img width="1178" height="602" alt="Screenshot 2026-01-29 094843" src="https://github.com/user-attachments/assets/6a295b18-3915-417e-9837-de77eee0db0c" />
+
 
 اسکریپت:
 - گواهی TLS معتبر می‌گیرد
@@ -443,3 +445,4 @@ Add this line:
 ---
 
 **Made with ❤️ for internet freedom**
+
