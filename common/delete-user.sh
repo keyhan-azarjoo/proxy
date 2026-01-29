@@ -89,6 +89,11 @@ main() {
         exit 1
     fi
 
+    # Remove iptables accounting chain
+    iptables -D OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
+    iptables -F "PROXY_USER_${USERNAME}" 2>/dev/null || true
+    iptables -X "PROXY_USER_${USERNAME}" 2>/dev/null || true
+
     # Remove user info file
     rm -f "/root/proxy-users/$USERNAME.txt"
 

@@ -178,6 +178,12 @@ EOF
 
     log "=== Layer 6 installation completed ==="
 
+    # Install management panel
+    log "Installing management panel..."
+    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/panel/install-panel.sh"
+    curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer6-stunnel || log "WARN: Panel installation failed (non-critical)"
+    rm -f /tmp/install-panel.sh
+
     # Final output
     echo ""
     echo "============================================"
@@ -208,7 +214,11 @@ EOF
     echo "     - Use stunnel client to connect to port 443"
     echo "     - Then SSH to localhost:22"
     echo ""
-    echo "Management commands:"
+    echo "Management Panel:"
+    echo "  URL: https://$(curl -s --max-time 5 ifconfig.me 2>/dev/null || echo 'YOUR_SERVER_IP'):8443"
+    echo "  Login with your server root credentials"
+    echo ""
+    echo "CLI Management commands:"
     echo "  Add user:     curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
     echo "  Delete user:  curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh USERNAME"
     echo "  View users:   curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh"

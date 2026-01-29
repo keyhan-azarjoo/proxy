@@ -143,6 +143,12 @@ EOF
         exit 1
     fi
 
+    # Add iptables accounting for bandwidth tracking
+    iptables -N "PROXY_USER_${USERNAME}" 2>/dev/null || true
+    iptables -C OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}" 2>/dev/null || \
+        iptables -A OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
+    iptables -C INPUT -m state --state ESTABLISHED,RELATED -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
+
     log "User $USERNAME added successfully"
 
     # Save user info
