@@ -107,8 +107,6 @@ ssh root@SERVER-IP
 | **لایه ۷: V2Ray VLESS** | ⭐⭐⭐⭐ پیشرفته | سانسور سخت | 443 |
 | **لایه ۷: دامنه واقعی (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ پیشرفته | بهترین امنیت | 443 |
 
-**💡 توصیه برای مبتدیان: لایه ۴ (Nginx)**
-
 ---
 
 ### 📚 راهنمای کامل هر روش:
@@ -122,10 +120,6 @@ ssh root@SERVER-IP
 
 ---
 
---------------------------------------------------
-مرحله ۳: نصب (بسته به روش انتخابی)
---------------------------------------------------
----
 
 --------------------------------------------------
 حذف نصب (در صورت نیاز)
@@ -272,8 +266,6 @@ Choose Installation Method
 | **Layer 7: V2Ray VLESS** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
 | **Layer 7: Real Domain (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ Advanced | Best security | 443 |
 
-**💡 Recommendation for beginners: Layer 4 (Nginx)**
-
 ---
 
 ### 📚 Complete guide for each method:
@@ -285,11 +277,6 @@ Choose Installation Method
 - [Layer 7: V2Ray VLESS](./layer7-v2ray-vless/README.md) - Modern and lightweight protocol
 - [Layer 7: Real Domain + TLS](./layer7-real-domain/README.md) - Best overall method
 
----
-
---------------------------------------------------
-Step 3: Installation (depending on chosen method)
---------------------------------------------------
 ---
 
 --------------------------------------------------
@@ -325,4 +312,5 @@ Very Important Security Notes
 - This tool is designed for personal and controlled use
 
 ---
+
 
