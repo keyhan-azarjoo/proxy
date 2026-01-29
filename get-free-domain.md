@@ -79,7 +79,7 @@ https://duckdns.org
 
 ۳. پیام سبز **"success: ip address for ... updated to ..."** نمایش داده می‌شود
 
-![IP Updated](./layer7-real-domain/images/5.png)
+<img width="1657" height="1087" alt="5" src="https://github.com/user-attachments/assets/86821fa9-a858-4e36-8c32-acd458365f37" />
 
 **تمام شد!** دامنه شما اکنون به IP سرورتان اشاره می‌کند.
 
@@ -139,9 +139,11 @@ https://duckdns.org
 
 Login with **Google** or **GitHub**.
 
+<img width="1918" height="1136" alt="Screenshot 2026-01-29 085553" src="https://github.com/user-attachments/assets/57684565-3981-44a4-89d0-abd2b8cf8c78" />
+
 After login, a reCaptcha page will be displayed. Complete it:
 
-![DuckDNS Login](./layer7-real-domain/images/2.png)
+<img width="1662" height="1081" alt="2" src="https://github.com/user-attachments/assets/d0d85295-1508-41fd-b5ef-4cd0d82bfdd5" />
 
 ---
 
@@ -158,7 +160,7 @@ On this page you will see important information:
 
 In the **domains** section you can create a new subdomain.
 
-![DuckDNS Dashboard](./layer7-real-domain/images/3.png)
+<img width="1660" height="1082" alt="3" src="https://github.com/user-attachments/assets/958d326c-0e27-4e5a-b8c0-85ab4f381da1" />
 
 **Make sure to copy your TOKEN.** You will need it in the next steps.
 
@@ -174,7 +176,7 @@ Step 3: Create a Subdomain
 
 3. A green message **"success: domain ... added to your account"** will appear
 
-![Domain Added](./layer7-real-domain/images/4.png)
+<img width="1658" height="1082" alt="4" src="https://github.com/user-attachments/assets/cfe83b4c-7f5c-49a2-978e-e4d498aceaf2" />
 
 Your domain is now created! (e.g.: `myproxy.duckdns.org`)
 
@@ -190,7 +192,7 @@ Step 4: Enter Server IP
 
 3. A green message **"success: ip address for ... updated to ..."** will appear
 
-![IP Updated](./layer7-real-domain/images/5.png)
+<img width="1657" height="1087" alt="5" src="https://github.com/user-attachments/assets/86821fa9-a858-4e36-8c32-acd458365f37" />
 
 **Done!** Your domain now points to your server IP.
 
