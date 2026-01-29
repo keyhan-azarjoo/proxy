@@ -26,7 +26,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 بعد از اجرا، **۲ کانفیگ JSON** نمایش داده می‌شود (iOS و Android). کانفیگ **iOS** را کپی کنید.
 
-<img width="597" alt="add-user output" src="https://github.com/user-attachments/assets/72e160d2-a380-4f5e-befb-9a7e8e071b7c" />
+<img width="1536" height="1357" alt="Screenshot 2026-01-29 102803" src="https://github.com/user-attachments/assets/e3088f63-c1af-412a-adc0-a8ee458b7947" />
 
 ---
 
@@ -99,7 +99,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 After running, **2 JSON configs** will be displayed (iOS and Android). Copy the **iOS** config.
 
-<img width="597" alt="add-user output" src="https://github.com/user-attachments/assets/72e160d2-a380-4f5e-befb-9a7e8e071b7c" />
+<img width="1536" height="1357" alt="Screenshot 2026-01-29 102803" src="https://github.com/user-attachments/assets/e3088f63-c1af-412a-adc0-a8ee458b7947" />
 
 ---
 
