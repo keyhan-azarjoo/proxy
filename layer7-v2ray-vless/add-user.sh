@@ -106,8 +106,38 @@ else
 fi
 echo "======================================"
 echo ""
-echo "Client Configuration (JSON):"
-echo "----------------------------"
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║          iOS  (NPV Tunnel)           ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
+
+cat <<EOF
+{
+  "outbounds": [{
+    "protocol": "vless",
+    "settings": {
+      "vnext": [{
+        "address": "$SERVER_IP",
+        "port": 443,
+        "users": [{"id": "$UUID", "encryption": "none"}]
+      }]
+    },
+    "streamSettings": {
+      "network": "ws",
+      "security": "tls",
+      "tlsSettings": {"allowInsecure": true},
+      "wsSettings": {"path": "$WS_PATH"}
+    }
+  }]
+}
+EOF
+
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║        ANDROID  (NetMod)             ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
 
 cat <<EOF
 {
@@ -139,9 +169,7 @@ cat <<EOF
 EOF
 
 echo ""
+echo "--------------------------------------"
 echo "Quick Connect String:"
 echo "vless://$UUID@$SERVER_IP:443?type=ws&security=tls&path=$WS_PATH#$USERNAME"
-echo ""
-echo "Copy the above configuration to your V2Ray client"
-echo "(NPV Tunnel for iOS, NetMod for Android)"
 echo ""

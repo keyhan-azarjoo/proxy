@@ -1,26 +1,26 @@
-# لایه ۷: V2Ray VMess - مخفی‌سازی پیشرفته
+# لایه ۷: V2Ray VLESS - پروتکل مدرن و سبک
 
 > **⭐⭐⭐⭐ برای سانسور سخت**
-> پورت 443 - پروتکل VMess با WebSocket
+> پورت 443 - پروتکل VLESS با WebSocket + TLS
 
-[← صفحه قبلی: لایه ۶ (Stunnel)](../layer6-stunnel/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۷ (V2Ray VLESS)](../layer7-v2ray-vless/README.md)
+[← صفحه قبلی: لایه ۷ (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← بازگشت به راهنمای اصلی](../README.md) | [→ صفحه بعدی: لایه ۷ دامنه واقعی](../layer7-real-domain/README.md)
 
 ---
 
 ## این روش چیست؟
 
-V2Ray با پروتکل VMess - یک پروتکل پیشرفته که ترافیک را به‌طور کامل مخفی می‌کند.
-از WebSocket استفاده می‌کند تا دقیقاً شبیه ترافیک وب معمولی باشد.
+V2Ray با پروتکل VLESS - نسخه سبک‌تر و مدرن‌تر VMess.
+از WebSocket و TLS استفاده می‌کند تا شبیه ترافیک HTTPS معمولی باشد.
 
 **مزایا:**
-- مخفی‌سازی بسیار پیشرفته
-- از سانسور سخت عبور می‌کند
+- پروتکل VLESS سبک‌تر و سریع‌تر از VMess
+- مخفی‌سازی پیشرفته با WebSocket + TLS
 - شبیه ترافیک وب واقعی
-- پروتکل VMess قدرتمند
+- بدون نیاز به دامنه (از گواهی self-signed استفاده می‌کند)
 
 **نسبت به لایه‌های قبلی:**
 - سخت‌ترین برای شناسایی
-- بهترین برای محیط‌های سانسور سخت
+- مناسب برای محیط‌های سانسور سخت
 - نصب و تنظیم پیچیده‌تر
 - نیاز به کلاینت V2Ray
 
@@ -60,17 +60,17 @@ ssh root@SERVER-IP
 ---
 
 --------------------------------------------------
-مرحله ۳: نصب لایه ۷ (V2Ray VMess)
+مرحله ۳: نصب لایه ۷ (V2Ray VLESS)
 --------------------------------------------------
 
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/install.sh -o install.sh && bash install.sh
 ```
 
 نصب خودکار انجام می‌شود.
-V2Ray با VMess روی پورت 443 راه‌اندازی می‌شود.
+V2Ray با VLESS روی پورت 443 راه‌اندازی می‌شود.
 
 ---
 
@@ -81,7 +81,7 @@ V2Ray با VMess روی پورت 443 راه‌اندازی می‌شود.
 برای هر نفر یک کاربر بسازید. بعد از اضافه کردن کاربر، کانفیگ اتصال (UUID و JSON) نمایش داده می‌شود:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **توجه:** اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ قبلی برگردانده می‌شود.
@@ -93,7 +93,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 بعد از حذف، کاربر دیگر نمی‌تواند با کانفیگ قبلی متصل شود.
@@ -117,36 +117,36 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 - این روش نیاز به کلاینت V2Ray دارد (نه SSH)
 - برای iOS: NPV Tunnel
 - برای Android: NetMod
-- بهترین روش برای سانسور سخت
+- مناسب برای سانسور سخت
 - UUID و لینک را ایمن نگه دارید
 
 ---
 
 =====================================================================
 
-# Layer 7: V2Ray VMess - Advanced Obfuscation
+# Layer 7: V2Ray VLESS - Modern and Lightweight Protocol
 
 > **⭐⭐⭐⭐ For hard censorship**
-> Port 443 - VMess protocol with WebSocket
+> Port 443 - VLESS protocol with WebSocket + TLS
 
-[← Previous: Layer 6 (Stunnel)](../layer6-stunnel/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 7 (V2Ray VLESS)](../layer7-v2ray-vless/README.md)
+[← Previous: Layer 7 (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← Back to main guide](../README.md) | [→ Next: Layer 7 Real Domain](../layer7-real-domain/README.md)
 
 ---
 
 ## What is this method?
 
-V2Ray with VMess protocol - an advanced protocol that fully obfuscates traffic.
-Uses WebSocket to look exactly like normal web traffic.
+V2Ray with VLESS protocol - a lighter and more modern version of VMess.
+Uses WebSocket and TLS to look like normal HTTPS traffic.
 
 **Advantages:**
-- Very advanced obfuscation
-- Passes hard censorship
+- VLESS protocol is lighter and faster than VMess
+- Advanced obfuscation with WebSocket + TLS
 - Looks like real web traffic
-- Powerful VMess protocol
+- No domain needed (uses self-signed certificate)
 
 **Compared to previous layers:**
 - Hardest to detect
-- Best for hard censorship environments
+- Suitable for hard censorship environments
 - More complex installation and configuration
 - Requires V2Ray client
 
@@ -186,17 +186,17 @@ ssh root@SERVER-IP
 ---
 
 --------------------------------------------------
-Step 3: Install Layer 7 (V2Ray VMess)
+Step 3: Install Layer 7 (V2Ray VLESS)
 --------------------------------------------------
 
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/install.sh -o install.sh && bash install.sh
 ```
 
 Installation runs automatically.
-V2Ray with VMess will be configured on port 443.
+V2Ray with VLESS will be configured on port 443.
 
 ---
 
@@ -207,7 +207,7 @@ Step 4: Add User
 Create a user for each person. After adding a user, the connection config (UUID and JSON) will be displayed:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **Note:** If you add the same username again, the same config will be returned.
@@ -219,7 +219,7 @@ Step 5: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 After deletion, the user can no longer connect with their previous config.
@@ -243,9 +243,9 @@ After deletion, the user can no longer connect with their previous config.
 - This method requires V2Ray client (not SSH)
 - For iOS: NPV Tunnel
 - For Android: NetMod
-- Best method for hard censorship
+- Suitable for hard censorship
 - Keep UUID and link secure
 
 ---
 
-**Made with ❤️ for internet freedom**
+**Made with love for internet freedom**

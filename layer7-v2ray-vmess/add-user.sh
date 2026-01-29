@@ -95,8 +95,44 @@ else
 fi
 echo "======================================"
 echo ""
-echo "Client Configuration (JSON):"
-echo "----------------------------"
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║          iOS  (NPV Tunnel)           ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
+
+cat <<EOF
+{
+  "outbounds": [{
+    "protocol": "vmess",
+    "settings": {
+      "vnext": [{
+        "address": "$SERVER_IP",
+        "port": 443,
+        "users": [{
+          "id": "$UUID",
+          "alterId": 0,
+          "security": "auto"
+        }]
+      }]
+    },
+    "streamSettings": {
+      "network": "tcp",
+      "security": "tls",
+      "tlsSettings": {
+        "serverName": "proxy.local",
+        "allowInsecure": true
+      }
+    }
+  }]
+}
+EOF
+
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║        ANDROID  (NetMod)             ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
 
 cat <<EOF
 {
@@ -134,9 +170,7 @@ cat <<EOF
 EOF
 
 echo ""
-echo "Copy the above configuration to your V2Ray client"
-echo "(NPV Tunnel for iOS, NetMod for Android)"
-echo ""
+echo "--------------------------------------"
 echo "Quick Connect String:"
 echo "vmess://$UUID@$SERVER_IP:443"
 echo ""

@@ -96,7 +96,7 @@ ssh root@SERVER-IP
 انتخاب روش نصب
 --------------------------------------------------
 
-### شما ۵ روش مختلف دارید:
+### شما ۶ روش مختلف دارید:
 
 | روش | سختی | بهترین برای | پورت |
 |-----|------|------------|------|
@@ -104,6 +104,7 @@ ssh root@SERVER-IP
 | **لایه ۴: Nginx** | ⭐⭐ آسان | استفاده روزانه | 443 |
 | **لایه ۶: Stunnel** | ⭐⭐⭐ متوسط | امنیت بالا | 443 |
 | **لایه ۷: V2Ray VMess** | ⭐⭐⭐⭐ پیشرفته | سانسور سخت | 443 |
+| **لایه ۷: V2Ray VLESS** | ⭐⭐⭐⭐ پیشرفته | سانسور سخت | 443 |
 | **لایه ۷: دامنه واقعی (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ پیشرفته | بهترین امنیت | 443 |
 
 **💡 توصیه برای مبتدیان: لایه ۴ (Nginx)**
@@ -116,6 +117,7 @@ ssh root@SERVER-IP
 - [لایه ۴: Nginx](./layer4-nginx/README.md) - پیشنهادی برای استفاده روزمره
 - [لایه ۶: Stunnel](./layer6-stunnel/README.md) - امنیت دوبل با TLS wrapper
 - [لایه ۷: V2Ray VMess](./layer7-v2ray-vmess/README.md) - مخفی‌سازی پیشرفته
+- [لایه ۷: V2Ray VLESS](./layer7-v2ray-vless/README.md) - پروتکل مدرن و سبک
 - [لایه ۷: دامنه واقعی + TLS](./layer7-real-domain/README.md) - بهترین روش کلی
 
 ---
@@ -418,7 +420,7 @@ After connecting, continue below.
 Choose Installation Method
 --------------------------------------------------
 
-### You have 5 different methods:
+### You have 6 different methods:
 
 | Method | Difficulty | Best For | Port |
 |--------|-----------|----------|------|
@@ -426,6 +428,7 @@ Choose Installation Method
 | **Layer 4: Nginx** | ⭐⭐ Easy | Daily use | 443 |
 | **Layer 6: Stunnel** | ⭐⭐⭐ Medium | High security | 443 |
 | **Layer 7: V2Ray VMess** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
+| **Layer 7: V2Ray VLESS** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
 | **Layer 7: Real Domain (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ Advanced | Best security | 443 |
 
 **💡 Recommendation for beginners: Layer 4 (Nginx)**
@@ -438,6 +441,7 @@ Choose Installation Method
 - [Layer 4: Nginx](./layer4-nginx/README.md) - Recommended for daily use
 - [Layer 6: Stunnel](./layer6-stunnel/README.md) - Double security with TLS wrapper
 - [Layer 7: V2Ray VMess](./layer7-v2ray-vmess/README.md) - Advanced obfuscation
+- [Layer 7: V2Ray VLESS](./layer7-v2ray-vless/README.md) - Modern and lightweight protocol
 - [Layer 7: Real Domain + TLS](./layer7-real-domain/README.md) - Best overall method
 
 ---

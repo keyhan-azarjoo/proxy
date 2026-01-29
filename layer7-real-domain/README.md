@@ -3,7 +3,7 @@
 > **⭐⭐⭐⭐⭐ بهترین روش (سخت‌ترین برای فیلتر شدن)**
 > پورت 443 - تونل TLS واقعی با گواهی معتبر
 
-[← صفحه قبلی: لایه ۷ (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← بازگشت به راهنمای اصلی](../README.md)
+[← صفحه قبلی: لایه ۷ (V2Ray VLESS)](../layer7-v2ray-vless/README.md) | [← بازگشت به راهنمای اصلی](../README.md)
 
 ---
 
@@ -208,7 +208,7 @@ crontab -e
 > **⭐⭐⭐⭐⭐ Best method (hardest to filter)**
 > Port 443 - Real TLS tunnel with valid certificate
 
-[← Previous: Layer 7 (V2Ray VMess)](../layer7-v2ray-vmess/README.md) | [← Back to main guide](../README.md)
+[← Previous: Layer 7 (V2Ray VLESS)](../layer7-v2ray-vless/README.md) | [← Back to main guide](../README.md)
 
 ---
 
