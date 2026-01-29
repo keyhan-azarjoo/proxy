@@ -47,7 +47,7 @@ https://duckdns.org
 
 در قسمت **domains** می‌توانید زیردامنه جدید بسازید.
 
-![DuckDNS Dashboard](./layer7-real-domain/images/3.png)
+<img width="1660" height="1082" alt="3" src="https://github.com/user-attachments/assets/cb6e722b-51ef-4ac9-8ac7-b561f85a17b4" />
 
 **TOKEN خود را حتماً کپی کنید.** در مراحل بعدی به آن نیاز دارید.
 
