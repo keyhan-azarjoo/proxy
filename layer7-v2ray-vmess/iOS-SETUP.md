@@ -63,24 +63,6 @@ then from the list, select the saved config and connect
 
 ---
 
-Android
-click on add
-![photo_6039706939081559660_y](https://github.com/user-attachments/assets/ac324b74-daec-4182-85b1-ea746e8c4401)
-then click on json config
-
-![photo_6039706939081559662_y](https://github.com/user-attachments/assets/b9874cfd-8168-4fa9-91ee-b39b1d593316)
-
-then click on open Editor
-![photo_6039706939081559663_y](https://github.com/user-attachments/assets/9fb5852d-6007-4762-9d52-9fbf9cac801c)
-
-then paste the json in the editor and click the checkbox and save it
-![photo_6039706939081559661_y](https://github.com/user-attachments/assets/f17d62bc-ded1-40c7-b214-50913316ae48)
-
-then click on the newly saved config and connect
-![photo_6039706939081559664_y](https://github.com/user-attachments/assets/7640d0dd-d860-4a61-85ba-a9c602281b84)
-
-
-
 ## نکات مهم
 
 - UUID و کانفیگ را ایمن نگه دارید
