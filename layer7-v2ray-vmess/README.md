@@ -72,24 +72,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 نصب خودکار انجام می‌شود.
 V2Ray با VMess روی پورت 443 راه‌اندازی می‌شود.
 
-**بعد از نصب شما دریافت می‌کنید:**
-- UUID کاربر
-- لینک اشتراک VMess
-- QR Code برای اسکن در موبایل
-
 ---
 
 --------------------------------------------------
-مرحله ۴: اضافه کردن کاربر جدید
+مرحله ۴: اضافه کردن کاربر
 --------------------------------------------------
 
-برای هر نفر یک کاربر بسازید:
+برای هر نفر یک کاربر بسازید. بعد از اضافه کردن کاربر، کانفیگ اتصال (UUID و JSON) نمایش داده می‌شود:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-**توجه:** برای V2Ray، اسکریپت UUID جدید و لینک کانفیگ می‌سازد.
+**توجه:** اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ قبلی برگردانده می‌شود.
 
 ---
 
@@ -98,8 +93,10 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/ad
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
+
+بعد از حذف، کاربر دیگر نمی‌تواند با کانفیگ قبلی متصل شود.
 
 ---
 
@@ -248,24 +245,19 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2
 Installation runs automatically.
 V2Ray with VMess will be configured on port 443.
 
-**After installation you'll receive:**
-- User UUID
-- VMess subscription link
-- QR Code for mobile scanning
-
 ---
 
 --------------------------------------------------
-Step 4: Add New User
+Step 4: Add User
 --------------------------------------------------
 
-Create a user for each person:
+Create a user for each person. After adding a user, the connection config (UUID and JSON) will be displayed:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
-**Note:** For V2Ray, the script creates a new UUID and config link.
+**Note:** If you add the same username again, the same config will be returned.
 
 ---
 
@@ -274,8 +266,10 @@ Step 5: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
+
+After deletion, the user can no longer connect with their previous config.
 
 ---
 

@@ -88,13 +88,6 @@ main() {
     }
     log "Xray installed"
 
-    # Generate initial UUID for default user
-    UUID=$(cat /proc/sys/kernel/random/uuid)
-
-    echo ""
-    echo "Default user UUID: $UUID"
-    echo ""
-
     # Create certificate
     echo "Creating TLS certificate..."
     mkdir -p /etc/xray/certs
@@ -127,12 +120,7 @@ main() {
       "port": 443,
       "protocol": "vmess",
       "settings": {
-        "clients": [
-          {
-            "id": "$UUID",
-            "alterId": 0
-          }
-        ]
+        "clients": []
       },
       "streamSettings": {
         "network": "tcp",
@@ -157,8 +145,8 @@ EOF
     chown nobody:nogroup /usr/local/etc/xray/config.json
     chmod 644 /usr/local/etc/xray/config.json
 
-    # Create user database
-    echo "{\"default\":\"$UUID\"}" > /usr/local/etc/xray/users.json
+    # Create empty user database
+    echo "{}" > /usr/local/etc/xray/users.json
     chmod 644 /usr/local/etc/xray/users.json
 
     log "Xray configured"
@@ -198,7 +186,6 @@ Protocol: VMess + TCP + TLS
 Script Version: $SCRIPT_VERSION
 
 Server IP: $SERVER_IP
-Default UUID: $UUID
 
 Config Location: /usr/local/etc/xray/config.json
 Users Database: /usr/local/etc/xray/users.json
@@ -211,58 +198,22 @@ EOF
     # Final output
     echo ""
     echo "============================================"
-    echo " ✓ Installation Complete!"
+    echo " Installation Complete!"
     echo "============================================"
     echo ""
     echo "V2Ray VMess proxy is now active on port 443"
     echo ""
-    echo "Connection Details:"
-    echo "-------------------"
     echo "Server IP: $SERVER_IP"
     echo "Port: 443"
-    echo "UUID: $UUID"
-    echo "TLS: Enabled (self-signed)"
-    echo "Protocol: VMess"
-    echo "AlterID: 0"
+    echo "Protocol: VMess + TCP + TLS"
     echo ""
-    echo "Client Configuration (JSON):"
-    echo "----------------------------"
-    cat <<CLIENTEOF
-{
-  "outbounds": [{
-    "protocol": "vmess",
-    "settings": {
-      "vnext": [{
-        "address": "$SERVER_IP",
-        "port": 443,
-        "users": [{
-          "id": "$UUID",
-          "alterId": 0,
-          "security": "auto"
-        }]
-      }]
-    },
-    "streamSettings": {
-      "network": "tcp",
-      "security": "tls",
-      "tlsSettings": {
-        "serverName": "proxy.local",
-        "allowInsecure": true
-      }
-    }
-  }]
-}
-CLIENTEOF
+    echo "Next step: Add a user to get connection config"
     echo ""
     echo "Management commands:"
-    echo "  bash add-user.sh <username> - Add new user"
-    echo "  systemctl status xray       - Check Xray status"
-    echo "  bash status.sh              - System status"
-    echo "  bash backup-config.sh       - Backup configuration"
-    echo "  bash uninstall.sh           - Uninstall completely"
-    echo ""
-    echo "Note: Save the UUID - you'll need it to connect!"
-    echo "      It's also saved in: /root/proxy-installation-info.txt"
+    echo "-------------------"
+    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
+    echo "  Status:      systemctl status xray"
     echo ""
     echo "============================================"
 }

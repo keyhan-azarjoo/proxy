@@ -114,25 +114,22 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 اسکریپت:
 - گواهی TLS معتبر می‌گیرد
-- VLESS/Trojan روی پورت 443 راه‌اندازی می‌کند
+- VLESS روی پورت 443 راه‌اندازی می‌کند
 - همه چیز را آماده می‌کند
-
-**بعد از نصب دریافت می‌کنید:**
-- UUID کاربر
-- لینک اشتراک
-- QR Code
 
 ---
 
 --------------------------------------------------
-مرحله ۵: اضافه کردن کاربر جدید
+مرحله ۵: اضافه کردن کاربر
 --------------------------------------------------
 
-برای هر نفر یک کاربر بسازید:
+برای هر نفر یک کاربر بسازید. بعد از اضافه کردن کاربر، کانفیگ اتصال (UUID و JSON) نمایش داده می‌شود:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
+
+**توجه:** اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ قبلی برگردانده می‌شود.
 
 ---
 
@@ -141,8 +138,10 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/ad
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
+
+بعد از حذف، کاربر دیگر نمی‌تواند با کانفیگ قبلی متصل شود.
 
 ---
 
@@ -362,25 +361,22 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-re
 
 The script will:
 - Obtain valid TLS certificate
-- Set up VLESS/Trojan on port 443
+- Set up VLESS on port 443
 - Prepare everything
-
-**After installation you'll receive:**
-- User UUID
-- Subscription link
-- QR Code
 
 ---
 
 --------------------------------------------------
-Step 5: Add New User
+Step 5: Add User
 --------------------------------------------------
 
-Create a user for each person:
+Create a user for each person. After adding a user, the connection config (UUID and JSON) will be displayed:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
+
+**Note:** If you add the same username again, the same config will be returned.
 
 ---
 
@@ -389,8 +385,10 @@ Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
+
+After deletion, the user can no longer connect with their previous config.
 
 ---
 

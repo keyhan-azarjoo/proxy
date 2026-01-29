@@ -119,15 +119,8 @@ main() {
     systemctl enable --now certbot.timer 2>/dev/null || true
     log "TLS certificate issued"
 
-    # Generate UUID and path
-    UUID=$(cat /proc/sys/kernel/random/uuid)
+    # Generate WebSocket path
     WS_PATH="/$(cat /proc/sys/kernel/random/uuid | cut -d'-' -f1)"
-
-    echo ""
-    echo "Generated credentials:"
-    echo "  UUID: $UUID"
-    echo "  WebSocket Path: $WS_PATH"
-    echo ""
 
     # Configure cert paths
     mkdir -p /etc/xray/certs
@@ -155,9 +148,7 @@ main() {
       "port": 443,
       "protocol": "vless",
       "settings": {
-        "clients": [
-          { "id": "$UUID" }
-        ],
+        "clients": [],
         "decryption": "none"
       },
       "streamSettings": {
@@ -186,10 +177,20 @@ EOF
     chown nobody:nogroup /usr/local/etc/xray/config.json
     chmod 644 /usr/local/etc/xray/config.json
 
-    # Save user database
+    # Save empty user database and server config
     mkdir -p /usr/local/etc/xray
-    echo "{\"default\":\"$UUID\"}" > /usr/local/etc/xray/users.json
+    echo "{}" > /usr/local/etc/xray/users.json
     chmod 644 /usr/local/etc/xray/users.json
+
+    # Save server config (domain, path) for add-user script
+    cat > /usr/local/etc/xray/server-config.json <<EOF
+{
+  "domain": "$DOMAIN",
+  "ws_path": "$WS_PATH",
+  "protocol": "vless"
+}
+EOF
+    chmod 644 /usr/local/etc/xray/server-config.json
 
     log "Xray configured"
 
@@ -223,11 +224,11 @@ Script Version: $SCRIPT_VERSION
 
 Domain: $DOMAIN
 Server IP: $SERVER_IP
-UUID: $UUID
 WebSocket Path: $WS_PATH
 
 Config Location: /usr/local/etc/xray/config.json
 Users Database: /usr/local/etc/xray/users.json
+Server Config: /usr/local/etc/xray/server-config.json
 EOF
 
     touch "$LOG_FILE"
@@ -237,53 +238,23 @@ EOF
     # Final output
     echo ""
     echo "============================================"
-    echo " ✓ Installation Complete!"
+    echo " Installation Complete!"
     echo "============================================"
     echo ""
     echo "V2Ray VLESS is now active on port 443"
     echo ""
-    echo "Connection Details:"
-    echo "-------------------"
     echo "Domain: $DOMAIN"
     echo "Server IP: $SERVER_IP"
     echo "Port: 443"
-    echo "UUID: $UUID"
-    echo "Path: $WS_PATH"
-    echo "TLS: Valid (Let's Encrypt)"
-    echo "Protocol: VLESS"
-    echo "Transport: WebSocket"
+    echo "Protocol: VLESS + WebSocket + TLS"
     echo ""
-    echo "Client Configuration (JSON):"
-    echo "----------------------------"
-    cat <<CLIENTEOF
-{
-  "outbounds": [{
-    "protocol": "vless",
-    "settings": {
-      "vnext": [{
-        "address": "$DOMAIN",
-        "port": 443,
-        "users": [{"id": "$UUID", "encryption": "none"}]
-      }]
-    },
-    "streamSettings": {
-      "network": "ws",
-      "security": "tls",
-      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false},
-      "wsSettings": {"path": "$WS_PATH"}
-    }
-  }]
-}
-CLIENTEOF
+    echo "Next step: Add a user to get connection config"
     echo ""
     echo "Management commands:"
-    echo "  systemctl status xray  - Check Xray status"
-    echo "  bash status.sh         - System status"
-    echo "  bash backup-config.sh  - Backup configuration"
-    echo "  bash uninstall.sh      - Uninstall completely"
-    echo ""
-    echo "Note: Save the UUID and path - you'll need them to connect!"
-    echo "      They are also saved in: /root/proxy-installation-info.txt"
+    echo "-------------------"
+    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
+    echo "  Status:      systemctl status xray"
     echo ""
     echo "============================================"
 }
