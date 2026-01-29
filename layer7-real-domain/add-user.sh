@@ -2,8 +2,7 @@
 set -euo pipefail
 
 # ============================================
-# V2Ray VLESS Real Domain - Add User Script
-# Add new user to VLESS configuration
+# V2Ray VLESS Real Domain - Add User Script (gRPC + REAL TLS)
 # ============================================
 
 CONFIG="/usr/local/etc/xray/config.json"
@@ -15,25 +14,21 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
-# Check if running as root
 if [ "$EUID" -ne 0 ]; then
     echo "Error: This script must be run as root"
     exit 1
 fi
 
-# Check if jq is installed
 if ! command -v jq >/dev/null 2>&1; then
     echo "Installing jq..."
     apt update -y && apt install -y jq
 fi
 
-# Check if server config exists
 if [ ! -f "$SERVER_CONFIG" ]; then
     echo "Error: Server config not found. Run install.sh first."
     exit 1
 fi
 
-# Get username
 if [ "$#" -eq 1 ]; then
     USERNAME="$1"
 elif [ "$#" -eq 0 ]; then
@@ -43,7 +38,6 @@ else
     exit 1
 fi
 
-# Validate username
 if ! [[ "$USERNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
     echo "Error: Username can only contain letters, numbers, dash, underscore"
     exit 1
@@ -51,34 +45,27 @@ fi
 
 log "Adding VLESS user: $USERNAME"
 
-# Create user database if not exists
 if [ ! -f "$USER_DB" ]; then
     echo "{}" > "$USER_DB"
 fi
 
-# Check if user exists
 if jq -e --arg u "$USERNAME" '.[$u]' "$USER_DB" >/dev/null 2>&1; then
     UUID=$(jq -r --arg u "$USERNAME" '.[$u]' "$USER_DB")
     EXISTING=true
     echo "User '$USERNAME' already exists - returning same config"
 else
-    # Generate new UUID
     UUID=$(cat /proc/sys/kernel/random/uuid)
 
-    # Save to user database
     jq --arg u "$USERNAME" --arg id "$UUID" '. + {($u): $id}' "$USER_DB" > /tmp/users.json
     mv /tmp/users.json "$USER_DB"
 
-    # Add to Xray config
     jq --arg uuid "$UUID" \
       '.inbounds[0].settings.clients += [{"id":$uuid}]' \
       "$CONFIG" > /tmp/xray.json
     mv /tmp/xray.json "$CONFIG"
 
-    # Restart Xray
     systemctl restart xray
 
-    # Verify Xray is running
     sleep 2
     if ! systemctl is-active --quiet xray; then
         log "ERROR: Xray failed to restart after adding user"
@@ -90,12 +77,10 @@ else
     log "User $USERNAME added successfully"
 fi
 
-# Read server config
 DOMAIN=$(jq -r '.domain' "$SERVER_CONFIG")
-WS_PATH=$(jq -r '.ws_path' "$SERVER_CONFIG")
+GRPC_SERVICE=$(jq -r '.grpc_service' "$SERVER_CONFIG")
 SERVER_IP=$(curl -s --max-time 5 ifconfig.me 2>/dev/null || echo "YOUR_SERVER_IP")
 
-# Display results
 echo ""
 echo "======================================"
 echo " User: $USERNAME"
@@ -107,10 +92,9 @@ else
 fi
 echo "======================================"
 echo ""
-echo ""
-echo "╔══════════════════════════════════════╗"
-echo "║          iOS  (NPV Tunnel)           ║"
-echo "╚══════════════════════════════════════╝"
+echo "VLESS gRPC + REAL TLS"
+echo "Domain: $DOMAIN"
+echo "gRPC Service: $GRPC_SERVICE"
 echo ""
 
 cat <<EOF
@@ -126,30 +110,29 @@ cat <<EOF
       }]
     },
     "streamSettings": {
-      "network": "ws",
+      "network": "grpc",
       "security": "tls",
-      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false},
-      "wsSettings": {"path": "$WS_PATH"}
+      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false, "alpn": ["h2"]},
+      "grpcSettings": {"serviceName": "$GRPC_SERVICE"}
     }
   }]
 }
 EOF
 
 echo ""
-echo "╔══════════════════════════════════════╗"
-echo "║        ANDROID  (NetMod)             ║"
-echo "╚══════════════════════════════════════╝"
+echo "--------------------------------------"
+echo "Quick Connect String:"
+echo "vless://$UUID@$DOMAIN:443?type=grpc&security=tls&serviceName=$GRPC_SERVICE&sni=$DOMAIN#$USERNAME"
 echo ""
 
+echo "Local SOCKS (Android/NetMod) sample:"
 cat <<EOF
 {
   "inbounds": [{
     "port": 10808,
     "listen": "127.0.0.1",
     "protocol": "socks",
-    "settings": {
-      "udp": true
-    }
+    "settings": {"udp": true}
   }],
   "outbounds": [{
     "protocol": "vless",
@@ -161,17 +144,11 @@ cat <<EOF
       }]
     },
     "streamSettings": {
-      "network": "ws",
+      "network": "grpc",
       "security": "tls",
-      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false},
-      "wsSettings": {"path": "$WS_PATH"}
+      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false, "alpn": ["h2"]},
+      "grpcSettings": {"serviceName": "$GRPC_SERVICE"}
     }
   }]
 }
 EOF
-
-echo ""
-echo "--------------------------------------"
-echo "Quick Connect String:"
-echo "vless://$UUID@$DOMAIN:443?type=ws&security=tls&path=$WS_PATH&sni=$DOMAIN#$USERNAME"
-echo ""

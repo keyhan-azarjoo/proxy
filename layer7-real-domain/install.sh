@@ -2,10 +2,10 @@
 set -euo pipefail
 
 # ============================================
-# Layer 7: Real Domain + TLS (VLESS)
+# Layer 7: Real Domain + gRPC + REAL TLS (VLESS)
 # ============================================
 
-SCRIPT_VERSION="2.0.0"
+SCRIPT_VERSION="2.1.0"
 LOG_FILE="/var/log/ssh-proxy.log"
 
 log() {
@@ -37,14 +37,14 @@ preflight_check() {
 
 main() {
     echo "============================================"
-    echo " Layer 7: Real Domain + TLS (VLESS)"
+    echo " Layer 7: Real Domain + gRPC + REAL TLS"
     echo " Version: $SCRIPT_VERSION"
     echo "============================================"
     echo ""
     echo "This will:"
     echo "  - Install Xray (V2Ray core)"
     echo "  - Configure VLESS protocol"
-    echo "  - Enable WebSocket transport"
+    echo "  - Enable gRPC transport"
     echo "  - Get a REAL TLS certificate (Let's Encrypt)"
     echo "  - Use port 443 (real HTTPS)"
     echo ""
@@ -57,7 +57,6 @@ main() {
         exit 1
     fi
 
-    # DuckDNS auto-update setup
     DUCKDNS_TOKEN=""
     DUCKDNS_SUBDOMAIN=""
     if [[ "$DOMAIN" == *.duckdns.org ]]; then
@@ -74,7 +73,6 @@ main() {
 
     log "=== Starting Layer 7 installation ==="
 
-    # Remove conflicting services
     echo "Removing conflicting services..."
     systemctl stop stunnel4 2>/dev/null || true
     systemctl disable stunnel4 2>/dev/null || true
@@ -88,13 +86,11 @@ main() {
     done
     log "Conflicting services removed"
 
-    # Install dependencies
     echo "Installing dependencies..."
     apt update -y
     apt install -y curl unzip openssl ufw jq certbot
     log "Dependencies installed"
 
-    # Update DuckDNS DNS record (before certbot, so domain resolves to this server)
     if [ -n "$DUCKDNS_TOKEN" ]; then
         echo "Updating DuckDNS DNS record..."
         DUCKDNS_RESPONSE=$(curl -s "https://www.duckdns.org/update?domains=${DUCKDNS_SUBDOMAIN}&token=${DUCKDNS_TOKEN}&ip=")
@@ -106,21 +102,18 @@ main() {
             echo "Continuing anyway..."
         fi
 
-        # Set up cron job for automatic DNS update every 5 minutes
         echo "Setting up DuckDNS auto-update cron job..."
         CRON_CMD="*/5 * * * * curl -fs \"https://www.duckdns.org/update?domains=${DUCKDNS_SUBDOMAIN}&token=${DUCKDNS_TOKEN}&ip=\" >/dev/null"
         (crontab -l 2>/dev/null | grep -v "duckdns.org/update"; echo "$CRON_CMD") | crontab -
         log "DuckDNS auto-update cron job configured (every 5 minutes)"
     fi
 
-    # Firewall
     echo "Configuring firewall..."
     ufw allow 80/tcp
     ufw allow 443/tcp
     ufw --force enable
     log "Firewall configured"
 
-    # Install Xray
     echo "Installing Xray..."
     bash <(curl -fsSL https://github.com/XTLS/Xray-install/raw/main/install-release.sh) || {
         log "ERROR: Xray installation failed"
@@ -128,7 +121,6 @@ main() {
     }
     log "Xray installed"
 
-    # Obtain TLS certificate
     echo "Requesting TLS certificate..."
     certbot certonly --standalone \
       -d "$DOMAIN" \
@@ -142,15 +134,12 @@ main() {
     systemctl enable --now certbot.timer 2>/dev/null || true
     log "TLS certificate issued"
 
-    # Generate WebSocket path
-    WS_PATH="/$(cat /proc/sys/kernel/random/uuid | cut -d'-' -f1)"
+    GRPC_SERVICE="grpc$(cat /proc/sys/kernel/random/uuid | cut -d'-' -f1)"
 
-    # Copy certs (not symlink — Let's Encrypt dirs are 0700 root-only)
     mkdir -p /etc/xray/certs
     cp "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" /etc/xray/certs/cert.pem
     cp "/etc/letsencrypt/live/$DOMAIN/privkey.pem" /etc/xray/certs/private.key
 
-    # Certbot renewal hook to copy new certs and restart xray
     mkdir -p /etc/letsencrypt/renewal-hooks/deploy
     cat > /etc/letsencrypt/renewal-hooks/deploy/xray-certs.sh <<HOOK
 #!/bin/bash
@@ -162,7 +151,6 @@ systemctl restart xray
 HOOK
     chmod 755 /etc/letsencrypt/renewal-hooks/deploy/xray-certs.sh
 
-    # Fix permissions
     chmod 755 /usr /usr/local /usr/local/etc
     mkdir -p /usr/local/etc/xray
     chmod 755 /usr/local/etc/xray
@@ -170,7 +158,6 @@ HOOK
     chown -R nobody:nogroup /etc/xray /usr/local/etc/xray
     chmod 644 /etc/xray/certs/cert.pem /etc/xray/certs/private.key
 
-    # Create Xray config
     echo "Configuring Xray..."
     cat > /usr/local/etc/xray/config.json <<EOF
 {
@@ -187,9 +174,10 @@ HOOK
         "decryption": "none"
       },
       "streamSettings": {
-        "network": "ws",
+        "network": "grpc",
         "security": "tls",
         "tlsSettings": {
+          "alpn": ["h2"],
           "certificates": [
             {
               "certificateFile": "/etc/xray/certs/cert.pem",
@@ -197,8 +185,8 @@ HOOK
             }
           ]
         },
-        "wsSettings": {
-          "path": "$WS_PATH"
+        "grpcSettings": {
+          "serviceName": "$GRPC_SERVICE"
         }
       }
     }
@@ -212,17 +200,15 @@ EOF
     chown nobody:nogroup /usr/local/etc/xray/config.json
     chmod 644 /usr/local/etc/xray/config.json
 
-    # Save empty user database and server config
     mkdir -p /usr/local/etc/xray
     echo "{}" > /usr/local/etc/xray/users.json
     chmod 644 /usr/local/etc/xray/users.json
 
-    # Save server config (domain, path) for add-user script
     if [ -n "$DUCKDNS_TOKEN" ]; then
         cat > /usr/local/etc/xray/server-config.json <<EOF
 {
   "domain": "$DOMAIN",
-  "ws_path": "$WS_PATH",
+  "grpc_service": "$GRPC_SERVICE",
   "protocol": "vless",
   "duckdns_token": "$DUCKDNS_TOKEN",
   "duckdns_subdomain": "$DUCKDNS_SUBDOMAIN"
@@ -232,7 +218,7 @@ EOF
         cat > /usr/local/etc/xray/server-config.json <<EOF
 {
   "domain": "$DOMAIN",
-  "ws_path": "$WS_PATH",
+  "grpc_service": "$GRPC_SERVICE",
   "protocol": "vless"
 }
 EOF
@@ -241,14 +227,12 @@ EOF
 
     log "Xray configured"
 
-    # Allow Xray (running as nobody) to read certs via systemd override
     mkdir -p /etc/systemd/system/xray.service.d
     cat > /etc/systemd/system/xray.service.d/override.conf <<OVERRIDE
 [Service]
 ReadOnlyPaths=/etc/xray/certs
 OVERRIDE
 
-    # Start Xray
     echo "Starting Xray..."
     systemctl daemon-reexec
     systemctl daemon-reload
@@ -266,7 +250,6 @@ OVERRIDE
 
     log "Xray started successfully"
 
-    # Save installation info
     SERVER_IP=$(curl -s --max-time 5 ifconfig.me 2>/dev/null || echo "Unknown")
     cat > /root/proxy-installation-info.txt <<EOF
 Installation Details
@@ -274,12 +257,12 @@ Installation Details
 Date: $(date)
 Layer: 7 (Real Domain + TLS)
 Port: 443
-Protocol: VLESS + WebSocket + TLS
+Protocol: VLESS + gRPC + REAL TLS
 Script Version: $SCRIPT_VERSION
 
 Domain: $DOMAIN
 Server IP: $SERVER_IP
-WebSocket Path: $WS_PATH
+gRPC Service: $GRPC_SERVICE
 
 Config Location: /usr/local/etc/xray/config.json
 Users Database: /usr/local/etc/xray/users.json
@@ -298,13 +281,11 @@ EOF
 
     log "=== Layer 7 installation completed ==="
 
-    # Install management panel
     log "Installing management panel..."
     PANEL_SCRIPT_URL="https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/panel/install-panel.sh"
     curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer7-real-domain || log "WARN: Panel installation failed (non-critical)"
     rm -f /tmp/install-panel.sh
 
-    # Final output
     echo ""
     echo "============================================"
     echo " Installation Complete!"
@@ -315,7 +296,8 @@ EOF
     echo "Domain: $DOMAIN"
     echo "Server IP: $SERVER_IP"
     echo "Port: 443"
-    echo "Protocol: VLESS + WebSocket + TLS"
+    echo "Protocol: VLESS + gRPC + REAL TLS"
+    echo "gRPC Service: $GRPC_SERVICE"
     echo ""
     if [ -n "$DUCKDNS_TOKEN" ]; then
         echo "DuckDNS Auto-Update: Enabled (every 5 minutes)"
