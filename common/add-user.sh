@@ -38,10 +38,12 @@ validate_password() {
     fi
 }
 
-# Backup configuration
+# Backup configuration (use /tmp/ to avoid read-only filesystem errors)
+BACKUP_FILE=""
 backup_config() {
-    cp "$SSHD_CONFIG" "$SSHD_CONFIG.backup-$(date +%s)"
-    log "Configuration backed up"
+    BACKUP_FILE="/tmp/sshd_config.backup-$(date +%s)"
+    cp "$SSHD_CONFIG" "$BACKUP_FILE"
+    log "Configuration backed up to $BACKUP_FILE"
 }
 
 # Main script
@@ -111,8 +113,10 @@ main() {
         echo "✓ User already exists, password updated"
     fi
 
-    # Remove existing Match block for this user
-    sed -i "/^Match User $USERNAME$/,/^$/d" "$SSHD_CONFIG"
+    # Remove existing Match block for this user (use temp file to avoid sed -i issues)
+    sed "/^Match User $USERNAME$/,/^$/d" "$SSHD_CONFIG" > /tmp/sshd_config.tmp
+    cp /tmp/sshd_config.tmp "$SSHD_CONFIG"
+    rm -f /tmp/sshd_config.tmp
 
     # Append clean Match block
     cat <<EOF >> "$SSHD_CONFIG"
@@ -128,7 +132,7 @@ EOF
     # Validate SSH config
     if ! sshd -t; then
         log "ERROR: Invalid SSH configuration, restoring backup"
-        cp "$SSHD_CONFIG.backup-"* "$SSHD_CONFIG" 2>/dev/null || true
+        cp "$BACKUP_FILE" "$SSHD_CONFIG" 2>/dev/null || true
         echo "Error: SSH configuration validation failed, changes reverted"
         exit 1
     fi
@@ -143,11 +147,30 @@ EOF
         exit 1
     fi
 
-    # Add iptables accounting for bandwidth tracking
+    # Add iptables accounting for bandwidth tracking (legacy chain)
     iptables -N "PROXY_USER_${USERNAME}" 2>/dev/null || true
     iptables -C OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}" 2>/dev/null || \
         iptables -A OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
-    iptables -C INPUT -m state --state ESTABLISHED,RELATED -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
+
+    # Per-user upload/download accounting via connmark (mangle table)
+    USER_UID="$(id -u "$USERNAME" 2>/dev/null || true)"
+    if [ -n "$USER_UID" ]; then
+        iptables -t mangle -N "PROXY_USER_${USERNAME}_OUT" 2>/dev/null || true
+        iptables -t mangle -N "PROXY_USER_${USERNAME}_IN" 2>/dev/null || true
+
+        iptables -t mangle -C OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}_OUT" 2>/dev/null || \
+            iptables -t mangle -A OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}_OUT" 2>/dev/null || true
+        iptables -t mangle -C INPUT -m connmark --mark "$USER_UID" -j "PROXY_USER_${USERNAME}_IN" 2>/dev/null || \
+            iptables -t mangle -A INPUT -m connmark --mark "$USER_UID" -j "PROXY_USER_${USERNAME}_IN" 2>/dev/null || true
+
+        iptables -t mangle -C "PROXY_USER_${USERNAME}_OUT" -m owner --uid-owner "$USERNAME" -j CONNMARK --set-mark "$USER_UID" 2>/dev/null || \
+            iptables -t mangle -A "PROXY_USER_${USERNAME}_OUT" -m owner --uid-owner "$USERNAME" -j CONNMARK --set-mark "$USER_UID" 2>/dev/null || true
+        iptables -t mangle -C "PROXY_USER_${USERNAME}_OUT" -j RETURN 2>/dev/null || \
+            iptables -t mangle -A "PROXY_USER_${USERNAME}_OUT" -j RETURN 2>/dev/null || true
+
+        iptables -t mangle -C "PROXY_USER_${USERNAME}_IN" -m connmark --mark "$USER_UID" -j RETURN 2>/dev/null || \
+            iptables -t mangle -A "PROXY_USER_${USERNAME}_IN" -m connmark --mark "$USER_UID" -j RETURN 2>/dev/null || true
+    fi
 
     log "User $USERNAME added successfully"
 
@@ -155,6 +178,7 @@ EOF
     mkdir -p /root/proxy-users
     cat > "/root/proxy-users/$USERNAME.txt" <<EOF
 Username: $USERNAME
+Password: $PASSWORD
 Created: $(date)
 Type: SSH SOCKS Proxy
 Status: Active

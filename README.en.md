@@ -96,7 +96,7 @@ After connecting, continue below.
 Choose Installation Method
 --------------------------------------------------
 
-### You have 6 different methods:
+### You have 7 different methods:
 
 | Method | Difficulty | Best For | Port |
 |--------|-----------|----------|------|
@@ -106,10 +106,14 @@ Choose Installation Method
 | **Layer 7: V2Ray VMess** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
 | **Layer 7: V2Ray VLESS** | ⭐⭐⭐⭐ Advanced | Hard censorship | 443 |
 | **Layer 7: Real Domain (VLESS/Trojan)** | ⭐⭐⭐⭐⭐ Advanced | Best security | 443 |
+| **Layer 7: Iran Optimized (gRPC)** | ⭐⭐⭐⭐⭐ Advanced | Iran DPI bypass | 443 |
 
 ---
 
 ### 📚 Complete guide for each method:
+
+At the moment, Layer 3 appears to work more reliably than other layers in Iran.
+However, the connection quality and internet bandwidth (speed) mainly depend on the hosting country’s network capacity and international connectivity, rather than the tunneling layer itself.
 
 - [Layer 3: Basic SSH](./layer3-basic/README.en.md) - Simplest method to get started
 - [Layer 4: Nginx](./layer4-nginx/README.en.md) - Recommended for daily use
@@ -117,6 +121,7 @@ Choose Installation Method
 - [Layer 7: V2Ray VMess](./layer7-v2ray-vmess/README.en.md) - Advanced obfuscation
 - [Layer 7: V2Ray VLESS](./layer7-v2ray-vless/README.en.md) - Modern and lightweight protocol
 - [Layer 7: Real Domain + TLS](./layer7-real-domain/README.en.md) - Best overall method
+- [Layer 7: Iran Optimized (gRPC)](./layer7-iran-optimized/README.en.md) - Tuned for Iranian ISP DPI/throttling
 
 ---
 
@@ -127,7 +132,7 @@ Uninstall (if needed)
 If you want to completely remove the proxy:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
 ```
 
 **Note:** If you have reset the server or are reinstalling, run this command on your computer to remove the old SSH key:

@@ -10,7 +10,7 @@ PANEL_PORT=8443
 XRAY_STATS_PORT=10085
 LOG_FILE="/var/log/proxy-panel.log"
 LAYER="unknown"
-REPO_BASE="https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/panel"
+REPO_BASE="https://raw.githubusercontent.com/myotgo/Proxy/main/panel"
 
 # ─── Parse Arguments ──────────────────────────────────────────────────────────
 
@@ -27,6 +27,48 @@ done
 log_msg() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE" 2>/dev/null || true
+}
+
+port_in_use() {
+    local port="$1"
+    ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE "(^|:)${port}$"
+}
+
+
+disable_plesk() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    if systemctl list-unit-files 2>/dev/null | grep -qE '^(sw-cp-server|sw-engine|plesk)\.service'; then
+        log_msg "Plesk detected. Disabling to free port 8443..."
+        systemctl stop sw-cp-server sw-engine plesk >/dev/null 2>&1 || true
+        systemctl disable sw-cp-server sw-engine plesk >/dev/null 2>&1 || true
+        sleep 2
+        return 0
+    fi
+    return 1
+}
+
+proxy_panel_active() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    systemctl is-active --quiet proxy-panel
+}
+
+stop_proxy_panel() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    if systemctl list-unit-files 2>/dev/null | grep -q '^proxy-panel\.service'; then
+        if systemctl is-active --quiet proxy-panel; then
+            log_msg "Proxy panel is running. Stopping it to free port 8443..."
+            systemctl stop proxy-panel >/dev/null 2>&1 || true
+            sleep 2
+            return 0
+        fi
+    fi
+    return 1
 }
 
 # ─── Pre-flight ───────────────────────────────────────────────────────────────
@@ -92,6 +134,39 @@ copy_or_download "static/app.js"
 
 chmod +x "$PANEL_DIR/proxy-panel.py"
 
+# Determine Panel Port
+
+PANEL_PORT=8443
+if [ -f "$PANEL_DIR/panel.conf" ] && command -v python3 >/dev/null 2>&1; then
+    python3 - <<'PY'
+import json
+path = "/opt/proxy-panel/panel.conf"
+with open(path, "r", encoding="utf-8") as f:
+    data = json.load(f)
+data["port"] = 8443
+with open(path, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+PY
+    chmod 600 "$PANEL_DIR/panel.conf" || true
+fi
+
+if port_in_use "8443"; then
+    disable_plesk || true
+fi
+
+if port_in_use "8443"; then
+    stop_proxy_panel || true
+fi
+
+if port_in_use "8443"; then
+    if proxy_panel_active; then
+        log_msg "Port 8443 is already in use by proxy-panel. Continuing reinstall..."
+    else
+    log_msg "ERROR: Port 8443 is in use and could not be freed. Aborting panel install."
+    exit 1
+    fi
+fi
+
 # ─── Copy Management Scripts ──────────────────────────────────────────────────
 
 # Determine which scripts to use based on layer
@@ -102,6 +177,11 @@ if [[ "$LAYER" == layer7-* ]]; then
         cp "$LAYER_DIR/add-user.sh" "$PANEL_DIR/scripts/add-user.sh"
         chmod +x "$PANEL_DIR/scripts/add-user.sh"
         log_msg "Copied V2Ray add-user.sh from $LAYER"
+    fi
+    if [ -f "$LAYER_DIR/delete-user.sh" ]; then
+        cp "$LAYER_DIR/delete-user.sh" "$PANEL_DIR/scripts/delete-user.sh"
+        chmod +x "$PANEL_DIR/scripts/delete-user.sh"
+        log_msg "Copied V2Ray delete-user.sh from $LAYER"
     fi
 else
     # SSH layer - copy from common
@@ -290,8 +370,6 @@ Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-ProtectSystem=full
-PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target

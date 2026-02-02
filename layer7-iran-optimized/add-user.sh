@@ -2,25 +2,33 @@
 set -euo pipefail
 
 # ============================================
-# V2Ray VMess - Add User Script
-# Add new user to VMess configuration
+# Iran-Optimized VLESS gRPC - Add User Script
 # ============================================
 
 CONFIG="/usr/local/etc/xray/config.json"
 USER_DB="/usr/local/etc/xray/users.json"
+SERVER_CONFIG="/usr/local/etc/xray/server-config.json"
 LOG_FILE="/var/log/ssh-proxy.log"
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
-# Check if jq is installed
+if [ "$EUID" -ne 0 ]; then
+    echo "Error: This script must be run as root"
+    exit 1
+fi
+
 if ! command -v jq >/dev/null 2>&1; then
     echo "Installing jq..."
     apt update -y && apt install -y jq
 fi
 
-# Get username
+if [ ! -f "$SERVER_CONFIG" ]; then
+    echo "Error: Server config not found. Run install.sh first."
+    exit 1
+fi
+
 if [ "$#" -eq 1 ]; then
     USERNAME="$1"
 elif [ "$#" -eq 0 ]; then
@@ -30,49 +38,38 @@ else
     exit 1
 fi
 
-# Validate username
 if ! [[ "$USERNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
     echo "Error: Username can only contain letters, numbers, dash, underscore"
     exit 1
 fi
 
-log "Adding VMess user: $USERNAME"
+log "Adding VLESS user: $USERNAME"
 
-# Create user database if not exists
 if [ ! -f "$USER_DB" ]; then
     echo "{}" > "$USER_DB"
 fi
 
-# Check if user exists
 if jq -e --arg u "$USERNAME" '.[$u]' "$USER_DB" >/dev/null 2>&1; then
     UUID=$(jq -r --arg u "$USERNAME" '.[$u]' "$USER_DB")
     EXISTING=true
-    echo "User '$USERNAME' already exists"
+    echo "User '$USERNAME' already exists - returning same config"
 else
-    # Generate new UUID
     UUID=$(cat /proc/sys/kernel/random/uuid)
 
-    # Save to user database
     jq --arg u "$USERNAME" --arg id "$UUID" '. + {($u): $id}' "$USER_DB" > /tmp/users.json
     mv /tmp/users.json "$USER_DB"
 
-    # Add to Xray config
     jq --arg uuid "$UUID" --arg email "${USERNAME}@proxy" \
-      '.inbounds[0].settings.clients += [{"id":$uuid,"alterId":0,"email":$email}]' \
+      '.inbounds[0].settings.clients += [{"id":$uuid,"email":$email}]' \
       "$CONFIG" > /tmp/xray.json
-
     mv /tmp/xray.json "$CONFIG"
 
-    # Restart Xray
     systemctl restart xray
 
-    # Verify Xray is running
     sleep 2
     if ! systemctl is-active --quiet xray; then
         log "ERROR: Xray failed to restart after adding user"
         echo "Error: Xray failed to restart"
-        echo "Restoring previous config..."
-        # Note: Should have backup, but for now just notify
         exit 1
     fi
 
@@ -80,10 +77,10 @@ else
     log "User $USERNAME added successfully"
 fi
 
-# Get server IP
+DOMAIN=$(jq -r '.domain' "$SERVER_CONFIG")
+GRPC_SERVICE=$(jq -r '.grpc_service' "$SERVER_CONFIG")
 SERVER_IP=$(curl -s --max-time 5 ifconfig.me 2>/dev/null || echo "YOUR_SERVER_IP")
 
-# Display results
 echo ""
 echo "======================================"
 echo " User: $USERNAME"
@@ -91,80 +88,32 @@ echo " UUID: $UUID"
 if [ "$EXISTING" = true ]; then
     echo " Status: Existing user"
 else
-    echo " Status: ✓ New user created"
+    echo " Status: New user created"
 fi
 echo "======================================"
 echo ""
-echo ""
-echo "╔══════════════════════════════════════╗"
-echo "║          iOS  (NPV Tunnel)           ║"
-echo "╚══════════════════════════════════════╝"
+echo "VLESS gRPC + REAL TLS (Iran-Optimized)"
+echo "Domain: $DOMAIN"
+echo "gRPC Service: $GRPC_SERVICE"
 echo ""
 
 cat <<EOF
 {
   "inbounds": [],
   "outbounds": [{
-    "protocol": "vmess",
+    "protocol": "vless",
     "settings": {
       "vnext": [{
-        "address": "$SERVER_IP",
+        "address": "$DOMAIN",
         "port": 443,
-        "users": [{
-          "id": "$UUID",
-          "alterId": 0,
-          "security": "auto"
-        }]
+        "users": [{"id": "$UUID", "encryption": "none"}]
       }]
     },
     "streamSettings": {
-      "network": "tcp",
+      "network": "grpc",
       "security": "tls",
-      "tlsSettings": {
-        "serverName": "proxy.local",
-        "allowInsecure": true
-      }
-    }
-  }]
-}
-EOF
-
-echo ""
-echo "╔══════════════════════════════════════╗"
-echo "║        ANDROID  (NetMod)             ║"
-echo "╚══════════════════════════════════════╝"
-echo ""
-
-cat <<EOF
-{
-  "inbounds": [{
-    "port": 10808,
-    "listen": "127.0.0.1",
-    "protocol": "socks",
-    "settings": {
-      "udp": true
-    }
-  }],
-  "outbounds": [{
-    "protocol": "vmess",
-    "settings": {
-      "vnext": [{
-        "address": "$SERVER_IP",
-        "port": 443,
-        "users": [{
-          "id": "$UUID",
-          "alterId": 0,
-          "security": "auto"
-        }]
-      }]
-    },
-    "streamSettings": {
-      "network": "tcp",
-      "security": "tls",
-      "tlsSettings": {
-        "serverName": "proxy.local",
-        "allowInsecure": true
-      }
+      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false, "alpn": ["h2"]},
+      "grpcSettings": {"serviceName": "$GRPC_SERVICE"}
     }
   }]
 }
@@ -173,5 +122,33 @@ EOF
 echo ""
 echo "--------------------------------------"
 echo "Quick Connect String:"
-echo "vmess://$UUID@$SERVER_IP:443"
+echo "vless://$UUID@$DOMAIN:443?type=grpc&security=tls&serviceName=$GRPC_SERVICE&sni=$DOMAIN#$USERNAME"
 echo ""
+
+echo "Local SOCKS (Android/NetMod) sample:"
+cat <<EOF
+{
+  "inbounds": [{
+    "port": 10808,
+    "listen": "127.0.0.1",
+    "protocol": "socks",
+    "settings": {"udp": true}
+  }],
+  "outbounds": [{
+    "protocol": "vless",
+    "settings": {
+      "vnext": [{
+        "address": "$DOMAIN",
+        "port": 443,
+        "users": [{"id": "$UUID", "encryption": "none"}]
+      }]
+    },
+    "streamSettings": {
+      "network": "grpc",
+      "security": "tls",
+      "tlsSettings": {"serverName": "$DOMAIN", "allowInsecure": false, "alpn": ["h2"]},
+      "grpcSettings": {"serviceName": "$GRPC_SERVICE"}
+    }
+  }]
+}
+EOF

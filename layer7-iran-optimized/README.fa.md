@@ -1,7 +1,7 @@
-# لایه ۷: دامنه واقعی + TLS - بهترین روش کلی
+# لایه ۷: بهینه‌شده ایران (gRPC) - تنظیم‌شده برای ISP‌های ایران
 
-> **⭐⭐⭐⭐⭐ بهترین روش (سخت‌ترین برای فیلتر شدن)**
-> پورت 443 - تونل TLS واقعی + gRPC با گواهی معتبر
+> **⭐⭐⭐⭐⭐ بهترین برای ایران (بهینه برای دور زدن DPI/throttling)**
+> پورت 443 - VLESS + gRPC + TLS واقعی + بهینه‌سازی‌های مخصوص ایران
 
 [← بازگشت به راهنمای اصلی](../README.fa.md)
 
@@ -9,20 +9,24 @@
 
 ## این روش چیست؟
 
-این روش از یک **دامنه واقعی** و **گواهی TLS معتبر** استفاده می‌کند.
-ترافیک شما دقیقاً شبیه یک وب‌سایت HTTPS معمولی است.
+این روش بر پایه **لایه ۷: دامنه واقعی** است اما با بهینه‌سازی‌های اضافی که مخصوصاً برای دور زدن DPI (بازرسی عمیق بسته) و throttling اینترنت ایران طراحی شده‌اند.
 
-**چرا بهترین است:**
-- دامنه واقعی (Real Domain)
-- گواهی TLS معتبر (Let's Encrypt)
-- اثر انگشت TLS طبیعی
-- بدون امضای واضح پروکسی
+**تنظیمات مخصوص ایران:**
+- پینگ keepalive برای gRPC (جلوگیری از قطع اتصالات بیکار توسط ISP)
+- TLS 1.2-1.3 + h2 ALPN (اثر انگشت مشابه Chrome/Android)
+- بافرهای کوچک (16KB، مقاوم در برابر از دست رفتن بسته)
+- تایم‌اوت کوتاه (جلوگیری از تحلیل جریان)
+- API آمار فعال برای مانیتورینگ
 
-**نتیجه:** ترافیک از مرور وب معمولی قابل تشخیص نیست.
+**چرا این روش بهتر از دامنه واقعی است:**
+- پایداری بهتر در شبکه‌های ایرانی
+- مقاوم در برابر ریست اتصال توسط ISP
+- بهینه برای محیط‌های با از دست رفتن بالای بسته
+- اقدامات ضد DPI داخلی
 
 **امنیت:** ⭐⭐⭐⭐⭐
 **مخفی‌سازی:** ⭐⭐⭐⭐⭐
-**سرعت:** ⭐⭐⭐⭐☆
+**پایداری ایران:** ⭐⭐⭐⭐⭐
 
 ---
 
@@ -83,7 +87,7 @@
 myproxy123.duckdns.org
 ```
 
-IP سرور IONOS خود را در کادر IP وارد کنید.
+IP سرور خود را در کادر IP وارد کنید.
 
 TOKEN خود را کپی کنید (نگه دارید).
 
@@ -103,25 +107,26 @@ ssh root@SERVER-IP
 ---
 
 --------------------------------------------------
-مرحله ۴: نصب لایه ۷ (دامنه واقعی + TLS)
+مرحله ۴: نصب لایه ۷ (بهینه‌شده ایران)
 --------------------------------------------------
 
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/install.sh -o install.sh && bash install.sh
 ```
 
 **در طول نصب از شما پرسیده می‌شود:**
 1. دامنه شما (مثلاً: myproxy123.duckdns.org)
 2. ایمیل شما (برای Let's Encrypt)
-<img width="1178" height="602" alt="Screenshot 2026-01-29 094843" src="https://github.com/user-attachments/assets/6a295b18-3915-417e-9837-de77eee0db0c" />
-
+3. توکن DuckDNS (اگر از دامنه .duckdns.org استفاده می‌کنید)
 
 اسکریپت:
 - گواهی TLS معتبر می‌گیرد
 - VLESS gRPC را روی پورت 443 راه‌اندازی می‌کند
-- همه چیز را آماده می‌کند
+- اقدامات ضد DPI مخصوص ایران را اعمال می‌کند
+- تنظیمات keepalive برای gRPC را فعال می‌کند
+- API آمار را برای مانیتورینگ فعال می‌کند
 
 ---
 
@@ -134,9 +139,8 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domai
 - کانفیگ Android (برای NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh
 ```
-<img width="1541" height="1327" alt="Screenshot 2026-01-29 095609" src="https://github.com/user-attachments/assets/d4a840bc-25f9-4347-a9b0-6bc1998f060c" />
 
 **توجه:** اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ قبلی برگردانده می‌شود.
 
@@ -159,7 +163,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 بعد از حذف، کاربر دیگر نمی‌تواند با کانفیگ قبلی متصل شود.
@@ -168,13 +172,13 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domai
 
 ## استفاده در iOS
 
-[راهنمای اتصال با iOS (NPV Tunnel)](./iOS-SETUP.md)
+[راهنمای اتصال با iOS (NPV Tunnel)](../layer7-real-domain/iOS-SETUP.fa.md)
 
 ---
 
 ## استفاده در Android
 
-[راهنمای اتصال با Android (NetMod)](./ANDROID-SETUP.md)
+[راهنمای اتصال با Android (NetMod)](../layer7-real-domain/ANDROID-SETUP.fa.md)
 
 ---
 
@@ -201,12 +205,13 @@ crontab -e
 
 ## نکات مهم
 
-- این **بهترین روش کلی** است
+- این **بهترین روش برای کاربران ایرانی** است
 - از DPI، فیلتر SNI، و Active Probing عبور می‌کند
 - گواهی معتبر مرورگر دارد
-- سخت‌ترین برای فیلتر شدن
+- keepalive برای gRPC از قطع شدن بیکار جلوگیری می‌کند
+- اثر انگشت TLS مشابه مرورگرهای Chrome/Android
 - برای iOS: NPV Tunnel
-- برای Android: NetMod
+- برای Android: NetMod / V2RayNG
 - دامنه و UUID را ایمن نگه دارید
 
 ---
@@ -215,9 +220,10 @@ crontab -e
 
 | سوال | پاسخ |
 |------|------|
-| کاملاً رایگان؟ | ✅ بله |
-| سخت برای فیلتر شدن؟ | ✅ بسیار سخت |
-| مناسب سانسور شدید؟ | ✅ بله |
-| نیاز به دامنه؟ | ✅ بله (DuckDNS رایگان) |
+| کاملاً رایگان؟ | بله (با DuckDNS) |
+| سخت برای فیلتر شدن؟ | بسیار سخت |
+| مناسب ایران؟ | بهترین گزینه |
+| نیاز به دامنه؟ | بله (DuckDNS رایگان) |
+| مقاوم در برابر DPI? | بله |
 
 ---

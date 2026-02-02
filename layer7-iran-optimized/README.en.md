@@ -1,7 +1,7 @@
-# Layer 7: Real Domain + TLS - Best Overall Method
+# Layer 7: Iran Optimized (gRPC) - Tuned for Iranian ISPs
 
-> **⭐⭐⭐⭐⭐ Best method (hardest to filter)**
-> Port 443 - Real TLS + gRPC tunnel with valid certificate
+> **⭐⭐⭐⭐⭐ Best for Iran (tuned for DPI/throttling bypass)**
+> Port 443 - VLESS + gRPC + Real TLS + Iran-specific optimizations
 
 [← Back to main guide](../README.en.md)
 
@@ -9,20 +9,24 @@
 
 ## What is this method?
 
-This method uses a **real domain** and **valid TLS certificate**.
-Your traffic looks exactly like a normal HTTPS website.
+This method is based on **Layer 7: Real Domain** but with additional optimizations specifically designed to bypass Iranian ISP DPI (Deep Packet Inspection) and throttling.
 
-**Why it's the best:**
-- Real domain
-- Valid TLS certificate (Let's Encrypt)
-- Natural TLS fingerprint
-- No obvious proxy signatures
+**Iran-specific tuning:**
+- gRPC keepalive pings (prevents idle connection kills by ISPs)
+- TLS 1.2-1.3 + h2 ALPN (Chrome/Android fingerprint normalization)
+- Small buffers (16KB, survives packet loss)
+- Short idle timeouts (avoids flow analysis)
+- Stats API enabled for monitoring
 
-**Result:** Traffic is indistinguishable from normal web browsing.
+**Why use this over Real Domain:**
+- Better stability on Iranian networks
+- Survives ISP connection resets
+- Optimized for high packet-loss environments
+- Built-in DPI countermeasures
 
 **Security:** ⭐⭐⭐⭐⭐
 **Stealth:** ⭐⭐⭐⭐⭐
-**Speed:** ⭐⭐⭐⭐☆
+**Iran Stability:** ⭐⭐⭐⭐⭐
 
 ---
 
@@ -83,7 +87,7 @@ Choose a name (e.g.):
 myproxy123.duckdns.org
 ```
 
-Enter your IONOS server IP in the IP box.
+Enter your server IP in the IP box.
 
 Copy your TOKEN (keep it safe).
 
@@ -103,26 +107,26 @@ ssh root@SERVER-IP
 ---
 
 --------------------------------------------------
-Step 4: Install Layer 7 (Real Domain + TLS)
+Step 4: Install Layer 7 (Iran Optimized)
 --------------------------------------------------
 
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/install.sh -o install.sh && bash install.sh
 ```
 
 **During installation you'll be asked:**
 1. Your domain (e.g.: myproxy123.duckdns.org)
 2. Your email (for Let's Encrypt)
-   
-<img width="1178" height="602" alt="Screenshot 2026-01-29 094843" src="https://github.com/user-attachments/assets/5818b2e8-8752-477b-834f-0679423c47ce" />
-
+3. DuckDNS token (if using a .duckdns.org domain)
 
 The script will:
 - Obtain valid TLS certificate
 - Set up VLESS gRPC on port 443
-- Prepare everything
+- Apply Iran-specific DPI countermeasures
+- Enable gRPC keepalive tuning
+- Enable stats API for monitoring
 
 ---
 
@@ -135,9 +139,8 @@ Create a user for each person. After adding a user, **2 JSON configs** will be d
 - Android config (for NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh
 ```
-<img width="1541" height="1327" alt="Screenshot 2026-01-29 095609" src="https://github.com/user-attachments/assets/3a4b8512-2ebe-424c-8499-ad7025872d2f" />
 
 **Note:** If you add the same username again, the same config will be returned.
 
@@ -160,7 +163,7 @@ Step 7: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 After deletion, the user can no longer connect with their previous config.
@@ -169,13 +172,13 @@ After deletion, the user can no longer connect with their previous config.
 
 ## iOS Usage
 
-[iOS Connection Guide (NPV Tunnel)](./iOS-SETUP.md)
+[iOS Connection Guide (NPV Tunnel)](../layer7-real-domain/iOS-SETUP.en.md)
 
 ---
 
 ## Android Usage
 
-[Android Connection Guide (NetMod)](./ANDROID-SETUP.md)
+[Android Connection Guide (NetMod)](../layer7-real-domain/ANDROID-SETUP.en.md)
 
 ---
 
@@ -202,12 +205,13 @@ Add this line:
 
 ## Important Notes
 
-- This is the **best overall method**
+- This is the **best method for users in Iran**
 - Passes DPI, SNI filtering, and Active Probing
 - Has valid browser certificate
-- Hardest to filter
+- gRPC keepalive prevents idle disconnections
+- TLS fingerprint matches Chrome/Android browsers
 - For iOS: NPV Tunnel
-- For Android: NetMod
+- For Android: NetMod / V2RayNG
 - Keep domain and UUID secure
 
 ---
@@ -216,14 +220,10 @@ Add this line:
 
 | Question | Answer |
 |----------|--------|
-| Fully free? | ✅ YES |
-| Hard to block? | ✅ VERY |
-| Suitable for hard censorship? | ✅ YES |
-| Need domain? | ✅ YES (DuckDNS is free) |
+| Fully free? | Yes (with DuckDNS) |
+| Hard to block? | Very hard |
+| Suitable for Iran? | Best option |
+| Need domain? | Yes (DuckDNS is free) |
+| Survives DPI? | Yes |
 
 ---
-
-**Made with ❤️ for internet freedom**
-
-
-

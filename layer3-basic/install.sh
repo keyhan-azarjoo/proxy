@@ -15,6 +15,49 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
+
+port_in_use() {
+    local port="$1"
+    ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE "(^|:)$port$"
+}
+
+disable_plesk() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    if systemctl list-unit-files 2>/dev/null | grep -qE '^(sw-cp-server|sw-engine|plesk)\.service'; then
+        log "Plesk detected. Disabling to free port 8443..."
+        systemctl stop sw-cp-server sw-engine plesk >/dev/null 2>&1 || true
+        systemctl disable sw-cp-server sw-engine plesk >/dev/null 2>&1 || true
+        sleep 2
+        return 0
+    fi
+    return 1
+}
+
+proxy_panel_active() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    systemctl is-active --quiet proxy-panel
+}
+
+stop_proxy_panel() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    if systemctl list-unit-files 2>/dev/null | grep -q '^proxy-panel\.service'; then
+        if systemctl is-active --quiet proxy-panel; then
+            log "Proxy panel is running. Stopping it to free port 8443..."
+            systemctl stop proxy-panel >/dev/null 2>&1 || true
+            sleep 2
+            return 0
+        fi
+    fi
+    return 1
+}
+
+
 # Pre-flight checks
 preflight_check() {
     log "Running pre-flight checks..."
@@ -148,9 +191,26 @@ EOF
 
     log "=== Layer 3 installation completed ==="
 
-    # Install management panel
+    
+    # Ensure panel uses port 8443 (disable Plesk if needed)
+    if port_in_use 8443; then
+        disable_plesk || true
+    fi
+    if port_in_use 8443; then
+        stop_proxy_panel || true
+    fi
+    if port_in_use 8443; then
+        if proxy_panel_active; then
+            log "Port 8443 is already in use by proxy-panel. Continuing..."
+        else
+            log "ERROR: Port 8443 is in use and could not be freed. Aborting panel install."
+            exit 1
+        fi
+    fi
+
+# Install management panel
     log "Installing management panel..."
-    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/panel/install-panel.sh"
+    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/myotgo/Proxy/main/panel/install-panel.sh"
     curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer3-basic || log "WARN: Panel installation failed (non-critical)"
     rm -f /tmp/install-panel.sh
 
@@ -164,7 +224,7 @@ EOF
     echo ""
     echo "Next steps:"
     echo "  1. Add a proxy user:"
-    echo "     curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "     curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
     echo ""
     echo "     Note: Password must be at least 8 characters."
     echo "           Password won't be visible while typing (this is normal)."
@@ -176,16 +236,31 @@ EOF
     echo "     Host: localhost"
     echo "     Port: 1080"
     echo ""
-    echo "Management Panel:"
-    echo "  URL: https://$(curl -s --max-time 5 ifconfig.me 2>/dev/null || echo 'YOUR_SERVER_IP'):8443"
+    PANEL_PORT=8443
+if [ -f /opt/proxy-panel/panel.conf ] && command -v python3 >/dev/null 2>&1; then
+    PANEL_PORT=$(python3 - <<'PY'
+import json
+try:
+    with open('/opt/proxy-panel/panel.conf', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    port = data.get('port')
+    print(port if isinstance(port, int) else '8443')
+except Exception:
+    print('8443')
+PY
+)
+fi
+
+echo "Management Panel:"
+    echo "  URL: https://$(curl -s --max-time 5 ifconfig.me 2>/dev/null || echo 'YOUR_SERVER_IP'):${PANEL_PORT}"
     echo "  Login with your server root credentials"
     echo ""
     echo "CLI Management commands:"
-    echo "  Add user:     curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
-    echo "  Delete user:  curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh USERNAME"
-    echo "  View users:   curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh"
-    echo "  List users:   curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/list-users.sh -o list-users.sh && bash list-users.sh"
-    echo "  Check status: curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/status.sh -o status.sh && bash status.sh"
+    echo "  Add user:     curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user:  curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh USERNAME"
+    echo "  View users:   curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh"
+    echo "  List users:   curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/list-users.sh -o list-users.sh && bash list-users.sh"
+    echo "  Check status: curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/status.sh -o status.sh && bash status.sh"
     echo ""
     echo "============================================"
 }

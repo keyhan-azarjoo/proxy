@@ -66,7 +66,7 @@ Step 3: Install Layer 7 (V2Ray VMess)
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-v2ray-vmess/install.sh -o install.sh && bash install.sh
 ```
 
 Installation runs automatically.
@@ -83,7 +83,7 @@ Create a user for each person. After adding a user, **2 JSON configs** will be d
 - Android config (for NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-v2ray-vmess/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **Note:** If you add the same username again, the same config will be returned.
@@ -97,7 +97,7 @@ Step 5: Monitor Users
 To view connected users and server status:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -107,7 +107,7 @@ Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-v2ray-vmess/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 After deletion, the user can no longer connect with their previous config.

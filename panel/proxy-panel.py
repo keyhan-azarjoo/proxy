@@ -23,7 +23,7 @@ import ctypes
 import ctypes.util
 from urllib.parse import urlparse, parse_qs, unquote
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict
 
 # ─── Configuration ────────────────────────────────────────────────────────────
@@ -34,6 +34,59 @@ DATA_DIR = PANEL_DIR / "data"
 TEMPLATES_DIR = PANEL_DIR / "templates"
 STATIC_DIR = PANEL_DIR / "static"
 LOG_FILE = "/var/log/proxy-panel.log"
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/myotgo/Proxy/main"
+
+LAYER_DEFINITIONS = [
+    {
+        "id": "layer3-basic",
+        "name": "Basic SSH SOCKS",
+        "description": "Simple SSH proxy on port 22",
+        "needs_domain": False,
+        "needs_duckdns": False,
+    },
+    {
+        "id": "layer4-nginx",
+        "name": "Nginx TCP Proxy",
+        "description": "Nginx stream proxy on port 443",
+        "needs_domain": False,
+        "needs_duckdns": False,
+    },
+    {
+        "id": "layer6-stunnel",
+        "name": "Stunnel TLS Wrapper",
+        "description": "SSH over TLS using Stunnel on port 443",
+        "needs_domain": False,
+        "needs_duckdns": False,
+    },
+    {
+        "id": "layer7-v2ray-vless",
+        "name": "V2Ray VLESS (WebSocket)",
+        "description": "VLESS protocol with WebSocket transport and self-signed TLS",
+        "needs_domain": False,
+        "needs_duckdns": False,
+    },
+    {
+        "id": "layer7-v2ray-vmess",
+        "name": "V2Ray VMess (TCP)",
+        "description": "VMess protocol with TCP transport",
+        "needs_domain": False,
+        "needs_duckdns": False,
+    },
+    {
+        "id": "layer7-real-domain",
+        "name": "V2Ray Real Domain (gRPC)",
+        "description": "VLESS + gRPC with real TLS certificate (Let's Encrypt)",
+        "needs_domain": True,
+        "needs_duckdns": False,
+    },
+    {
+        "id": "layer7-iran-optimized",
+        "name": "V2Ray Iran Optimized (gRPC)",
+        "description": "VLESS + gRPC tuned for Iranian ISP DPI/throttling",
+        "needs_domain": True,
+        "needs_duckdns": True,
+    },
+]
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
 
@@ -312,29 +365,48 @@ class LayerManager:
 
     def _list_ssh_users(self):
         users = []
+        connected_users = self._get_ssh_connected_users()
         proxy_dir = Path("/root/proxy-users")
         if proxy_dir.exists():
             for f in proxy_dir.glob("*.txt"):
                 username = f.stem
-                user_info = {"username": username, "type": "ssh", "connected": False}
+                user_info = {"username": username, "type": "ssh", "connected": username in connected_users}
                 try:
                     content = f.read_text()
                     for line in content.splitlines():
                         if "Created:" in line:
                             user_info["created"] = line.split("Created:")[-1].strip()
-                except Exception:
-                    pass
-                # Check if connected
-                try:
-                    result = subprocess.run(
-                        ["who"], capture_output=True, text=True, timeout=5
-                    )
-                    if username in result.stdout:
-                        user_info["connected"] = True
+                        if "Password:" in line:
+                            user_info["password"] = line.split("Password:")[-1].strip()
                 except Exception:
                     pass
                 users.append(user_info)
         return users
+
+    def _get_ssh_connected_users(self):
+        """Best-effort detection of active SSH sessions per user."""
+        connected = set()
+        try:
+            result = subprocess.run(
+                ["ps", "-eo", "user=,cmd="],
+                capture_output=True, text=True, timeout=5
+            )
+            if result.returncode == 0 and result.stdout:
+                for line in result.stdout.splitlines():
+                    parts = line.strip().split(None, 1)
+                    if len(parts) != 2:
+                        continue
+                    user, cmd = parts
+                    if "sshd:" not in cmd:
+                        continue
+                    match = re.search(r"sshd:\s*([a-zA-Z0-9_-]+)", cmd)
+                    if match:
+                        connected.add(match.group(1))
+                    elif user not in ("root", "sshd"):
+                        connected.add(user)
+        except Exception:
+            pass
+        return connected
 
     def _list_v2ray_users(self):
         users = []
@@ -343,16 +415,40 @@ class LayerManager:
             try:
                 with open(users_file) as f:
                     data = json.load(f)
+                active_users = self._check_v2ray_users_connected()
                 for username, uuid in data.items():
                     users.append({
                         "username": username,
                         "uuid": uuid,
                         "type": "v2ray",
-                        "connected": False
+                        "connected": username in active_users
                     })
             except Exception as e:
                 log(f"Error reading users.json: {e}", "ERROR")
         return users
+
+    def _check_v2ray_users_connected(self):
+        """Check which V2Ray users have active traffic in the current xray session."""
+        connected = set()
+        stats_port = self.config.xray_stats_port
+        try:
+            result = subprocess.run(
+                ["xray", "api", "statsquery",
+                 f"--server=127.0.0.1:{stats_port}",
+                 "-pattern=user>>>"],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                data = json.loads(result.stdout)
+                for stat in data.get("stat", []):
+                    name = stat.get("name", "")
+                    value = int(stat.get("value", "0"))
+                    match = re.match(r"user>>>(.+)@proxy>>>traffic>>>", name)
+                    if match and value > 0:
+                        connected.add(match.group(1))
+        except Exception:
+            pass
+        return connected
 
     def add_user(self, username, password=None):
         """Add a proxy user using existing scripts."""
@@ -362,6 +458,14 @@ class LayerManager:
             if not password:
                 return {"success": False, "error": "Password required for SSH users"}
             return self._add_ssh_user(username, password)
+
+    def update_user_password(self, username, password):
+        """Update password for an existing SSH user."""
+        if self.is_v2ray_layer():
+            return {"success": False, "error": "Password changes are only supported for SSH users"}
+        if not self._ssh_user_exists(username):
+            return {"success": False, "error": "User not found"}
+        return self._add_ssh_user(username, password)
 
     def _add_ssh_user(self, username, password):
         script = self._find_script("add-user.sh", "common")
@@ -382,6 +486,16 @@ class LayerManager:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def _ssh_user_exists(self, username):
+        try:
+            result = subprocess.run(
+                ["id", username],
+                capture_output=True, text=True, timeout=5
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
     def _add_v2ray_user(self, username):
         # Find the correct add-user.sh for this layer
         layer_dir = self.layer
@@ -395,18 +509,12 @@ class LayerManager:
             )
             if result.returncode == 0:
                 log(f"User '{username}' added successfully (V2Ray)")
-                # Read users.json to get the UUID
-                users_file = "/usr/local/etc/xray/users.json"
-                uuid = None
-                if os.path.exists(users_file):
-                    with open(users_file) as f:
-                        data = json.load(f)
-                    uuid = data.get(username)
-                return {
-                    "success": True,
-                    "output": result.stdout,
-                    "uuid": uuid
-                }
+                # Return full connection config
+                config_result = self.get_user_config(username)
+                response = {"success": True, "output": result.stdout}
+                if config_result.get("success"):
+                    response.update(config_result)
+                return response
             else:
                 return {"success": False, "error": result.stderr or result.stdout}
         except subprocess.TimeoutExpired:
@@ -477,12 +585,13 @@ class LayerManager:
             return {"success": False, "error": str(e)}
 
     def get_user_config(self, username):
-        """Get V2Ray user connection configuration."""
+        """Get V2Ray user connection configuration with proper transport detection."""
         if not self.is_v2ray_layer():
             return {"success": False, "error": "Not a V2Ray layer"}
 
         users_file = "/usr/local/etc/xray/users.json"
         server_cfg_file = "/usr/local/etc/xray/server-config.json"
+        xray_config_file = "/usr/local/etc/xray/config.json"
 
         try:
             with open(users_file) as f:
@@ -496,40 +605,79 @@ class LayerManager:
                 with open(server_cfg_file) as f:
                     server_cfg = json.load(f)
 
+            # Detect transport from xray config
+            transport = "ws"
+            if os.path.exists(xray_config_file):
+                with open(xray_config_file) as f:
+                    xray_cfg = json.load(f)
+                for inb in xray_cfg.get("inbounds", []):
+                    if inb.get("protocol") in ("vless", "vmess"):
+                        transport = inb.get("streamSettings", {}).get("network", "ws")
+                        break
+
             domain = server_cfg.get("domain", "")
-            ws_path = server_cfg.get("ws_path", "/")
             protocol = server_cfg.get("protocol", "vless")
             server_ip = self._get_server_ip()
             host = domain if domain else server_ip
 
-            # Build connection URI
-            if protocol == "vless":
+            if transport == "grpc":
+                grpc_service = server_cfg.get("grpc_service", "")
+                uri = f"vless://{uuid}@{host}:443?type=grpc&security=tls&serviceName={grpc_service}&sni={host}#{username}"
+
+                stream = {
+                    "network": "grpc",
+                    "security": "tls",
+                    "tlsSettings": {"serverName": host, "allowInsecure": False, "alpn": ["h2"]},
+                    "grpcSettings": {"serviceName": grpc_service}
+                }
+            else:
+                ws_path = server_cfg.get("ws_path", "/")
+                allow_insecure = not bool(domain)
                 uri = f"vless://{uuid}@{host}:443?type=ws&security=tls&path={ws_path}"
                 if domain:
                     uri += f"&sni={domain}"
                 uri += f"#{username}"
-            else:
-                uri = f"vmess://{uuid}@{host}:443"
 
-            # Build client configs
+                tls_settings = {"allowInsecure": allow_insecure}
+                if domain:
+                    tls_settings["serverName"] = domain
+
+                stream = {
+                    "network": "ws",
+                    "security": "tls",
+                    "tlsSettings": tls_settings,
+                    "wsSettings": {"path": ws_path}
+                }
+
+            vnext = [{"address": host, "port": 443, "users": [{"id": uuid, "encryption": "none"}]}]
+
             ios_config = {
-                "protocol": protocol,
-                "uuid": uuid,
-                "address": host,
-                "port": 443,
-                "transport": "ws",
-                "ws_path": ws_path,
-                "tls": True,
-                "sni": domain if domain else host
+                "inbounds": [],
+                "outbounds": [{
+                    "protocol": protocol,
+                    "settings": {"vnext": vnext},
+                    "streamSettings": stream
+                }]
+            }
+
+            android_config = {
+                "inbounds": [{"port": 10808, "listen": "127.0.0.1", "protocol": "socks", "settings": {"udp": True}}],
+                "outbounds": [{
+                    "protocol": protocol,
+                    "settings": {"vnext": vnext},
+                    "streamSettings": stream
+                }]
             }
 
             return {
                 "success": True,
                 "uuid": uuid,
                 "uri": uri,
-                "config": ios_config,
+                "ios_config": ios_config,
+                "android_config": android_config,
                 "host": host,
-                "protocol": protocol
+                "protocol": protocol,
+                "transport": transport
             }
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -558,7 +706,7 @@ class LayerManager:
         return "SERVER_IP"
 
     def _find_script(self, name, subdir):
-        """Find a management script."""
+        """Find a management script. Downloads from GitHub if not found locally."""
         # Check scripts dir first
         scripts_dir = Path(self.config.scripts_dir)
         if (scripts_dir / name).exists():
@@ -571,7 +719,177 @@ class LayerManager:
             path = Path(base) / name
             if path.exists():
                 return str(path)
+        # Fallback: download from GitHub
+        return self._download_script(name, subdir)
+
+    def _download_script(self, name, subdir):
+        """Download script from GitHub raw URL and cache locally."""
+        url = f"{GITHUB_RAW_BASE}/{subdir}/{name}"
+        dest_dir = Path(self.config.scripts_dir)
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest = dest_dir / f"{subdir}_{name}"
+        try:
+            result = subprocess.run(
+                ["curl", "-fsSL", url, "-o", str(dest)],
+                capture_output=True, text=True, timeout=30
+            )
+            if result.returncode == 0:
+                os.chmod(str(dest), 0o755)
+                log(f"Downloaded script from {url}")
+                return str(dest)
+            else:
+                log(f"Failed to download script from {url}: {result.stderr}", "ERROR")
+        except Exception as e:
+            log(f"Failed to download script: {e}", "ERROR")
         return None
+
+    def switch_layer(self, target_layer_id, domain="", email="", duckdns_token=""):
+        """Start a layer switch in a background thread."""
+        global _switch_state
+
+        with _switch_lock:
+            if _switch_state["in_progress"]:
+                return {"success": False, "error": "Switch already in progress"}
+            _switch_state = {
+                "in_progress": True,
+                "phase": "starting",
+                "target_layer": target_layer_id,
+                "progress_pct": 0,
+                "log_lines": [],
+                "error": "",
+            }
+
+        thread = threading.Thread(
+            target=self._do_switch,
+            args=(target_layer_id, domain, email, duckdns_token),
+            daemon=True
+        )
+        thread.start()
+        return {"success": True, "message": "Layer switch started"}
+
+    def _do_switch(self, target_layer_id, domain, email, duckdns_token):
+        """Background worker: uninstall current layer, install new one, reinstall panel."""
+        global _switch_state, _config
+
+        def update(phase, pct, line=""):
+            _switch_state["phase"] = phase
+            _switch_state["progress_pct"] = pct
+            if line:
+                _switch_state["log_lines"].append(line)
+                log(f"[switch] {line}")
+
+        env = {**os.environ, "DEBIAN_FRONTEND": "noninteractive"}
+
+        try:
+            # Phase 1: Uninstall current layer
+            update("uninstalling", 5, "Downloading uninstall script...")
+            uninstall_url = f"{GITHUB_RAW_BASE}/common/uninstall.sh"
+            dl = subprocess.run(
+                ["curl", "-fsSL", uninstall_url, "-o", "/tmp/proxy-uninstall.sh"],
+                capture_output=True, text=True, timeout=60, env=env
+            )
+            if dl.returncode != 0:
+                raise RuntimeError(f"Failed to download uninstall script: {dl.stderr[-200:]}")
+            result = subprocess.run(
+                ["bash", "/tmp/proxy-uninstall.sh"],
+                capture_output=True, text=True, timeout=300, env=env
+            )
+            if result.returncode != 0:
+                raise RuntimeError(f"Uninstall failed: {result.stderr[-500:]}")
+            update("uninstalling", 20, "Uninstall complete")
+
+            # Persist state before install (survives process restart if install restarts panel)
+            state_file = DATA_DIR / "switch_state.json"
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            with open(state_file, "w") as f:
+                json.dump({"target_layer": target_layer_id, "phase": "installing"}, f)
+
+            # Phase 2: Install target layer
+            update("installing", 25, f"Downloading {target_layer_id} install script...")
+            install_url = f"{GITHUB_RAW_BASE}/{target_layer_id}/install.sh"
+            dl = subprocess.run(
+                ["curl", "-fsSL", install_url, "-o", "/tmp/proxy-install.sh"],
+                capture_output=True, text=True, timeout=60, env=env
+            )
+            if dl.returncode != 0:
+                raise RuntimeError(f"Failed to download install script: {dl.stderr[-200:]}")
+
+            layer_def = next((l for l in LAYER_DEFINITIONS if l["id"] == target_layer_id), None)
+            needs_domain = layer_def and layer_def["needs_domain"]
+
+            if needs_domain:
+                stdin_lines = f"{domain}\n{email}\n"
+                if duckdns_token:
+                    stdin_lines += f"{duckdns_token}\n"
+                else:
+                    stdin_lines += "\n"
+                update("installing", 30, f"Installing {target_layer_id} (domain: {domain})...")
+                result = subprocess.run(
+                    ["bash", "/tmp/proxy-install.sh"],
+                    input=stdin_lines,
+                    capture_output=True, text=True, timeout=600, env=env
+                )
+            else:
+                update("installing", 30, f"Installing {target_layer_id}...")
+                result = subprocess.run(
+                    ["bash", "/tmp/proxy-install.sh"],
+                    capture_output=True, text=True, timeout=600, env=env
+                )
+
+            if result.returncode != 0:
+                raise RuntimeError(f"Install failed: {result.stderr[-500:]}")
+            update("installing", 80, "Layer installation complete")
+
+            # Phase 3: Reinstall panel with new layer flag
+            update("reinstalling_panel", 85, "Reinstalling panel with new layer...")
+            panel_url = f"{GITHUB_RAW_BASE}/panel/install-panel.sh"
+            dl = subprocess.run(
+                ["curl", "-fsSL", panel_url, "-o", "/tmp/proxy-panel-install.sh"],
+                capture_output=True, text=True, timeout=60, env=env
+            )
+            if dl.returncode == 0:
+                result = subprocess.run(
+                    ["bash", "/tmp/proxy-panel-install.sh", f"--layer={target_layer_id}"],
+                    capture_output=True, text=True, timeout=300, env=env
+                )
+                if result.returncode != 0:
+                    update("reinstalling_panel", 90,
+                           f"Panel reinstall warning: {result.stderr[-200:]}")
+
+            # Phase 4: Update in-memory state
+            update("finalizing", 95, "Updating configuration...")
+            _config = Config.load()
+            detected = self.detect_layer()
+            _config.layer = detected
+            self.layer = detected
+            if detected.startswith("layer7"):
+                _config.service_type = "xray"
+                _config.user_management = "v2ray"
+            else:
+                _config.service_type = "ssh"
+                _config.user_management = "ssh"
+            _config.save()
+
+            # Clean up state file
+            if state_file.exists():
+                os.unlink(str(state_file))
+
+            update("done", 100, f"Successfully switched to {target_layer_id}")
+            _switch_state["in_progress"] = False
+
+        except Exception as e:
+            _switch_state["phase"] = "error"
+            _switch_state["error"] = str(e)
+            _switch_state["in_progress"] = False
+            _switch_state["log_lines"].append(f"ERROR: {e}")
+            log(f"Layer switch failed: {e}", "ERROR")
+            # Clean up state file on error
+            state_file = DATA_DIR / "switch_state.json"
+            if state_file.exists():
+                try:
+                    os.unlink(str(state_file))
+                except Exception:
+                    pass
 
 # ─── System Information ───────────────────────────────────────────────────────
 
@@ -695,7 +1013,7 @@ class BandwidthMonitor:
                     return json.load(f)
             except Exception:
                 pass
-        return {"users": {}, "last_update": 0}
+        return {"users": {}, "daily": {}, "last_update": 0, "last_reset_day": ""}
 
     def _save_data(self):
         DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -747,14 +1065,88 @@ class BandwidthMonitor:
         return result
 
     def get_user_bandwidth(self):
-        """Get per-user bandwidth."""
+        """Get per-user bandwidth with daily breakdown and period summaries."""
+        # Ensure fresh data by persisting if stale (> 60s since last persist)
+        last_update = self._data.get("last_update", 0)
+        if time.time() - last_update > 60:
+            try:
+                self.persist_stats()
+            except Exception as e:
+                log(f"Error persisting stats on demand: {e}", "ERROR")
+
         if self.config.user_management == "v2ray":
-            return self._get_xray_user_bandwidth()
+            raw = self._get_xray_user_bandwidth()
         else:
-            return self._get_ssh_user_bandwidth()
+            raw = self._get_ssh_user_bandwidth()
+
+        today = datetime.now().strftime("%Y-%m-%d")
+        daily = self._data.get("daily", {})
+        now = datetime.now()
+        week_start = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+        month_start = (now - timedelta(days=30)).strftime("%Y-%m-%d")
+
+        for username, data in raw.items():
+            user_daily = daily.get(username, {})
+
+            # Today
+            today_data = user_daily.get(today, {"uplink": 0, "downlink": 0})
+            data["today_uplink"] = today_data.get("uplink", 0)
+            data["today_downlink"] = today_data.get("downlink", 0)
+            data["today_total"] = data["today_uplink"] + data["today_downlink"]
+
+            # This week (last 7 days)
+            week_up = 0
+            week_down = 0
+            for day_key, day_data in user_daily.items():
+                if day_key >= week_start:
+                    week_up += day_data.get("uplink", 0)
+                    week_down += day_data.get("downlink", 0)
+            data["week_uplink"] = week_up
+            data["week_downlink"] = week_down
+            data["week_total"] = week_up + week_down
+
+            # This month (last 30 days)
+            month_up = 0
+            month_down = 0
+            for day_key, day_data in user_daily.items():
+                if day_key >= month_start:
+                    month_up += day_data.get("uplink", 0)
+                    month_down += day_data.get("downlink", 0)
+            data["month_uplink"] = month_up
+            data["month_downlink"] = month_down
+            data["month_total"] = month_up + month_down
+
+            # Include daily breakdown for frontend charts
+            data["daily"] = user_daily
+
+        return raw
+
+    @staticmethod
+    def _read_iptables_chain_bytes(table, chain):
+        """Return a list of byte counters for rules in a chain or None if chain missing."""
+        try:
+            cmd = ["iptables"]
+            if table:
+                cmd += ["-t", table]
+            cmd += ["-L", chain, "-v", "-n", "-x"]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+            if result.returncode != 0:
+                return None
+            lines = result.stdout.splitlines()[2:]
+            bytes_list = []
+            for line in lines:
+                parts = line.split()
+                if len(parts) >= 2:
+                    try:
+                        bytes_list.append(int(parts[1]))
+                    except ValueError:
+                        continue
+            return bytes_list
+        except Exception:
+            return None
 
     def _get_xray_user_bandwidth(self):
-        """Get V2Ray per-user bandwidth from Xray Stats API."""
+        """Get V2Ray per-user bandwidth from current xray session + accumulated data."""
         users = {}
         users_file = "/usr/local/etc/xray/users.json"
         if not os.path.exists(users_file):
@@ -764,49 +1156,15 @@ class BandwidthMonitor:
             with open(users_file) as f:
                 user_data = json.load(f)
 
-            stats_port = self.config.xray_stats_port
+            # Include current session stats so usage shows immediately
+            current_stats = self._get_raw_xray_stats()
+
             for username in user_data:
-                email = f"{username}@proxy"
-                uplink = 0
-                downlink = 0
-
-                # Query uplink
-                try:
-                    result = subprocess.run(
-                        ["xray", "api", "statsquery",
-                         f"--server=127.0.0.1:{stats_port}",
-                         f"-pattern=user>>>{email}>>>traffic>>>uplink"],
-                        capture_output=True, text=True, timeout=10
-                    )
-                    if result.returncode == 0:
-                        match = re.search(r'"value":\s*"?(\d+)"?', result.stdout)
-                        if match:
-                            uplink = int(match.group(1))
-                except Exception:
-                    pass
-
-                # Query downlink
-                try:
-                    result = subprocess.run(
-                        ["xray", "api", "statsquery",
-                         f"--server=127.0.0.1:{stats_port}",
-                         f"-pattern=user>>>{email}>>>traffic>>>downlink"],
-                        capture_output=True, text=True, timeout=10
-                    )
-                    if result.returncode == 0:
-                        match = re.search(r'"value":\s*"?(\d+)"?', result.stdout)
-                        if match:
-                            downlink = int(match.group(1))
-                except Exception:
-                    pass
-
-                # Add persistent data
                 persistent = self._data.get("users", {}).get(username, {})
+                current = current_stats.get(username, {})
                 users[username] = {
-                    "uplink": uplink + persistent.get("uplink_acc", 0),
-                    "downlink": downlink + persistent.get("downlink_acc", 0),
-                    "uplink_session": uplink,
-                    "downlink_session": downlink,
+                    "uplink": current.get("uplink", 0) + persistent.get("uplink_acc", 0),
+                    "downlink": current.get("downlink", 0) + persistent.get("downlink_acc", 0),
                 }
         except Exception as e:
             log(f"Error getting xray user bandwidth: {e}", "ERROR")
@@ -826,17 +1184,21 @@ class BandwidthMonitor:
             downlink = 0
 
             try:
-                # Check iptables chain
-                result = subprocess.run(
-                    ["iptables", "-L", f"PROXY_USER_{username}", "-v", "-n", "-x"],
-                    capture_output=True, text=True, timeout=5
-                )
-                if result.returncode == 0:
-                    for line in result.stdout.splitlines()[2:]:
-                        parts = line.split()
-                        if len(parts) >= 2:
-                            bytes_count = int(parts[1])
-                            uplink += bytes_count
+                out_bytes = self._read_iptables_chain_bytes("mangle", f"PROXY_USER_{username}_OUT")
+                in_bytes = self._read_iptables_chain_bytes("mangle", f"PROXY_USER_{username}_IN")
+
+                if out_bytes:
+                    uplink = out_bytes[0]
+                if in_bytes:
+                    downlink = in_bytes[0]
+
+                if out_bytes is None and in_bytes is None:
+                    legacy = self._read_iptables_chain_bytes("filter", f"PROXY_USER_{username}")
+                    if legacy:
+                        uplink = legacy[0] if len(legacy) >= 1 else 0
+                        downlink = legacy[1] if len(legacy) >= 2 else 0
+                        if len(legacy) > 2:
+                            downlink += sum(legacy[2:])
             except Exception:
                 pass
 
@@ -849,23 +1211,156 @@ class BandwidthMonitor:
         return users
 
     def persist_stats(self):
-        """Persist current stats to survive restarts."""
+        """Persist current stats to survive restarts and track daily usage."""
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        # Reset daily counters if new day
+        last_day = self._data.get("last_reset_day", "")
+        if today != last_day:
+            self._data["last_reset_day"] = today
+
+        # Get raw session stats (without accumulated)
         if self.config.user_management == "v2ray":
-            users_file = "/usr/local/etc/xray/users.json"
-            if os.path.exists(users_file):
+            raw_stats = self._get_raw_xray_stats()
+        else:
+            raw_stats = self._get_raw_ssh_stats()
+
+        if "daily" not in self._data:
+            self._data["daily"] = {}
+
+        # Track previous session values to compute deltas
+        prev_session = self._data.get("prev_session", {})
+
+        for username, stats in raw_stats.items():
+            up = stats.get("uplink", 0)
+            down = stats.get("downlink", 0)
+
+            # Compute delta from last collection
+            prev = prev_session.get(username, {"uplink": 0, "downlink": 0})
+            delta_up = max(0, up - prev.get("uplink", 0))
+            delta_down = max(0, down - prev.get("downlink", 0))
+
+            # If session counter reset (e.g. service restart), use full value
+            if up < prev.get("uplink", 0):
+                delta_up = up
+            if down < prev.get("downlink", 0):
+                delta_down = down
+
+            # Update accumulated totals
+            if username not in self._data["users"]:
+                self._data["users"][username] = {"uplink_acc": 0, "downlink_acc": 0}
+            self._data["users"][username]["uplink_acc"] += delta_up
+            self._data["users"][username]["downlink_acc"] += delta_down
+
+            # Update daily totals
+            if username not in self._data["daily"]:
+                self._data["daily"][username] = {}
+            if today not in self._data["daily"][username]:
+                self._data["daily"][username][today] = {"uplink": 0, "downlink": 0}
+            self._data["daily"][username][today]["uplink"] += delta_up
+            self._data["daily"][username][today]["downlink"] += delta_down
+
+            # Clean old daily data (keep 30 days)
+            user_days = self._data["daily"][username]
+            cutoff = (datetime.now().timestamp() - 30 * 86400)
+            for day_key in list(user_days.keys()):
                 try:
-                    with open(users_file) as f:
-                        user_data = json.load(f)
-                    for username in user_data:
-                        bw = self._get_xray_user_bandwidth().get(username, {})
-                        if username not in self._data["users"]:
-                            self._data["users"][username] = {}
-                        self._data["users"][username]["uplink_acc"] = bw.get("uplink", 0)
-                        self._data["users"][username]["downlink_acc"] = bw.get("downlink", 0)
-                except Exception:
+                    day_ts = datetime.strptime(day_key, "%Y-%m-%d").timestamp()
+                    if day_ts < cutoff:
+                        del user_days[day_key]
+                except ValueError:
                     pass
+
+        # Store current session values for next delta calculation
+        self._data["prev_session"] = raw_stats
         self._data["last_update"] = time.time()
         self._save_data()
+
+    def _get_raw_xray_stats(self):
+        """Get raw Xray session stats (without accumulated data)."""
+        users = {}
+        users_file = "/usr/local/etc/xray/users.json"
+        if not os.path.exists(users_file):
+            return users
+
+        try:
+            with open(users_file) as f:
+                user_data = json.load(f)
+
+            stats_port = self.config.xray_stats_port
+            for username in user_data:
+                email = f"{username}@proxy"
+                uplink = 0
+                downlink = 0
+
+                try:
+                    result = subprocess.run(
+                        ["xray", "api", "statsquery",
+                         f"--server=127.0.0.1:{stats_port}",
+                         f"-pattern=user>>>{email}>>>traffic>>>uplink"],
+                        capture_output=True, text=True, timeout=10
+                    )
+                    if result.returncode == 0:
+                        match = re.search(r'"value":\s*"?(\d+)"?', result.stdout)
+                        if match:
+                            uplink = int(match.group(1))
+                except Exception:
+                    pass
+
+                try:
+                    result = subprocess.run(
+                        ["xray", "api", "statsquery",
+                         f"--server=127.0.0.1:{stats_port}",
+                         f"-pattern=user>>>{email}>>>traffic>>>downlink"],
+                        capture_output=True, text=True, timeout=10
+                    )
+                    if result.returncode == 0:
+                        match = re.search(r'"value":\s*"?(\d+)"?', result.stdout)
+                        if match:
+                            downlink = int(match.group(1))
+                except Exception:
+                    pass
+
+                users[username] = {"uplink": uplink, "downlink": downlink}
+        except Exception as e:
+            log(f"Error getting raw xray stats: {e}", "ERROR")
+
+        return users
+
+    def _get_raw_ssh_stats(self):
+        """Get raw SSH session stats from iptables (without accumulated data)."""
+        users = {}
+        proxy_dir = Path("/root/proxy-users")
+        if not proxy_dir.exists():
+            return users
+
+        for f in proxy_dir.glob("*.txt"):
+            username = f.stem
+            uplink = 0
+            downlink = 0
+
+            try:
+                out_bytes = self._read_iptables_chain_bytes("mangle", f"PROXY_USER_{username}_OUT")
+                in_bytes = self._read_iptables_chain_bytes("mangle", f"PROXY_USER_{username}_IN")
+
+                if out_bytes:
+                    uplink = out_bytes[0]
+                if in_bytes:
+                    downlink = in_bytes[0]
+
+                if out_bytes is None and in_bytes is None:
+                    legacy = self._read_iptables_chain_bytes("filter", f"PROXY_USER_{username}")
+                    if legacy:
+                        uplink = legacy[0] if len(legacy) >= 1 else 0
+                        downlink = legacy[1] if len(legacy) >= 2 else 0
+                        if len(legacy) > 2:
+                            downlink += sum(legacy[2:])
+            except Exception:
+                pass
+
+            users[username] = {"uplink": uplink, "downlink": downlink}
+
+        return users
 
     def get_connections(self):
         """Get active connections."""
@@ -917,6 +1412,17 @@ _auth = None
 _sessions = None
 _layer_mgr = None
 _bandwidth = None
+
+# Layer switch state (tracked across background thread)
+_switch_state = {
+    "in_progress": False,
+    "phase": "",
+    "target_layer": "",
+    "progress_pct": 0,
+    "log_lines": [],
+    "error": "",
+}
+_switch_lock = threading.Lock()
 
 class PanelHandler(http.server.BaseHTTPRequestHandler):
     """Main HTTP request handler with routing."""
@@ -1054,8 +1560,15 @@ class PanelHandler(http.server.BaseHTTPRequestHandler):
 
         if path == "/api/users":
             self._handle_add_user()
+        elif path.startswith("/api/users/") and path.endswith("/password"):
+            username = path[len("/api/users/"):-len("/password")]
+            self._handle_update_password(unquote(username))
         elif path == "/api/service/restart":
             self._handle_service_restart()
+        elif path == "/api/layer/switch":
+            self._handle_layer_switch()
+        elif path == "/api/layer/switch/clear":
+            self._handle_switch_clear()
         else:
             self.send_error(404)
 
@@ -1113,6 +1626,25 @@ class PanelHandler(http.server.BaseHTTPRequestHandler):
 
         elif path == "/api/service/logs":
             self._handle_service_logs()
+
+        elif path == "/api/layers":
+            layers = []
+            for layer_def in LAYER_DEFINITIONS:
+                layers.append({
+                    **layer_def,
+                    "active": layer_def["id"] == _layer_mgr.layer,
+                })
+            self._send_json({"layers": layers, "current": _layer_mgr.layer})
+
+        elif path == "/api/layer/switch/status":
+            self._send_json({
+                "in_progress": _switch_state["in_progress"],
+                "phase": _switch_state["phase"],
+                "target_layer": _switch_state["target_layer"],
+                "progress_pct": _switch_state["progress_pct"],
+                "log_lines": _switch_state["log_lines"][-20:],
+                "error": _switch_state["error"],
+            })
 
         else:
             self.send_error(404)
@@ -1203,6 +1735,27 @@ class PanelHandler(http.server.BaseHTTPRequestHandler):
         status = 200 if result.get("success") else 400
         self._send_json(result, status)
 
+    def _handle_update_password(self, username):
+        try:
+            body = json.loads(self._read_body())
+        except Exception:
+            self._send_json({"error": "Invalid request"}, 400)
+            return
+
+        password = body.get("password", "")
+
+        if not re.match(r"^[a-zA-Z0-9_-]{3,32}$", username):
+            self._send_json({"error": "Invalid username"}, 400)
+            return
+
+        if len(password) < 8:
+            self._send_json({"error": "Password must be at least 8 characters"}, 400)
+            return
+
+        result = _layer_mgr.update_user_password(username, password)
+        status = 200 if result.get("success") else 400
+        self._send_json(result, status)
+
     def _handle_service_restart(self):
         service = _layer_mgr.get_service_name()
         try:
@@ -1218,6 +1771,64 @@ class PanelHandler(http.server.BaseHTTPRequestHandler):
         except Exception as e:
             self._send_json({"success": False, "error": str(e)}, 500)
 
+    def _handle_layer_switch(self):
+        try:
+            body = json.loads(self._read_body())
+        except Exception:
+            self._send_json({"error": "Invalid request"}, 400)
+            return
+
+        target = body.get("layer_id", "").strip()
+        domain = body.get("domain", "").strip()
+        email = body.get("email", "").strip()
+        duckdns_token = body.get("duckdns_token", "").strip()
+
+        # Validate layer_id
+        valid_ids = [l["id"] for l in LAYER_DEFINITIONS]
+        if target not in valid_ids:
+            self._send_json({"error": "Invalid layer ID"}, 400)
+            return
+
+        if target == _layer_mgr.layer:
+            self._send_json({"error": "Already on this layer"}, 400)
+            return
+
+        # Validate domain/email for layers that need it
+        layer_def = next(l for l in LAYER_DEFINITIONS if l["id"] == target)
+        if layer_def["needs_domain"]:
+            if not domain or not email:
+                self._send_json({"error": "Domain and email are required for this layer"}, 400)
+                return
+            if not re.match(r'^[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$', domain):
+                self._send_json({"error": "Invalid domain format"}, 400)
+                return
+            if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
+                self._send_json({"error": "Invalid email format"}, 400)
+                return
+
+        result = _layer_mgr.switch_layer(target, domain, email, duckdns_token)
+        status = 200 if result.get("success") else 400
+        self._send_json(result, status)
+
+    def _handle_switch_clear(self):
+        """Reset switch state and clean up state file."""
+        global _switch_state
+        _switch_state = {
+            "in_progress": False,
+            "phase": "",
+            "target_layer": "",
+            "progress_pct": 0,
+            "log_lines": [],
+            "error": "",
+        }
+        state_file = DATA_DIR / "switch_state.json"
+        if state_file.exists():
+            try:
+                os.unlink(str(state_file))
+            except Exception:
+                pass
+        self._send_json({"success": True})
+
     def _handle_service_logs(self):
         service = _layer_mgr.get_service_name()
         try:
@@ -1229,6 +1840,43 @@ class PanelHandler(http.server.BaseHTTPRequestHandler):
             self._send_json({"logs": logs, "service": service})
         except Exception as e:
             self._send_json({"logs": str(e), "service": service})
+
+def _ensure_xray_client_emails():
+    """Patch existing xray clients to add email fields for per-user stats tracking."""
+    config_path = "/usr/local/etc/xray/config.json"
+    users_file = "/usr/local/etc/xray/users.json"
+    if not os.path.exists(config_path) or not os.path.exists(users_file):
+        return
+    try:
+        with open(users_file) as f:
+            users = json.load(f)
+        with open(config_path) as f:
+            cfg = json.load(f)
+
+        # Build uuid->username map
+        uuid_to_user = {uuid: name for name, uuid in users.items()}
+        changed = False
+
+        for inb in cfg.get("inbounds", []):
+            if inb.get("protocol") not in ("vless", "vmess"):
+                continue
+            for client in inb.get("settings", {}).get("clients", []):
+                if not client.get("email"):
+                    cid = client.get("id", "")
+                    username = uuid_to_user.get(cid, cid[:8])
+                    client["email"] = f"{username}@proxy"
+                    changed = True
+
+        if changed:
+            with open(config_path, "w") as f:
+                json.dump(cfg, f, indent=2)
+            subprocess.run(
+                ["systemctl", "restart", "xray"],
+                capture_output=True, timeout=15
+            )
+            log("Patched xray clients with email fields for stats tracking")
+    except Exception as e:
+        log(f"Error patching xray client emails: {e}", "ERROR")
 
 # ─── Threaded HTTPS Server ────────────────────────────────────────────────────
 
@@ -1247,21 +1895,43 @@ def main():
     _layer_mgr = LayerManager(_config)
     _bandwidth = BandwidthMonitor(_config)
 
-    # Auto-detect layer if not set
-    if _config.layer == "unknown":
-        detected = _layer_mgr.detect_layer()
-        _config.layer = detected
-        if detected.startswith("layer7"):
-            _config.service_type = "xray"
-            _config.user_management = "v2ray"
-        else:
-            _config.service_type = "ssh"
-            _config.user_management = "ssh"
-        _config.save()
-        log(f"Auto-detected layer: {detected}")
+    # Always re-detect layer on startup (handles layer changes after reinstall)
+    detected = _layer_mgr.detect_layer()
+    if detected != _config.layer:
+        log(f"Layer changed: {_config.layer} -> {detected}")
+    _config.layer = detected
+    _layer_mgr.layer = detected
+    if detected.startswith("layer7"):
+        _config.service_type = "xray"
+        _config.user_management = "v2ray"
+    else:
+        _config.service_type = "ssh"
+        _config.user_management = "ssh"
+    _config.save()
+    log(f"Active layer: {detected}")
 
     # Ensure data directory exists
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Recover from a layer switch if panel was restarted during Phase 3
+    switch_state_file = DATA_DIR / "switch_state.json"
+    if switch_state_file.exists():
+        try:
+            with open(switch_state_file) as f:
+                saved_switch = json.load(f)
+            # Keep state file until frontend clears it via /api/layer/switch/clear
+            _switch_state["phase"] = "done"
+            _switch_state["progress_pct"] = 100
+            _switch_state["target_layer"] = saved_switch.get("target_layer", "")
+            _switch_state["log_lines"] = [f"Successfully switched to {saved_switch.get('target_layer', 'unknown')}"]
+            _switch_state["in_progress"] = False
+            log(f"Recovered from layer switch: {saved_switch.get('target_layer')}")
+        except Exception as e:
+            log(f"Error recovering switch state: {e}", "WARN")
+
+    # Patch existing xray clients to add email fields for stats tracking
+    if _config.user_management == "v2ray":
+        _ensure_xray_client_emails()
 
     # Start bandwidth collector
     collector = BandwidthCollector(_bandwidth)

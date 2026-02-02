@@ -29,12 +29,19 @@ const translations = {
         th_type: "Type",
         th_status: "Status",
         th_created: "Created",
+        th_password: "Password",
         th_actions: "Actions",
         no_users: "No users found. Add your first user.",
         connected: "Connected",
         offline: "Offline",
         config: "Config",
         delete: "Delete",
+        show_password: "Show password",
+        hide_password: "Hide password",
+        change_password: "Change Password",
+        new_password: "New Password",
+        update_password: "Update Password",
+        password_updated: "Password updated successfully",
         add_new_user: "Add New User",
         username: "Username",
         password: "Password",
@@ -63,12 +70,18 @@ const translations = {
         bandwidth_title: "Bandwidth Usage",
         system_bandwidth: "System Bandwidth",
         today: "Today",
+        today_usage: "Today",
+        this_week: "This Week",
         this_month: "This Month",
         all_time: "All Time",
         per_user_bandwidth: "Per-User Bandwidth",
-        upload: "Upload",
-        download: "Download",
+        upload: "Upload (Total)",
+        download: "Download (Total)",
+        upload_label: "Upload",
+        download_label: "Download",
         total_label: "Total",
+        auto_refresh_note: "Auto refresh every 10s",
+        auto_refresh_note_5s: "Auto refresh every 5s",
 
         // Connections
         connections_title: "Active Connections",
@@ -87,6 +100,35 @@ const translations = {
         service_logs: "Service Logs",
         load_logs: "Load Logs",
         click_load_logs: "Click \"Load Logs\" to view service logs...",
+
+        // Settings / Layer Switching
+        nav_settings: "Settings",
+        settings_title: "Settings",
+        layer_switching: "Layer Switching",
+        layer_switching_desc: "Switch between proxy layers. This will uninstall the current layer and install the selected one.",
+        current_layer: "Current Layer",
+        activate: "Activate",
+        confirm_switch: "Confirm Layer Switch",
+        switch_warning_text: "This will uninstall the current proxy layer and install a new one. All existing users will be preserved but the service will be interrupted during the switch.",
+        current_layer_label: "Current:",
+        new_layer_label: "New:",
+        domain_label: "Domain (FQDN)",
+        email_label: "Email (for Let's Encrypt)",
+        duckdns_token_label: "DuckDNS Token (optional)",
+        domain_hint: "Your domain must point to this server's IP",
+        duckdns_hint: "Only needed for .duckdns.org domains",
+        activate_layer: "Activate Layer",
+        switching_layer: "Switching Layer...",
+        switch_complete: "Layer switch complete!",
+        switch_back_settings: "Back to Settings",
+        switch_phase_uninstalling: "Uninstalling",
+        switch_phase_installing: "Installing",
+        switch_phase_reinstalling_panel: "Reinstalling panel",
+        switch_phase_finalizing: "Finalizing",
+        switch_phase_done: "Complete",
+        switch_phase_error: "Error",
+        switch_phase_starting: "Starting",
+        layer_needs_domain: "Requires domain + email",
     },
     fa: {
         nav_overview: "\u0646\u0645\u0627\u06cc \u06a9\u0644\u06cc",
@@ -113,12 +155,19 @@ const translations = {
         th_type: "\u0646\u0648\u0639",
         th_status: "\u0648\u0636\u0639\u06cc\u062a",
         th_created: "\u062a\u0627\u0631\u06cc\u062e \u0633\u0627\u062e\u062a",
+        th_password: "\u0631\u0645\u0632 \u0639\u0628\u0648\u0631",
         th_actions: "\u0639\u0645\u0644\u06cc\u0627\u062a",
         no_users: "\u06a9\u0627\u0631\u0628\u0631\u06cc \u06cc\u0627\u0641\u062a \u0646\u0634\u062f. \u0627\u0648\u0644\u06cc\u0646 \u06a9\u0627\u0631\u0628\u0631 \u0631\u0627 \u0627\u0636\u0627\u0641\u0647 \u06a9\u0646\u06cc\u062f.",
         connected: "\u0645\u062a\u0635\u0644",
         offline: "\u0622\u0641\u0644\u0627\u06cc\u0646",
         config: "\u067e\u06cc\u06a9\u0631\u0628\u0646\u062f\u06cc",
         delete: "\u062d\u0630\u0641",
+        show_password: "\u0646\u0645\u0627\u06cc\u0634 \u0631\u0645\u0632 \u0639\u0628\u0648\u0631",
+        hide_password: "\u067e\u0646\u0647\u0627\u0646 \u06a9\u0631\u062f\u0646 \u0631\u0645\u0632 \u0639\u0628\u0648\u0631",
+        change_password: "\u062a\u063a\u06cc\u06cc\u0631 \u0631\u0645\u0632 \u0639\u0628\u0648\u0631",
+        new_password: "\u0631\u0645\u0632 \u0639\u0628\u0648\u0631 \u062c\u062f\u06cc\u062f",
+        update_password: "\u0628\u0647\u200c\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06cc \u0631\u0645\u0632 \u0639\u0628\u0648\u0631",
+        password_updated: "\u0631\u0645\u0632 \u0639\u0628\u0648\u0631 \u0628\u0627 \u0645\u0648\u0641\u0642\u06cc\u062a \u0628\u0647\u200c\u0631\u0648\u0632 \u0634\u062f",
         add_new_user: "\u0627\u0641\u0632\u0648\u062f\u0646 \u06a9\u0627\u0631\u0628\u0631 \u062c\u062f\u06cc\u062f",
         username: "\u0646\u0627\u0645 \u06a9\u0627\u0631\u0628\u0631\u06cc",
         password: "\u0631\u0645\u0632 \u0639\u0628\u0648\u0631",
@@ -144,12 +193,18 @@ const translations = {
         bandwidth_title: "\u0645\u0635\u0631\u0641 \u067e\u0647\u0646\u0627\u06cc \u0628\u0627\u0646\u062f",
         system_bandwidth: "\u067e\u0647\u0646\u0627\u06cc \u0628\u0627\u0646\u062f \u0633\u06cc\u0633\u062a\u0645",
         today: "\u0627\u0645\u0631\u0648\u0632",
+        today_usage: "\u0627\u0645\u0631\u0648\u0632",
+        this_week: "\u0627\u06cc\u0646 \u0647\u0641\u062a\u0647",
         this_month: "\u0627\u06cc\u0646 \u0645\u0627\u0647",
         all_time: "\u06a9\u0644",
         per_user_bandwidth: "\u067e\u0647\u0646\u0627\u06cc \u0628\u0627\u0646\u062f \u0647\u0631 \u06a9\u0627\u0631\u0628\u0631",
-        upload: "\u0622\u067e\u0644\u0648\u062f",
-        download: "\u062f\u0627\u0646\u0644\u0648\u062f",
+        upload: "\u0622\u067e\u0644\u0648\u062f (\u06a9\u0644)",
+        download: "\u062f\u0627\u0646\u0644\u0648\u062f (\u06a9\u0644)",
+        upload_label: "\u0622\u067e\u0644\u0648\u062f",
+        download_label: "\u062f\u0627\u0646\u0644\u0648\u062f",
         total_label: "\u06a9\u0644",
+        auto_refresh_note: "\u0628\u0647\u200c\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06cc \u062e\u0648\u062f\u06a9\u0627\u0631 \u0647\u0631 \u06f1\u06f0 \u062b\u0627\u0646\u06cc\u0647",
+        auto_refresh_note_5s: "\u0628\u0647\u200c\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06cc \u062e\u0648\u062f\u06a9\u0627\u0631 \u0647\u0631 \u06f5 \u062b\u0627\u0646\u06cc\u0647",
 
         connections_title: "\u0627\u062a\u0635\u0627\u0644\u0627\u062a \u0641\u0639\u0627\u0644",
         refresh: "\u0628\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06cc",
@@ -166,12 +221,58 @@ const translations = {
         service_logs: "\u0644\u0627\u06af\u200c\u0647\u0627\u06cc \u0633\u0631\u0648\u06cc\u0633",
         load_logs: "\u0628\u0627\u0631\u06af\u0630\u0627\u0631\u06cc \u0644\u0627\u06af",
         click_load_logs: "\u0628\u0631\u0627\u06cc \u0645\u0634\u0627\u0647\u062f\u0647 \u0644\u0627\u06af\u200c\u0647\u0627 \u0631\u0648\u06cc \"\u0628\u0627\u0631\u06af\u0630\u0627\u0631\u06cc \u0644\u0627\u06af\" \u06a9\u0644\u06cc\u06a9 \u06a9\u0646\u06cc\u062f...",
+
+        // Settings / Layer Switching
+        nav_settings: "\u062a\u0646\u0638\u06cc\u0645\u0627\u062a",
+        settings_title: "\u062a\u0646\u0638\u06cc\u0645\u0627\u062a",
+        layer_switching: "\u062a\u063a\u06cc\u06cc\u0631 \u0644\u0627\u06cc\u0647",
+        layer_switching_desc: "\u0628\u06cc\u0646 \u0644\u0627\u06cc\u0647\u200c\u0647\u0627\u06cc \u067e\u0631\u0648\u06a9\u0633\u06cc \u062c\u0627\u0628\u062c\u0627 \u0634\u0648\u06cc\u062f. \u0627\u06cc\u0646 \u06a9\u0627\u0631 \u0644\u0627\u06cc\u0647 \u0641\u0639\u0644\u06cc \u0631\u0627 \u062d\u0630\u0641 \u0648 \u0644\u0627\u06cc\u0647 \u062c\u062f\u06cc\u062f \u0631\u0627 \u0646\u0635\u0628 \u0645\u06cc\u200c\u06a9\u0646\u062f.",
+        current_layer: "\u0644\u0627\u06cc\u0647 \u0641\u0639\u0644\u06cc",
+        activate: "\u0641\u0639\u0627\u0644\u200c\u0633\u0627\u0632\u06cc",
+        confirm_switch: "\u062a\u0627\u06cc\u06cc\u062f \u062a\u063a\u06cc\u06cc\u0631 \u0644\u0627\u06cc\u0647",
+        switch_warning_text: "\u0627\u06cc\u0646 \u06a9\u0627\u0631 \u0644\u0627\u06cc\u0647 \u0641\u0639\u0644\u06cc \u0631\u0627 \u062d\u0630\u0641 \u0648 \u0644\u0627\u06cc\u0647 \u062c\u062f\u06cc\u062f \u0631\u0627 \u0646\u0635\u0628 \u0645\u06cc\u200c\u06a9\u0646\u062f. \u06a9\u0627\u0631\u0628\u0631\u0627\u0646 \u062d\u0641\u0638 \u0645\u06cc\u200c\u0634\u0648\u0646\u062f \u0627\u0645\u0627 \u0633\u0631\u0648\u06cc\u0633 \u0645\u0648\u0642\u062a\u0627 \u0642\u0637\u0639 \u0645\u06cc\u200c\u0634\u0648\u062f.",
+        current_layer_label: "\u0641\u0639\u0644\u06cc:",
+        new_layer_label: "\u062c\u062f\u06cc\u062f:",
+        domain_label: "\u062f\u0627\u0645\u0646\u0647 (FQDN)",
+        email_label: "\u0627\u06cc\u0645\u06cc\u0644 (Let's Encrypt)",
+        duckdns_token_label: "\u062a\u0648\u06a9\u0646 DuckDNS (\u0627\u062e\u062a\u06cc\u0627\u0631\u06cc)",
+        domain_hint: "\u062f\u0627\u0645\u0646\u0647 \u0628\u0627\u06cc\u062f \u0628\u0647 \u0622\u06cc\u067e\u06cc \u0627\u06cc\u0646 \u0633\u0631\u0648\u0631 \u0627\u0634\u0627\u0631\u0647 \u06a9\u0646\u062f",
+        duckdns_hint: "\u0641\u0642\u0637 \u0628\u0631\u0627\u06cc \u062f\u0627\u0645\u0646\u0647\u200c\u0647\u0627\u06cc .duckdns.org",
+        activate_layer: "\u0641\u0639\u0627\u0644\u200c\u0633\u0627\u0632\u06cc \u0644\u0627\u06cc\u0647",
+        switching_layer: "\u062f\u0631 \u062d\u0627\u0644 \u062a\u063a\u06cc\u06cc\u0631 \u0644\u0627\u06cc\u0647...",
+        switch_complete: "\u062a\u063a\u06cc\u06cc\u0631 \u0644\u0627\u06cc\u0647 \u06a9\u0627\u0645\u0644 \u0634\u062f!",
+        switch_back_settings: "\u0628\u0627\u0632\u06af\u0634\u062a \u0628\u0647 \u062a\u0646\u0638\u06cc\u0645\u0627\u062a",
+        switch_phase_uninstalling: "\u062d\u0630\u0641 \u0644\u0627\u06cc\u0647 \u0641\u0639\u0644\u06cc",
+        switch_phase_installing: "\u0646\u0635\u0628 \u0644\u0627\u06cc\u0647 \u062c\u062f\u06cc\u062f",
+        switch_phase_reinstalling_panel: "\u0646\u0635\u0628 \u0645\u062c\u062f\u062f \u067e\u0646\u0644",
+        switch_phase_finalizing: "\u0646\u0647\u0627\u06cc\u06cc\u200c\u0633\u0627\u0632\u06cc",
+        switch_phase_done: "\u06a9\u0627\u0645\u0644 \u0634\u062f",
+        switch_phase_error: "\u062e\u0637\u0627",
+        switch_phase_starting: "\u0634\u0631\u0648\u0639",
+        layer_needs_domain: "\u0646\u06cc\u0627\u0632 \u0628\u0647 \u062f\u0627\u0645\u0646\u0647 + \u0627\u06cc\u0645\u06cc\u0644",
     }
 };
 
 let currentLang = localStorage.getItem("lang") || "en";
 let currentLayerIsV2Ray = false;
 let pendingDeleteUser = null;
+let pendingPasswordUser = null;
+let currentBandwidthPeriod = "today";
+let bandwidthData = null;
+let bandwidthLoading = false;
+let bandwidthRefreshInterval = null;
+const BANDWIDTH_REFRESH_MS = 10000;
+let layersData = null;
+let switchPollInterval = null;
+let pendingSwitchLayer = null;
+let sectionRefreshInterval = null;
+const SECTION_REFRESH_MS = {
+    overview: 20000,
+    users: 5000,
+    bandwidth: 10000,
+    connections: 5000,
+    settings: 30000
+};
 
 /* ─── Language ──────────────────────────────────────────────────────────── */
 
@@ -216,10 +317,16 @@ function showSection(name, navEl) {
     document.getElementById("sidebar").classList.remove("open");
 
     // Load data for section
+    stopBandwidthAutoRefresh();
+    stopSectionAutoRefresh();
+
     if (name === "overview") loadOverview();
     else if (name === "users") loadUsers();
     else if (name === "bandwidth") loadBandwidth();
     else if (name === "connections") loadConnections();
+    else if (name === "settings") loadLayers();
+
+    startSectionAutoRefresh(name);
 }
 
 /* ─── API Helper ────────────────────────────────────────────────────────── */
@@ -328,8 +435,23 @@ async function loadUsers() {
         tbody.innerHTML = users.map(u => {
             const statusClass = u.connected ? "connected" : "offline";
             const statusText = u.connected ? t("connected") : t("offline");
+            const hasPassword = u.type === "ssh" && u.password;
+            const passwordValue = hasPassword ? String(u.password) : "";
+            const passwordAttr = hasPassword ? escapeHtml(passwordValue) : "";
+            const maskedPassword = hasPassword ? maskPassword(passwordValue) : "-";
+            const passwordCell = u.type === "ssh"
+                ? `<div class="password-cell">
+                        <span class="password-text" data-password="${passwordAttr}" data-visible="false">${escapeHtml(maskedPassword)}</span>
+                        <button class="icon-btn" type="button" onclick="togglePasswordVisibility(this)" ${hasPassword ? "" : "disabled"} title="${t("show_password")}" aria-label="${t("show_password")}">
+                            ${eyeIcon(false)}
+                        </button>
+                   </div>`
+                : "-";
             const configBtn = u.type === "v2ray"
                 ? `<button class="btn btn-sm btn-secondary" onclick="showConfig('${u.username}')">${t("config")}</button>`
+                : "";
+            const changePwBtn = u.type === "ssh"
+                ? `<button class="btn btn-sm btn-secondary" onclick="showChangePasswordModal('${u.username}')">${t("change_password")}</button>`
                 : "";
 
             return `<tr>
@@ -337,9 +459,11 @@ async function loadUsers() {
                 <td>${u.type || "ssh"}</td>
                 <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                 <td>${u.created || "-"}</td>
+                <td>${passwordCell}</td>
                 <td>
                     <div class="user-actions">
                         ${configBtn}
+                        ${changePwBtn}
                         <button class="btn btn-sm btn-danger" onclick="showDeleteModal('${escapeHtml(u.username)}')">${t("delete")}</button>
                     </div>
                 </td>
@@ -354,6 +478,7 @@ function showAddUserModal() {
     document.getElementById("addUserModal").style.display = "flex";
     document.getElementById("addUserError").style.display = "none";
     document.getElementById("addUserForm").reset();
+    resetAddUserPasswordToggle();
 
     // Show/hide password field based on layer type
     const pwGroup = document.getElementById("passwordGroup");
@@ -366,6 +491,42 @@ function showAddUserModal() {
     }
 
     document.getElementById("newUsername").focus();
+}
+
+function toggleAddUserPassword() {
+    const input = document.getElementById("newPassword");
+    if (!input) return;
+    const btn = input.parentElement?.querySelector(".icon-btn");
+    const isVisible = input.type === "text";
+    input.type = isVisible ? "password" : "text";
+    if (btn) {
+        btn.innerHTML = eyeIcon(!isVisible);
+        const label = isVisible ? t("show_password") : t("hide_password");
+        btn.setAttribute("title", label);
+        btn.setAttribute("aria-label", label);
+    }
+}
+
+function resetAddUserPasswordToggle() {
+    const input = document.getElementById("newPassword");
+    if (!input) return;
+    input.type = "password";
+    const btn = input.parentElement?.querySelector(".icon-btn");
+    if (btn) {
+        btn.innerHTML = eyeIcon(false);
+        btn.setAttribute("title", t("show_password"));
+        btn.setAttribute("aria-label", t("show_password"));
+    }
+}
+
+function showChangePasswordModal(username) {
+    if (currentLayerIsV2Ray) return;
+    pendingPasswordUser = username;
+    document.getElementById("changePasswordUsername").value = username;
+    document.getElementById("changePasswordInput").value = "";
+    document.getElementById("changePasswordError").style.display = "none";
+    document.getElementById("changePasswordModal").style.display = "flex";
+    document.getElementById("changePasswordInput").focus();
 }
 
 async function handleAddUser(e) {
@@ -395,6 +556,10 @@ async function handleAddUser(e) {
             closeModal("addUserModal");
             showToast(t("user_added"), "success");
             loadUsers();
+            // Show connection config for V2Ray users
+            if (currentLayerIsV2Ray && data.uri) {
+                displayConfigModal(data);
+            }
         } else {
             errorDiv.textContent = data.error || "Failed to add user";
             errorDiv.style.display = "block";
@@ -405,6 +570,43 @@ async function handleAddUser(e) {
     } finally {
         btn.disabled = false;
         btn.querySelector("span").textContent = t("add_user");
+    }
+}
+
+async function handleChangePassword(e) {
+    e.preventDefault();
+    if (!pendingPasswordUser) return;
+
+    const btn = document.getElementById("changePasswordBtn");
+    const errorDiv = document.getElementById("changePasswordError");
+    const password = document.getElementById("changePasswordInput").value;
+
+    btn.disabled = true;
+    btn.querySelector("span").textContent = t("update_password");
+    errorDiv.style.display = "none";
+
+    try {
+        const resp = await api(`/api/users/${encodeURIComponent(pendingPasswordUser)}/password`, {
+            method: "POST",
+            body: JSON.stringify({ password })
+        });
+
+        const data = await resp.json();
+        if (data.success) {
+            closeModal("changePasswordModal");
+            showToast(t("password_updated"), "success");
+            loadUsers();
+        } else {
+            errorDiv.textContent = data.error || "Failed to update password";
+            errorDiv.style.display = "block";
+        }
+    } catch (err) {
+        errorDiv.textContent = "Network error";
+        errorDiv.style.display = "block";
+    } finally {
+        btn.disabled = false;
+        btn.querySelector("span").textContent = t("update_password");
+        pendingPasswordUser = null;
     }
 }
 
@@ -452,17 +654,21 @@ async function showConfig(username) {
         const resp = await api(`/api/users/${encodeURIComponent(username)}/config`);
         if (!resp) return;
         const data = await resp.json();
-
         if (data.success) {
-            document.getElementById("configUri").textContent = data.uri || "";
-            document.getElementById("configJson").textContent = JSON.stringify(data.config, null, 2);
-            document.getElementById("configModal").style.display = "flex";
+            displayConfigModal(data);
         } else {
             showToast(data.error || "Failed to get config", "error");
         }
     } catch (err) {
         showToast("Network error", "error");
     }
+}
+
+function displayConfigModal(data) {
+    document.getElementById("configUri").textContent = data.uri || "";
+    document.getElementById("configIos").textContent = JSON.stringify(data.ios_config || data.config || {}, null, 2);
+    document.getElementById("configAndroid").textContent = JSON.stringify(data.android_config || {}, null, 2);
+    document.getElementById("configModal").style.display = "flex";
 }
 
 /* ─── Bandwidth ─────────────────────────────────────────────────────────── */
@@ -479,7 +685,52 @@ function formatBytes(bytes) {
     return val.toFixed(1) + " " + units[i];
 }
 
+function setBandwidthPeriod(period, btn) {
+    currentBandwidthPeriod = period;
+    document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    if (bandwidthData) {
+        renderUserBandwidth(bandwidthData);
+    }
+}
+
+function getPeriodData(data) {
+    const p = currentBandwidthPeriod;
+    if (p === "today") return { up: data.today_uplink || 0, down: data.today_downlink || 0 };
+    if (p === "week") return { up: data.week_uplink || 0, down: data.week_downlink || 0 };
+    if (p === "month") return { up: data.month_uplink || 0, down: data.month_downlink || 0 };
+    return { up: data.uplink || 0, down: data.downlink || 0 };
+}
+
+function renderUserBandwidth(users) {
+    const tbody = document.getElementById("bandwidth-tbody");
+    const chartContainer = document.getElementById("user-bandwidth-chart");
+    const entries = Object.entries(users);
+
+    if (entries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-dim)">No data</td></tr>`;
+        chartContainer.innerHTML = `<p style="text-align:center;color:var(--text-dim)">No per-user data available</p>`;
+        return;
+    }
+
+    tbody.innerHTML = entries.map(([name, data]) => {
+        const { up, down } = getPeriodData(data);
+        return `<tr>
+            <td><strong>${escapeHtml(name)}</strong></td>
+            <td>${formatBytes(up)}</td>
+            <td>${formatBytes(down)}</td>
+            <td>${formatBytes(up + down)}</td>
+        </tr>`;
+    }).join("");
+
+    renderBandwidthChart(chartContainer, entries);
+}
+
 async function loadBandwidth() {
+    if (bandwidthLoading) return;
+    bandwidthLoading = true;
+    const refreshBtn = document.getElementById("bandwidthRefreshBtn");
+    if (refreshBtn) refreshBtn.disabled = true;
     try {
         const [sysResp, userResp] = await Promise.all([
             api("/api/bandwidth/system"),
@@ -498,34 +749,56 @@ async function loadBandwidth() {
         }
 
         if (userResp) {
-            const users = await userResp.json();
-            const tbody = document.getElementById("bandwidth-tbody");
-            const chartContainer = document.getElementById("user-bandwidth-chart");
-
-            const entries = Object.entries(users);
-
-            if (entries.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-dim)">No data</td></tr>`;
-                chartContainer.innerHTML = `<p style="text-align:center;color:var(--text-dim)">No per-user data available</p>`;
-                return;
-            }
-
-            tbody.innerHTML = entries.map(([name, data]) => {
-                const up = data.uplink || data.uplink_session || 0;
-                const down = data.downlink || data.downlink_session || 0;
-                return `<tr>
-                    <td><strong>${escapeHtml(name)}</strong></td>
-                    <td>${formatBytes(up)}</td>
-                    <td>${formatBytes(down)}</td>
-                    <td>${formatBytes(up + down)}</td>
-                </tr>`;
-            }).join("");
-
-            // Simple SVG bar chart
-            renderBandwidthChart(chartContainer, entries);
+            bandwidthData = await userResp.json();
+            renderUserBandwidth(bandwidthData);
         }
     } catch (err) {
         console.error("Failed to load bandwidth:", err);
+    } finally {
+        bandwidthLoading = false;
+        if (refreshBtn) refreshBtn.disabled = false;
+    }
+}
+
+async function refreshBandwidth() {
+    await loadBandwidth();
+}
+
+function startBandwidthAutoRefresh() {
+    stopBandwidthAutoRefresh();
+    bandwidthRefreshInterval = setInterval(() => {
+        const activeSection = document.querySelector(".section.active");
+        if (activeSection && activeSection.id === "section-bandwidth") {
+            loadBandwidth();
+        }
+    }, BANDWIDTH_REFRESH_MS);
+}
+
+function stopBandwidthAutoRefresh() {
+    if (bandwidthRefreshInterval) {
+        clearInterval(bandwidthRefreshInterval);
+        bandwidthRefreshInterval = null;
+    }
+}
+
+function startSectionAutoRefresh(sectionName) {
+    const interval = SECTION_REFRESH_MS[sectionName];
+    if (!interval) return;
+    sectionRefreshInterval = setInterval(() => {
+        const activeSection = document.querySelector(".section.active");
+        if (!activeSection || activeSection.id !== `section-${sectionName}`) return;
+        if (sectionName === "overview") loadOverview();
+        else if (sectionName === "users") loadUsers();
+        else if (sectionName === "bandwidth") loadBandwidth();
+        else if (sectionName === "connections") loadConnections();
+        else if (sectionName === "settings") loadLayers();
+    }, interval);
+}
+
+function stopSectionAutoRefresh() {
+    if (sectionRefreshInterval) {
+        clearInterval(sectionRefreshInterval);
+        sectionRefreshInterval = null;
     }
 }
 
@@ -535,30 +808,44 @@ function renderBandwidthChart(container, entries) {
         return;
     }
 
-    const maxVal = Math.max(...entries.map(([, d]) => (d.uplink || 0) + (d.downlink || 0)), 1);
-    const barHeight = 28;
+    const maxVal = Math.max(...entries.map(([, d]) => {
+        const { up, down } = getPeriodData(d);
+        return up + down;
+    }), 1);
+    const barHeight = 24;
+    const rowHeight = 56;
     const gap = 8;
     const labelWidth = 120;
     const chartWidth = container.clientWidth - 40 || 500;
-    const svgHeight = entries.length * (barHeight + gap) + 10;
+    const svgHeight = entries.length * (rowHeight + gap) + 30;
     const barAreaWidth = chartWidth - labelWidth - 20;
 
+    // Legend
     let svg = `<svg width="100%" height="${svgHeight}" viewBox="0 0 ${chartWidth} ${svgHeight}">`;
+    svg += `<rect x="${labelWidth}" y="4" width="10" height="10" rx="2" fill="#5b8af5"/>`;
+    svg += `<text x="${labelWidth + 16}" y="13" fill="#8b8fa3" font-size="11">${t("upload_label")}</text>`;
+    svg += `<rect x="${labelWidth + 80}" y="4" width="10" height="10" rx="2" fill="#4ade80"/>`;
+    svg += `<text x="${labelWidth + 96}" y="13" fill="#8b8fa3" font-size="11">${t("download_label")}</text>`;
 
     entries.forEach(([name, data], i) => {
-        const total = (data.uplink || 0) + (data.downlink || 0);
-        const barW = Math.max((total / maxVal) * barAreaWidth, 2);
-        const y = i * (barHeight + gap) + 5;
+        const { up, down } = getPeriodData(data);
+        const upBarW = Math.max((up / maxVal) * barAreaWidth, up > 0 ? 2 : 0);
+        const downBarW = Math.max((down / maxVal) * barAreaWidth, down > 0 ? 2 : 0);
+        const y = i * (rowHeight + gap) + 28;
 
         // Label
         const displayName = name.length > 14 ? name.substring(0, 14) + "..." : name;
-        svg += `<text x="${labelWidth - 8}" y="${y + barHeight / 2 + 4}" fill="#8b8fa3" font-size="12" text-anchor="end">${escapeHtml(displayName)}</text>`;
+        svg += `<text x="${labelWidth - 8}" y="${y + 18}" fill="#8b8fa3" font-size="12" text-anchor="end">${escapeHtml(displayName)}</text>`;
 
-        // Bar
-        svg += `<rect x="${labelWidth}" y="${y}" width="${barW}" height="${barHeight}" rx="4" fill="#5b8af5" opacity="0.8"/>`;
+        // Upload bar
+        svg += `<rect x="${labelWidth}" y="${y}" width="${upBarW}" height="${barHeight}" rx="4" fill="#5b8af5" opacity="0.8"/>`;
+        svg += `<text x="${labelWidth + upBarW + 8}" y="${y + barHeight / 2 + 4}" fill="#e4e6eb" font-size="11">${formatBytes(up)}</text>`;
 
-        // Value
-        svg += `<text x="${labelWidth + barW + 8}" y="${y + barHeight / 2 + 4}" fill="#e4e6eb" font-size="11">${formatBytes(total)}</text>`;
+        // Download bar
+        svg += `<rect x="${labelWidth}" y="${y + barHeight + 2}" width="${downBarW}" height="${barHeight}" rx="4" fill="#4ade80" opacity="0.7"/>`;
+        if (down > 0) {
+            svg += `<text x="${labelWidth + downBarW + 8}" y="${y + barHeight + 2 + barHeight / 2 + 4}" fill="#4ade80" font-size="10">${formatBytes(down)}</text>`;
+        }
     });
 
     svg += "</svg>";
@@ -631,10 +918,277 @@ async function loadLogs() {
     }
 }
 
+/* ─── Layer Switching ───────────────────────────────────────────────────── */
+
+async function loadLayers() {
+    try {
+        const resp = await api("/api/layers");
+        if (!resp) return;
+        layersData = await resp.json();
+        renderLayerCards(layersData);
+        checkSwitchStatus();
+    } catch (err) {
+        console.error("Failed to load layers:", err);
+    }
+}
+
+function renderLayerCards(data) {
+    const container = document.getElementById("layerCards");
+    const current = data.current;
+
+    container.innerHTML = data.layers.map(layer => {
+        const isActive = layer.id === current;
+        const activeClass = isActive ? "layer-card-active" : "";
+        const badgeHtml = isActive
+            ? `<span class="layer-badge active">${t("current_layer")}</span>`
+            : "";
+        const domainNote = layer.needs_domain
+            ? `<span class="layer-note">${t("layer_needs_domain")}</span>`
+            : "";
+        const btnHtml = isActive
+            ? ""
+            : `<button class="btn btn-sm btn-primary" onclick="showSwitchModal('${layer.id}')">${t("activate")}</button>`;
+
+        return `
+            <div class="layer-card ${activeClass}" data-layer="${layer.id}">
+                <div class="layer-card-header">
+                    <div class="layer-card-title">
+                        <h3>${escapeHtml(layer.name)}</h3>
+                        ${badgeHtml}
+                    </div>
+                    ${btnHtml}
+                </div>
+                <p class="layer-card-desc">${escapeHtml(layer.description)}</p>
+                ${domainNote}
+            </div>
+        `;
+    }).join("");
+}
+
+function showSwitchModal(layerId) {
+    if (!layersData) return;
+    const layer = layersData.layers.find(l => l.id === layerId);
+    if (!layer) return;
+
+    pendingSwitchLayer = layer;
+
+    document.getElementById("switchCurrentLayer").textContent = layersData.current;
+    document.getElementById("switchTargetLayer").textContent = layer.name;
+    document.getElementById("switchModalError").style.display = "none";
+
+    const domainFields = document.getElementById("switchDomainFields");
+    const duckdnsField = document.getElementById("switchDuckdnsField");
+
+    if (layer.needs_domain) {
+        domainFields.style.display = "block";
+        document.getElementById("switchDomain").value = "";
+        document.getElementById("switchEmail").value = "";
+        document.getElementById("switchDuckdns").value = "";
+        duckdnsField.style.display = layer.needs_duckdns ? "block" : "none";
+    } else {
+        domainFields.style.display = "none";
+    }
+
+    document.getElementById("switchConfirmBtn").disabled = false;
+    document.getElementById("switchConfirmBtn").querySelector("span").textContent = t("activate_layer");
+    document.getElementById("switchModal").style.display = "flex";
+}
+
+async function confirmLayerSwitch() {
+    if (!pendingSwitchLayer) return;
+
+    const btn = document.getElementById("switchConfirmBtn");
+    const errorDiv = document.getElementById("switchModalError");
+    errorDiv.style.display = "none";
+
+    const body = { layer_id: pendingSwitchLayer.id };
+
+    if (pendingSwitchLayer.needs_domain) {
+        body.domain = document.getElementById("switchDomain").value.trim();
+        body.email = document.getElementById("switchEmail").value.trim();
+        body.duckdns_token = document.getElementById("switchDuckdns").value.trim();
+
+        if (!body.domain || !body.email) {
+            errorDiv.textContent = t("switch_error_domain_required") || "Domain and email are required";
+            errorDiv.style.display = "block";
+            return;
+        }
+    }
+
+    btn.disabled = true;
+    btn.querySelector("span").textContent = t("switching_layer");
+
+    try {
+        const resp = await api("/api/layer/switch", {
+            method: "POST",
+            body: JSON.stringify(body)
+        });
+
+        const data = await resp.json();
+        if (data.success) {
+            closeModal("switchModal");
+            showSwitchProgress();
+            startSwitchPolling();
+        } else {
+            errorDiv.textContent = data.error || "Failed to start switch";
+            errorDiv.style.display = "block";
+            btn.disabled = false;
+            btn.querySelector("span").textContent = t("activate_layer");
+        }
+    } catch (err) {
+        errorDiv.textContent = "Network error";
+        errorDiv.style.display = "block";
+        btn.disabled = false;
+        btn.querySelector("span").textContent = t("activate_layer");
+    }
+}
+
+function showSwitchProgress() {
+    document.getElementById("layerCards").style.display = "none";
+    const status = document.getElementById("layerSwitchStatus");
+    status.style.display = "block";
+    document.getElementById("switchProgressBar").style.width = "0%";
+    document.getElementById("switchProgressText").textContent = "0%";
+    document.getElementById("switchLog").textContent = "";
+    document.getElementById("switchError").style.display = "none";
+    document.getElementById("switchDone").style.display = "none";
+    document.getElementById("switchBackBtn").style.display = "none";
+    document.getElementById("switchProgressBar").className = "progress-fill";
+}
+
+function startSwitchPolling() {
+    if (switchPollInterval) clearInterval(switchPollInterval);
+    switchPollInterval = setInterval(pollSwitchStatus, 2000);
+}
+
+async function pollSwitchStatus() {
+    try {
+        const resp = await api("/api/layer/switch/status");
+        if (!resp) return;
+        const data = await resp.json();
+        updateSwitchUI(data);
+
+        if (!data.in_progress && (data.phase === "done" || data.phase === "error")) {
+            clearInterval(switchPollInterval);
+            switchPollInterval = null;
+        }
+    } catch (err) {
+        // Server may be restarting during panel reinstall - keep polling
+        console.warn("Switch status poll failed (server may be restarting):", err);
+    }
+}
+
+async function checkSwitchStatus() {
+    try {
+        const resp = await api("/api/layer/switch/status");
+        if (!resp) return;
+        const data = await resp.json();
+        if (data.in_progress || data.phase === "done" || data.phase === "error") {
+            showSwitchProgress();
+            updateSwitchUI(data);
+            if (data.in_progress) {
+                startSwitchPolling();
+            }
+        }
+    } catch (err) {
+        // ignore
+    }
+}
+
+function updateSwitchUI(data) {
+    const bar = document.getElementById("switchProgressBar");
+    const text = document.getElementById("switchProgressText");
+    const logEl = document.getElementById("switchLog");
+    const badge = document.getElementById("switchPhaseBadge");
+    const errorDiv = document.getElementById("switchError");
+    const doneDiv = document.getElementById("switchDone");
+
+    bar.style.width = data.progress_pct + "%";
+    text.textContent = data.progress_pct + "%";
+
+    if (data.phase) {
+        const phaseKey = "switch_phase_" + data.phase;
+        badge.textContent = t(phaseKey) || data.phase;
+        badge.className = "phase-badge phase-" + data.phase;
+        badge.style.display = "";
+    } else {
+        badge.style.display = "none";
+    }
+
+    if (data.log_lines && data.log_lines.length > 0) {
+        logEl.textContent = data.log_lines.join("\n");
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    const backBtn = document.getElementById("switchBackBtn");
+
+    if (data.phase === "error") {
+        errorDiv.textContent = data.error || "Unknown error";
+        errorDiv.style.display = "block";
+        backBtn.style.display = "block";
+        bar.className = "progress-fill error-fill";
+    }
+
+    if (data.phase === "done") {
+        doneDiv.style.display = "flex";
+        backBtn.style.display = "block";
+        bar.className = "progress-fill success-fill";
+    }
+}
+
+async function resetSwitchAndShowLayers() {
+    try {
+        await api("/api/layer/switch/clear", { method: "POST" });
+    } catch (err) {
+        // best effort
+    }
+    document.getElementById("layerSwitchStatus").style.display = "none";
+    document.getElementById("layerCards").style.display = "";
+    loadLayers();
+}
+
 /* ─── Utilities ─────────────────────────────────────────────────────────── */
 
 function closeModal(id) {
     document.getElementById(id).style.display = "none";
+}
+
+function maskPassword(password) {
+    if (!password) return "-";
+    return "********";
+}
+
+function eyeIcon(visible) {
+    if (visible) {
+        return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>`;
+    }
+    return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.17-6.62"></path>
+        <path d="M1 1l22 22"></path>
+        <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.86 21.86 0 0 1-3.2 4.83"></path>
+        <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24"></path>
+    </svg>`;
+}
+
+function togglePasswordVisibility(btn) {
+    const wrapper = btn.closest(".password-cell");
+    if (!wrapper) return;
+    const textEl = wrapper.querySelector(".password-text");
+    if (!textEl) return;
+
+    const password = textEl.getAttribute("data-password") || "";
+    if (!password) return;
+
+    const isVisible = textEl.getAttribute("data-visible") === "true";
+    textEl.textContent = isVisible ? maskPassword(password) : password;
+    textEl.setAttribute("data-visible", isVisible ? "false" : "true");
+    btn.innerHTML = eyeIcon(!isVisible);
+    const label = isVisible ? t("show_password") : t("hide_password");
+    btn.setAttribute("title", label);
+    btn.setAttribute("aria-label", label);
 }
 
 function escapeHtml(str) {
@@ -681,14 +1235,7 @@ async function handleLogout() {
 document.addEventListener("DOMContentLoaded", () => {
     applyLang(currentLang);
     loadOverview();
-
-    // Auto-refresh overview every 30 seconds
-    setInterval(() => {
-        const activeSection = document.querySelector(".section.active");
-        if (activeSection && activeSection.id === "section-overview") {
-            loadOverview();
-        }
-    }, 30000);
+    startSectionAutoRefresh("overview");
 });
 
 // Close modal on backdrop click

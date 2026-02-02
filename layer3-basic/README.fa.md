@@ -62,10 +62,68 @@ ssh root@SERVER-IP
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
 ```
 
 نصب خودکار انجام می‌شود.
+
+---
+
+--------------------------------------------------
+مرحله ۳.۱: دسترسی به پنل مدیریت
+--------------------------------------------------
+
+پس از اتمام نصب، آدرس زیر را در مرورگر خود باز کنید:
+
+```
+https://server-IP:8443
+```
+
+> **توجه:** به جای `server-IP` آدرس IP سرور خود را وارد کنید.
+
+![پنل مدیریت](https://github.com/user-attachments/assets/0a0e0264-75d5-4206-b71c-d212a61bbc99)
+
+
+
+---
+
+### هشدار گواهی SSL
+
+مرورگر یک هشدار امنیتی نشان می‌دهد. این به دلیل استفاده از گواهی SSL خودامضا (self-signed) است و مشکلی ندارد.
+
+روی **Advanced** کلیک کنید:
+
+![هشدار SSL](https://github.com/user-attachments/assets/4a18b53a-eaaa-4e51-b9c7-d21812eb855e)
+
+سپس روی **Proceed to IP (unsafe)** کلیک کنید:
+
+> ما از SSL خودامضا استفاده می‌کنیم تا پنل با HTTPS کار کند (بدون نیاز به خرید گواهی). به همین دلیل مرورگر این سایت را در لیست گواهی‌های معتبر خود پیدا نمی‌کند.
+
+![ادامه دادن](https://github.com/user-attachments/assets/4f763fcc-5bb8-4c0a-b96f-e09285652788)
+
+---
+
+### ورود به پنل
+
+صفحه ورود نمایش داده می‌شود. در صورت تمایل می‌توانید زبان را به فارسی تغییر دهید.
+
+نام کاربری و رمز عبور سرور خود (اطلاعات دریافت شده از IONOS) را وارد کنید:
+
+![صفحه ورود](https://github.com/user-attachments/assets/30ac2bde-59bc-4379-af1d-5c8846485210)
+
+---
+
+### پنل مدیریت
+
+این پنل مدیریت سرور شماست. از اینجا می‌توانید کاربران را اضافه یا حذف کنید:
+
+![پنل مدیریت](https://github.com/user-attachments/assets/5262345c-7f4d-47d4-bc38-34dff8dd7111)
+
+در پنل روش‌های مختلفی برای لایه‌های مختلف وجود دارد. در حال حاضر فقط ۳ لایه اول در ایران کار می‌کنند و پیشنهاد می‌شود از لایه اول استفاده کنید چون عملکرد بهتری دارد:
+
+![روش‌های مختلف](https://github.com/user-attachments/assets/33037acb-db2d-442b-b1e0-eef5177ed1d1)
+
+### **روش جایگزین:** همچنین می‌توانید از دستورات زیر برای اضافه یا حذف کاربران استفاده کنید (مرحله ۴ تا ۶ را ببینید).
 
 ---
 
@@ -76,7 +134,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer3-ba
 برای هر نفر یک کاربر بسازید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 نام کاربری و رمز عبور را وارد کنید.
@@ -90,7 +148,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/ad
 برای مشاهده کاربران متصل و وضعیت سرور:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -100,7 +158,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/vi
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---

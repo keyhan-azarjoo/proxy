@@ -65,7 +65,7 @@ ssh root@SERVER-IP
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer4-nginx/install.sh -o install.sh && bash install.sh
 ```
 
 نصب خودکار انجام می‌شود.
@@ -80,7 +80,7 @@ Nginx روی پورت 443 راه‌اندازی می‌شود.
 برای هر نفر یک کاربر بسازید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 نام کاربری و رمز عبور را وارد کنید.
@@ -94,7 +94,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/ad
 برای مشاهده کاربران متصل و وضعیت سرور:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -104,7 +104,7 @@ curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/vi
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---

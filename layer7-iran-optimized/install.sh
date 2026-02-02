@@ -2,10 +2,16 @@
 set -euo pipefail
 
 # ============================================
-# Layer 7: Real Domain + gRPC + REAL TLS (VLESS)
+# Layer 7: Iran-Optimized gRPC + REAL TLS (VLESS)
+#
+# Tuned for Iranian ISP DPI/throttling:
+#   - gRPC keepalive (survives idle connection kills)
+#   - TLS fingerprint normalization (Chrome/Android)
+#   - Policy tuning (smaller buffers, shorter idles)
+#   - Stats API enabled for monitoring
 # ============================================
 
-SCRIPT_VERSION="2.1.0"
+SCRIPT_VERSION="2.2.0-iran"
 LOG_FILE="/var/log/ssh-proxy.log"
 
 log() {
@@ -80,16 +86,23 @@ preflight_check() {
 
 main() {
     echo "============================================"
-    echo " Layer 7: Real Domain + gRPC + REAL TLS"
+    echo " Layer 7: Iran-Optimized gRPC + REAL TLS"
     echo " Version: $SCRIPT_VERSION"
     echo "============================================"
     echo ""
     echo "This will:"
     echo "  - Install Xray (V2Ray core)"
     echo "  - Configure VLESS protocol"
-    echo "  - Enable gRPC transport"
+    echo "  - Enable gRPC transport with keepalive tuning"
     echo "  - Get a REAL TLS certificate (Let's Encrypt)"
-    echo "  - Use port 443 (real HTTPS)"
+    echo "  - Apply Iran DPI/throttling countermeasures"
+    echo "  - Enable stats API for monitoring"
+    echo ""
+    echo "Iran-specific tuning:"
+    echo "  - gRPC keepalive pings (prevents idle kill)"
+    echo "  - TLS 1.2-1.3 + h2 ALPN (Chrome/Android fingerprint)"
+    echo "  - Small buffers (survives packet loss)"
+    echo "  - Short idle timeouts (avoids flow analysis)"
     echo ""
 
     read -p "Enter your domain (FQDN): " DOMAIN
@@ -114,7 +127,7 @@ main() {
 
     preflight_check
 
-    log "=== Starting Layer 7 installation ==="
+    log "=== Starting Iran-Optimized Layer 7 installation ==="
 
     echo "Removing conflicting services..."
     systemctl stop stunnel4 2>/dev/null || true
@@ -201,8 +214,8 @@ HOOK
     chown -R nobody:nogroup /etc/xray /usr/local/etc/xray
     chmod 644 /etc/xray/certs/cert.pem /etc/xray/certs/private.key
 
-    echo "Configuring Xray..."
-cat > /usr/local/etc/xray/config.json <<EOF
+    echo "Configuring Xray (Iran-optimized)..."
+    cat > /usr/local/etc/xray/config.json <<EOF
 {
   "log": {
     "loglevel": "warning"
@@ -243,6 +256,8 @@ cat > /usr/local/etc/xray/config.json <<EOF
         "security": "tls",
         "tlsSettings": {
           "alpn": ["h2"],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
           "certificates": [
             {
               "certificateFile": "/etc/xray/certs/cert.pem",
@@ -251,7 +266,11 @@ cat > /usr/local/etc/xray/config.json <<EOF
           ]
         },
         "grpcSettings": {
-          "serviceName": "$GRPC_SERVICE"
+          "serviceName": "$GRPC_SERVICE",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": true,
+          "initial_windows_size": 1048576
         }
       }
     },
@@ -326,7 +345,7 @@ EOF
     fi
     chmod 644 /usr/local/etc/xray/server-config.json
 
-    log "Xray configured"
+    log "Xray configured (Iran-optimized)"
 
     mkdir -p /etc/systemd/system/xray.service.d
     cat > /etc/systemd/system/xray.service.d/override.conf <<OVERRIDE
@@ -356,14 +375,20 @@ OVERRIDE
 Installation Details
 ====================
 Date: $(date)
-Layer: 7 (Real Domain + TLS)
+Layer: 7 (Iran-Optimized gRPC + REAL TLS)
 Port: 443
-Protocol: VLESS + gRPC + REAL TLS
+Protocol: VLESS + gRPC + REAL TLS (Iran-tuned)
 Script Version: $SCRIPT_VERSION
 
 Domain: $DOMAIN
 Server IP: $SERVER_IP
 gRPC Service: $GRPC_SERVICE
+
+Iran Tuning Applied:
+  gRPC keepalive: idle_timeout=60, health_check=20
+  TLS: 1.2-1.3, ALPN=h2
+  Policy: bufferSize=16, connIdle=60
+  Stats API: enabled on 127.0.0.1:10085
 
 Config Location: /usr/local/etc/xray/config.json
 Users Database: /usr/local/etc/xray/users.json
@@ -380,7 +405,7 @@ EOF
 
     touch "$LOG_FILE"
 
-    log "=== Layer 7 installation completed ==="
+    log "=== Iran-Optimized Layer 7 installation completed ==="
 
     # Ensure panel uses port 8443 (disable Plesk if needed)
     if port_in_use 8443; then
@@ -401,12 +426,12 @@ EOF
 
     log "Installing management panel..."
     PANEL_SCRIPT_URL="https://raw.githubusercontent.com/myotgo/Proxy/main/panel/install-panel.sh"
-    curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer7-real-domain || log "WARN: Panel installation failed (non-critical)"
+    curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer7-iran-optimized || log "WARN: Panel installation failed (non-critical)"
     rm -f /tmp/install-panel.sh
 
     echo ""
     echo "============================================"
-    echo " Installation Complete!"
+    echo " Installation Complete! (Iran-Optimized)"
     echo "============================================"
     echo ""
     echo "V2Ray VLESS is now active on port 443"
@@ -414,8 +439,14 @@ EOF
     echo "Domain: $DOMAIN"
     echo "Server IP: $SERVER_IP"
     echo "Port: 443"
-    echo "Protocol: VLESS + gRPC + REAL TLS"
+    echo "Protocol: VLESS + gRPC + REAL TLS (Iran-tuned)"
     echo "gRPC Service: $GRPC_SERVICE"
+    echo ""
+    echo "Iran tuning applied:"
+    echo "  gRPC keepalive: idle=60s, health_check=20s"
+    echo "  TLS: 1.2-1.3 only, ALPN=h2"
+    echo "  Buffers: 16KB (packet-loss friendly)"
+    echo "  Stats API: 127.0.0.1:10085"
     echo ""
     if [ -n "$DUCKDNS_TOKEN" ]; then
         echo "DuckDNS Auto-Update: Enabled (every 5 minutes)"
@@ -444,9 +475,10 @@ echo "Management Panel:"
     echo ""
     echo "CLI Management commands:"
     echo "-------------------"
-    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh"
-    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
+    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
     echo "  Status:      systemctl status xray"
+    echo "  Stats:       xray api statsquery --server=127.0.0.1:10085 -pattern=''"
     echo ""
     echo "============================================"
 }

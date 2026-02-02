@@ -62,10 +62,66 @@ Step 3: Install Layer 3
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
 ```
 
 Installation runs automatically.
+
+---
+
+--------------------------------------------------
+Step 3.1: Access the Management Panel
+--------------------------------------------------
+
+After the installation is complete, open the following URL in your browser:
+
+```
+https://server-IP:8443
+```
+
+> **Note:** Replace `server-IP` with your actual server IP address.
+
+![Management Panel](https://github.com/user-attachments/assets/a038a374-91ff-44e4-803b-455d732f3ed2)
+
+---
+
+### SSL Certificate Warning
+
+Your browser will show a security warning. This is because we use a self-signed SSL certificate, and it is completely safe.
+
+Click **Advanced**:
+
+![SSL Warning](https://github.com/user-attachments/assets/4a18b53a-eaaa-4e51-b9c7-d21812eb855e)
+
+Then click **Proceed to IP (unsafe)**:
+
+> We use a self-signed SSL certificate so the panel works over HTTPS (without needing to purchase a certificate). Because of this, the browser does not find this site in its trusted certificate list.
+
+![Proceed](https://github.com/user-attachments/assets/4f763fcc-5bb8-4c0a-b96f-e09285652788)
+
+---
+
+### Log In to the Panel
+
+The login page will appear. You can change the language to Persian if you prefer.
+
+Enter the username and password of your server (the credentials you received from IONOS):
+
+![Login Page](https://github.com/user-attachments/assets/30ac2bde-59bc-4379-af1d-5c8846485210)
+
+---
+
+### Management Panel
+
+This is your server management panel. You can add or delete users from here:
+
+![Management Panel](https://github.com/user-attachments/assets/5262345c-7f4d-47d4-bc38-34dff8dd7111)
+
+The panel offers different methods for different layers. Currently, only the first 3 layers work in Iran, and it is recommended to use the first one as it performs better:
+
+![Different Methods](https://github.com/user-attachments/assets/33037acb-db2d-442b-b1e0-eef5177ed1d1)
+
+### **Alternative method:** You can also use the commands below to add or delete users (see Steps 4 through 6).
 
 ---
 
@@ -76,7 +132,7 @@ Step 4: Add User
 Create a user for each person:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 Enter username and password.
@@ -90,7 +146,7 @@ Step 5: Monitor Users
 To view connected users and server status:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -100,7 +156,7 @@ Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---

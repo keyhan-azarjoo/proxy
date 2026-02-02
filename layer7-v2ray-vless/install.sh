@@ -13,6 +13,49 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
+
+port_in_use() {
+    local port="$1"
+    ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE "(^|:)$port$"
+}
+
+disable_plesk() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    if systemctl list-unit-files 2>/dev/null | grep -qE '^(sw-cp-server|sw-engine|plesk)\.service'; then
+        log "Plesk detected. Disabling to free port 8443..."
+        systemctl stop sw-cp-server sw-engine plesk >/dev/null 2>&1 || true
+        systemctl disable sw-cp-server sw-engine plesk >/dev/null 2>&1 || true
+        sleep 2
+        return 0
+    fi
+    return 1
+}
+
+proxy_panel_active() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    systemctl is-active --quiet proxy-panel
+}
+
+stop_proxy_panel() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 1
+    fi
+    if systemctl list-unit-files 2>/dev/null | grep -q '^proxy-panel\.service'; then
+        if systemctl is-active --quiet proxy-panel; then
+            log "Proxy panel is running. Stopping it to free port 8443..."
+            systemctl stop proxy-panel >/dev/null 2>&1 || true
+            sleep 2
+            return 0
+        fi
+    fi
+    return 1
+}
+
+
 preflight_check() {
     log "Running pre-flight checks..."
 
@@ -106,10 +149,32 @@ main() {
 
     # Create Xray config
     echo "Configuring Xray..."
-    cat > /usr/local/etc/xray/config.json <<EOF
+cat > /usr/local/etc/xray/config.json <<EOF
 {
   "log": {
     "loglevel": "warning"
+  },
+  "stats": {},
+  "api": {
+    "tag": "api",
+    "services": ["StatsService"]
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "handshake": 10,
+        "connIdle": 60,
+        "uplinkOnly": 2,
+        "downlinkOnly": 5,
+        "bufferSize": 16,
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true
+    }
   },
   "inbounds": [
     {
@@ -135,21 +200,57 @@ main() {
           "path": "$WS_PATH"
         }
       }
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 10085,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1"
+      },
+      "tag": "api"
     }
   ],
   "outbounds": [
     { "protocol": "freedom" }
-  ]
+  ],
+  "routing": {
+    "rules": [
+      {
+        "inboundTag": ["api"],
+        "outboundTag": "api",
+        "type": "field"
+      }
+    ]
+  }
 }
 EOF
 
     chown nobody:nogroup /usr/local/etc/xray/config.json
     chmod 644 /usr/local/etc/xray/config.json
 
-    # Save empty user database and server config
+    # Restore or create user database
     mkdir -p /usr/local/etc/xray
-    echo "{}" > /usr/local/etc/xray/users.json
+    if [ -f /root/proxy-users/xray-users.json ]; then
+        cp /root/proxy-users/xray-users.json /usr/local/etc/xray/users.json
+        log "Restored previous user database from /root/proxy-users/xray-users.json"
+    else
+        echo "{}" > /usr/local/etc/xray/users.json
+    fi
     chmod 644 /usr/local/etc/xray/users.json
+
+    # Re-add restored users to xray config
+    if command -v jq >/dev/null 2>&1; then
+        for username in $(jq -r 'keys[]' /usr/local/etc/xray/users.json 2>/dev/null); do
+            uuid=$(jq -r --arg u "$username" '.[$u]' /usr/local/etc/xray/users.json)
+            if [ -n "$uuid" ] && [ "$uuid" != "null" ]; then
+                jq --arg uuid "$uuid" --arg email "${username}@proxy" \
+                  '.inbounds[0].settings.clients += [{"id":$uuid,"email":$email}]' \
+                  "$CONFIG" > /tmp/xray.json && mv /tmp/xray.json "$CONFIG"
+                log "Restored user: $username"
+            fi
+        done
+    fi
 
     # Save server config for add-user script
     cat > /usr/local/etc/xray/server-config.json <<EOF
@@ -217,9 +318,26 @@ EOF
 
     log "=== Layer 7 VLESS installation completed ==="
 
-    # Install management panel
+    
+    # Ensure panel uses port 8443 (disable Plesk if needed)
+    if port_in_use 8443; then
+        disable_plesk || true
+    fi
+    if port_in_use 8443; then
+        stop_proxy_panel || true
+    fi
+    if port_in_use 8443; then
+        if proxy_panel_active; then
+            log "Port 8443 is already in use by proxy-panel. Continuing..."
+        else
+            log "ERROR: Port 8443 is in use and could not be freed. Aborting panel install."
+            exit 1
+        fi
+    fi
+
+# Install management panel
     log "Installing management panel..."
-    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/panel/install-panel.sh"
+    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/myotgo/Proxy/main/panel/install-panel.sh"
     curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer7-v2ray-vless || log "WARN: Panel installation failed (non-critical)"
     rm -f /tmp/install-panel.sh
 
@@ -237,14 +355,29 @@ EOF
     echo ""
     echo "Next step: Add a user to get connection config"
     echo ""
-    echo "Management Panel:"
-    echo "  URL: https://${SERVER_IP}:8443"
+    PANEL_PORT=8443
+if [ -f /opt/proxy-panel/panel.conf ] && command -v python3 >/dev/null 2>&1; then
+    PANEL_PORT=$(python3 - <<'PY'
+import json
+try:
+    with open('/opt/proxy-panel/panel.conf', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    port = data.get('port')
+    print(port if isinstance(port, int) else '8443')
+except Exception:
+    print('8443')
+PY
+)
+fi
+
+echo "Management Panel:"
+    echo "  URL: https://${SERVER_IP}:${PANEL_PORT}"
     echo "  Login with your server root credentials"
     echo ""
     echo "CLI Management commands:"
     echo "-------------------"
-    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/add-user.sh -o add-user.sh && bash add-user.sh"
-    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/proxy/main/layer7-v2ray-vless/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
+    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-v2ray-vless/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-v2ray-vless/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
     echo "  Status:      systemctl status xray"
     echo ""
     echo "============================================"

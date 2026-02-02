@@ -15,10 +15,12 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
-# Backup configuration
+# Backup configuration (use /tmp/ to avoid read-only filesystem errors)
+BACKUP_FILE=""
 backup_config() {
-    cp "$SSHD_CONFIG" "$SSHD_CONFIG.backup-$(date +%s)"
-    log "Configuration backed up"
+    BACKUP_FILE="/tmp/sshd_config.backup-$(date +%s)"
+    cp "$SSHD_CONFIG" "$BACKUP_FILE"
+    log "Configuration backed up to $BACKUP_FILE"
 }
 
 # Main script
@@ -66,15 +68,19 @@ main() {
     sleep 1
 
     echo "Removing user account..."
-    deluser --remove-home "$USERNAME" || true
+    userdel -r "$USERNAME" 2>/dev/null || deluser --remove-home "$USERNAME" 2>/dev/null || {
+        log "WARN: Could not remove system user $USERNAME, continuing with config cleanup"
+    }
 
-    # Remove Match block for this user
-    sed -i "/^Match User $USERNAME$/,/^$/d" "$SSHD_CONFIG"
+    # Remove Match block for this user (use temp file to avoid sed -i issues)
+    sed "/^Match User $USERNAME$/,/^$/d" "$SSHD_CONFIG" > /tmp/sshd_config.tmp
+    cp /tmp/sshd_config.tmp "$SSHD_CONFIG"
+    rm -f /tmp/sshd_config.tmp
 
     # Validate SSH config
     if ! sshd -t; then
         log "ERROR: Invalid SSH configuration after deletion"
-        cp "$SSHD_CONFIG.backup-"* "$SSHD_CONFIG" 2>/dev/null || true
+        cp "$BACKUP_FILE" "$SSHD_CONFIG" 2>/dev/null || true
         echo "Error: SSH configuration validation failed, changes reverted"
         exit 1
     fi
@@ -89,10 +95,22 @@ main() {
         exit 1
     fi
 
-    # Remove iptables accounting chain
+    # Remove iptables accounting chain (legacy)
     iptables -D OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
+    iptables -D INPUT -m state --state ESTABLISHED,RELATED -j "PROXY_USER_${USERNAME}" 2>/dev/null || true
     iptables -F "PROXY_USER_${USERNAME}" 2>/dev/null || true
     iptables -X "PROXY_USER_${USERNAME}" 2>/dev/null || true
+
+    # Remove per-user connmark rules (mangle table)
+    USER_UID="$(id -u "$USERNAME" 2>/dev/null || true)"
+    if [ -n "$USER_UID" ]; then
+        iptables -t mangle -D OUTPUT -m owner --uid-owner "$USERNAME" -j "PROXY_USER_${USERNAME}_OUT" 2>/dev/null || true
+        iptables -t mangle -D INPUT -m connmark --mark "$USER_UID" -j "PROXY_USER_${USERNAME}_IN" 2>/dev/null || true
+    fi
+    iptables -t mangle -F "PROXY_USER_${USERNAME}_OUT" 2>/dev/null || true
+    iptables -t mangle -X "PROXY_USER_${USERNAME}_OUT" 2>/dev/null || true
+    iptables -t mangle -F "PROXY_USER_${USERNAME}_IN" 2>/dev/null || true
+    iptables -t mangle -X "PROXY_USER_${USERNAME}_IN" 2>/dev/null || true
 
     # Remove user info file
     rm -f "/root/proxy-users/$USERNAME.txt"
