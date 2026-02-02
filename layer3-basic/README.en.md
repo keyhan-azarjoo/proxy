@@ -62,7 +62,7 @@ Step 3: Install Layer 3
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer3-basic/install.sh -o install.sh && bash install.sh
 ```
 
 Installation runs automatically.
@@ -132,7 +132,7 @@ Step 4: Add User
 Create a user for each person:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 Enter username and password.
@@ -146,7 +146,7 @@ Step 5: Monitor Users
 To view connected users and server status:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -156,7 +156,7 @@ Step 6: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 ---

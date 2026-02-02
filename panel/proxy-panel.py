@@ -34,7 +34,7 @@ DATA_DIR = PANEL_DIR / "data"
 TEMPLATES_DIR = PANEL_DIR / "templates"
 STATIC_DIR = PANEL_DIR / "static"
 LOG_FILE = "/var/log/proxy-panel.log"
-GITHUB_RAW_BASE = "https://raw.githubusercontent.com/myotgo/Proxy/main"
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main"
 
 LAYER_DEFINITIONS = [
     {

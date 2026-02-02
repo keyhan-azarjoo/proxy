@@ -21,7 +21,7 @@ Search on **Google Play**: **NetMod** or **Net Mod Syna**
 On the server, run the add user command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 After running, **2 JSON configs** will be displayed (iOS and Android). Copy the **Android** config.

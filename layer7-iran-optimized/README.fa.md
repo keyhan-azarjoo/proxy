@@ -113,7 +113,7 @@ ssh root@SERVER-IP
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-iran-optimized/install.sh -o install.sh && bash install.sh
 ```
 
 **در طول نصب از شما پرسیده می‌شود:**
@@ -139,7 +139,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optim
 - کانفیگ Android (برای NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **توجه:** اگر همان نام کاربری را دوباره اضافه کنید، همان کانفیگ قبلی برگردانده می‌شود.
@@ -153,7 +153,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optim
 برای مشاهده کاربران متصل و وضعیت سرور:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -163,7 +163,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 بعد از حذف، کاربر دیگر نمی‌تواند با کانفیگ قبلی متصل شود.

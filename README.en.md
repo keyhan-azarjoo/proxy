@@ -132,7 +132,7 @@ Uninstall (if needed)
 If you want to completely remove the proxy:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
 ```
 
 **Note:** If you have reset the server or are reinstalling, run this command on your computer to remove the old SSH key:

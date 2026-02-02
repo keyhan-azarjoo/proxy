@@ -10,7 +10,7 @@ PANEL_PORT=8443
 XRAY_STATS_PORT=10085
 LOG_FILE="/var/log/proxy-panel.log"
 LAYER="unknown"
-REPO_BASE="https://raw.githubusercontent.com/myotgo/Proxy/main/panel"
+REPO_BASE="https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/panel"
 
 # ─── Parse Arguments ──────────────────────────────────────────────────────────
 

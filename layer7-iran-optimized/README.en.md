@@ -113,7 +113,7 @@ Step 4: Install Layer 7 (Iran Optimized)
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-iran-optimized/install.sh -o install.sh && bash install.sh
 ```
 
 **During installation you'll be asked:**
@@ -139,7 +139,7 @@ Create a user for each person. After adding a user, **2 JSON configs** will be d
 - Android config (for NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-iran-optimized/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 
 **Note:** If you add the same username again, the same config will be returned.
@@ -153,7 +153,7 @@ Step 6: Monitor Users
 To view connected users and server status:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -163,7 +163,7 @@ Step 7: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-iran-optimized/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 After deletion, the user can no longer connect with their previous config.

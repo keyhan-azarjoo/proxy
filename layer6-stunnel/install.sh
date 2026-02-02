@@ -240,7 +240,7 @@ EOF
 
 # Install management panel
     log "Installing management panel..."
-    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/myotgo/Proxy/main/panel/install-panel.sh"
+    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/panel/install-panel.sh"
     curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer6-stunnel || log "WARN: Panel installation failed (non-critical)"
     rm -f /tmp/install-panel.sh
 
@@ -259,7 +259,7 @@ EOF
     echo ""
     echo "Next steps:"
     echo "  1. Add a proxy user:"
-    echo "     curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "     curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
     echo ""
     echo "     Note: Password must be at least 8 characters."
     echo "           Password won't be visible while typing (this is normal)."
@@ -294,11 +294,11 @@ echo "Management Panel:"
     echo "  Login with your server root credentials"
     echo ""
     echo "CLI Management commands:"
-    echo "  Add user:     curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
-    echo "  Delete user:  curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh USERNAME"
-    echo "  View users:   curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh"
-    echo "  List users:   curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/list-users.sh -o list-users.sh && bash list-users.sh"
-    echo "  Check status: curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/status.sh -o status.sh && bash status.sh"
+    echo "  Add user:     curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user:  curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/delete-user.sh -o delete-user.sh && bash delete-user.sh USERNAME"
+    echo "  View users:   curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh"
+    echo "  List users:   curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/list-users.sh -o list-users.sh && bash list-users.sh"
+    echo "  Check status: curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/status.sh -o status.sh && bash status.sh"
     echo ""
     echo "============================================"
 }

@@ -400,7 +400,7 @@ EOF
 
 
     log "Installing management panel..."
-    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/myotgo/Proxy/main/panel/install-panel.sh"
+    PANEL_SCRIPT_URL="https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/panel/install-panel.sh"
     curl -fsSL "$PANEL_SCRIPT_URL" -o /tmp/install-panel.sh && bash /tmp/install-panel.sh --layer=layer7-real-domain || log "WARN: Panel installation failed (non-critical)"
     rm -f /tmp/install-panel.sh
 
@@ -444,8 +444,8 @@ echo "Management Panel:"
     echo ""
     echo "CLI Management commands:"
     echo "-------------------"
-    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh"
-    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
+    echo "  Add user:    curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh"
+    echo "  Delete user: curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh <username>"
     echo "  Status:      systemctl status xray"
     echo ""
     echo "============================================"

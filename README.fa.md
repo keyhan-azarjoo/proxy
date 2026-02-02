@@ -133,7 +133,7 @@ ssh root@SERVER-IP
 اگر می‌خواهید پراکسی را کاملاً حذف کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/uninstall.sh -o uninstall.sh && bash uninstall.sh
 ```
 
 **توجه:** اگر سرور را ریست کرده‌اید یا مجدداً نصب می‌کنید، این دستور را روی کامپیوتر خود اجرا کنید تا کلید SSH قدیمی حذف شود:

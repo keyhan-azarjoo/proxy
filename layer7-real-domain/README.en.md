@@ -109,7 +109,7 @@ Step 4: Install Layer 7 (Real Domain + TLS)
 Run this command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/install.sh -o install.sh && bash install.sh
 ```
 
 **During installation you'll be asked:**
@@ -135,7 +135,7 @@ Create a user for each person. After adding a user, **2 JSON configs** will be d
 - Android config (for NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 <img width="1541" height="1327" alt="Screenshot 2026-01-29 095609" src="https://github.com/user-attachments/assets/3a4b8512-2ebe-424c-8499-ad7025872d2f" />
 
@@ -150,7 +150,7 @@ Step 6: Monitor Users
 To view connected users and server status:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -160,7 +160,7 @@ Step 7: Delete User (if needed)
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 After deletion, the user can no longer connect with their previous config.

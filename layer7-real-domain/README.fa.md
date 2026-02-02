@@ -109,7 +109,7 @@ ssh root@SERVER-IP
 این دستور را اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/install.sh -o install.sh && bash install.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/install.sh -o install.sh && bash install.sh
 ```
 
 **در طول نصب از شما پرسیده می‌شود:**
@@ -134,7 +134,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domai
 - کانفیگ Android (برای NetMod)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/add-user.sh -o add-user.sh && bash add-user.sh
 ```
 <img width="1541" height="1327" alt="Screenshot 2026-01-29 095609" src="https://github.com/user-attachments/assets/d4a840bc-25f9-4347-a9b0-6bc1998f060c" />
 
@@ -149,7 +149,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domai
 برای مشاهده کاربران متصل و وضعیت سرور:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/common/view-users.sh -o view-users.sh && bash view-users.sh
 ```
 
 ---
@@ -159,7 +159,7 @@ curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/common/view-users
 --------------------------------------------------
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/myotgo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
+curl -fsSL https://raw.githubusercontent.com/keyhan-azarjoo/Proxy/main/layer7-real-domain/delete-user.sh -o delete-user.sh && bash delete-user.sh username
 ```
 
 بعد از حذف، کاربر دیگر نمی‌تواند با کانفیگ قبلی متصل شود.
