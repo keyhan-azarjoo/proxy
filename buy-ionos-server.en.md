@@ -63,6 +63,42 @@ On the server page, you will see very important information:
 
 ---
 
+## To change the IP address of ypour server for free
+in your panel in side bar, click on Network -> public IP
+then click on create
+<img width="1918" height="1132" alt="1" src="https://github.com/user-attachments/assets/85b7cecb-7d75-47a8-872a-32edb35b7a9d" />
+
+then select your server and click on create
+it show you need to pay 5 pound to get a new IP but it efect if you have the second IP for more than 3 day
+so if you create the ip and delet ethe previous IP, you do not need to pay any money for IP
+<img width="1918" height="1132" alt="2" src="https://github.com/user-attachments/assets/aab669b2-5f44-40fc-84a0-5277b3906233" />
+<img width="1910" height="1132" alt="3" src="https://github.com/user-attachments/assets/c010ec53-8cd7-47ce-8059-677a721c13d5" />
+
+after that, in your ip list, select the old IP and delete it(do it when the second IP has been created)
+<img width="1917" height="1141" alt="4" src="https://github.com/user-attachments/assets/5406de4c-c8d7-469e-9385-6e278539700b" />
+
+then go to server page and restart the server
+
+<img width="1915" height="1133" alt="5" src="https://github.com/user-attachments/assets/76901ad5-ff76-4988-a0d8-89117e5e39bd" />
+
+
+now you can use your new IP
+
+
+## To reinstall the os and start everything new from scratchj
+you can go to Action -> reinstall image
+
+<img width="1912" height="1123" alt="6" src="https://github.com/user-attachments/assets/ec3fec58-e90f-4216-909f-fc226aea3531" />
+
+then select your OS and click on reinstall
+<img width="1918" height="1138" alt="7" src="https://github.com/user-attachments/assets/317a6846-5717-45c9-a263-df22c524b80a" />
+
+it reset everything and give you a fresh OS
+
+
+
+
+
 ## Next Step
 
 Now that you have purchased the server and have its information, return to the main guide and continue from **Step 2 (SSH Connection)**:
